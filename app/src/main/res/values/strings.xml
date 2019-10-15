@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">swift</string>
+    <string name="map_api_key">AIzaSyDCDDy-HTxxCmEJDJQdQVI6OyjA5t6h8x0</string>
+    <string name="navigation_drawer_open">open drawer</string>
+    <string name="navigation_drawer_close">open drawer</string>
+</resources>

@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 
@@ -20,7 +21,13 @@ public class activity_earning extends Activity {
         btn_month = findViewById(R.id.btn_month);
         btn_today = findViewById(R.id.btn_today);
         btn_week = findViewById(R.id.btn_week);
-
+        final ImageView btn_back = findViewById(R.id.btn_back);
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity_earning.this.finish();
+            }
+        });
         btn_today.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -48,5 +48,12 @@ public class activity_signature_pad extends AppCompatActivity {
                 //Event triggered when the pad is cleared
             }
         });
+        final ImageView btn_back = findViewById(R.id.btn_back);
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity_signature_pad.this.finish();
+            }
+        });
     }
 }

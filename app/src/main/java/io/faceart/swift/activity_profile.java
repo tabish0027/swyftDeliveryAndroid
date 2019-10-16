@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 
@@ -41,7 +42,13 @@ public class activity_profile  extends Activity {
             }
         });
 
-
+        final ImageView btn_back = findViewById(R.id.btn_back);
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity_profile.this.finish();
+            }
+        });
     }
     public void SelectDay(){
         btn_today.setBackgroundResource(R.drawable.button_earn_select);

@@ -34,6 +34,7 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
     TextView tx_barcode ;
     ConstraintLayout layout_scanned_id;
     ImageView btn_refreash;
+    ConstraintLayout barcode_remaining_parcels ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +44,22 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
         tx_barcode = findViewById(R.id.tx_barcode);
         mScannerView = new ZXingScannerView(this);
         btn_refreash = findViewById(R.id.btn_refreash);
+        final ImageView btn_back = findViewById(R.id.btn_back);
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity_barcode_scanner.this.finish();
+            }
+        });
+        barcode_remaining_parcels = findViewById(R.id.barcode_remaining_parcels);
+        barcode_remaining_parcels.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent showParcelList = new Intent(activity_barcode_scanner.this,activity_order_status_scanning.class);
+                activity_barcode_scanner.this.startActivity(showParcelList);
+                overridePendingTransition( R.anim.slide_in_up, R.anim.slide_out_up );
+            }
+        });
         btn_refreash.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

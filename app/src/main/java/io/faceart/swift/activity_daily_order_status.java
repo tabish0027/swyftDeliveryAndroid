@@ -3,6 +3,7 @@ package io.faceart.swift;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -23,7 +24,13 @@ public class activity_daily_order_status  extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_daily_order_status);
-
+        final ImageView btn_back = findViewById(R.id.btn_back);
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity_daily_order_status.this.finish();
+            }
+        });
         order_list_daily = findViewById(R.id.order_list_daily);
 
 

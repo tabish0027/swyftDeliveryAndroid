@@ -7,7 +7,8 @@ import io.faceart.swift.data_models.*;
 public class Databackbone {
     public static Databackbone databackbone=null;
     public ArrayList<model_order_item> ar_orders_diclined,ar_orders_reattempt,ar_orders_delivered,ar_orders_scanned,ar_orders_remaining;
-    public ArrayList<model_daily_package_item> ar_orders_daily;
+    public ArrayList<model_daily_package_item> ar_orders_daily = new ArrayList<>();
+    public ArrayList<model_wallets_order> ar_orders_wallet = new ArrayList<>();
 
     private Databackbone(){
 

@@ -33,7 +33,7 @@ public class adapter_status_packages_scanning extends RecyclerView.Adapter<adapt
 
 
         View view = LayoutInflater.from(parent.getContext()).inflate(
-                R.layout.row_item_today_package_order, parent, false);
+                R.layout.row_item_package_order_status, parent, false);
 
         return new model_order_item_holder(view);
     }

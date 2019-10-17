@@ -34,10 +34,9 @@ public class activity_daily_order_status  extends Activity {
         order_list_daily = findViewById(R.id.order_list_daily);
 
 
-        Databackbone.getinstance().ar_orders_daily = new ArrayList<>();
 
 
-        generate_test_Data();
+        //generate_test_Data();
         ad_orders_daily = new adapter_status_daily_packages(Databackbone.getinstance().ar_orders_daily, this);
 
 

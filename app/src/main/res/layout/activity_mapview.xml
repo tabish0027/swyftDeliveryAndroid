@@ -33,7 +33,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView14"
+        android:id="@+id/btn_get_current_locationc"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginEnd="16dp"
@@ -91,7 +91,7 @@
             app:layout_constraintStart_toStartOf="@+id/guideline9" />
 
         <TextView
-            android:id="@+id/textView9"
+            android:id="@+id/tx_parcels_status_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"

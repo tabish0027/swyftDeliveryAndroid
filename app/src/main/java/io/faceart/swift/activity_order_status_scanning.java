@@ -12,14 +12,15 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.faceart.swift.adapters.adapter_status_packages_scanning;
 import io.faceart.swift.data_models.model_order_item;
+import io.faceart.swift.interface_retrofit.Parcel;
 
 public class activity_order_status_scanning extends Activity {
 
     public androidx.constraintlayout.widget.ConstraintLayout con_orders_scanned,con_orders_remaining;
-
     public RecyclerView order_list_remaining,order_list_scanned;
     public adapter_status_packages_scanning ad_orders_scanned,ad_orders_remaining;
     public TextView tx_count_scanned,tx_count_remaining;
@@ -44,7 +45,7 @@ public class activity_order_status_scanning extends Activity {
         Databackbone.getinstance().ar_orders_scanned = new ArrayList<>();
         Databackbone.getinstance().ar_orders_remaining= new ArrayList<>();
 
-        generate_test_Data();
+
         ad_orders_scanned = new adapter_status_packages_scanning(Databackbone.getinstance().ar_orders_scanned, this);
         ad_orders_remaining = new adapter_status_packages_scanning(Databackbone.getinstance().ar_orders_remaining, this);
 
@@ -93,27 +94,35 @@ public class activity_order_status_scanning extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        load_parcels();
 
-        update_view();
     }
 
-
-
-    public void generate_test_Data() {
+    public void load_parcels(){
         Databackbone.getinstance().ar_orders_scanned.clear();
         Databackbone.getinstance().ar_orders_remaining.clear();
 
         ArrayList<model_order_item>  temp_ar_orders_scanned = new ArrayList<>();
         ArrayList<model_order_item>  temp_ar_orders_remaining= new ArrayList<>();
-        for(int i =0;i<10;i++){
-            temp_ar_orders_scanned.add(new model_order_item("123123"+Integer.toString(i), "10/10/2018", "14:12AM", "scan"));
-            temp_ar_orders_remaining.add(new model_order_item("123123"+Integer.toString(i), "10/10/2018", "14:12AM", "remain"));
+        List<Parcel> parcels=   Databackbone.getinstance().parcels.get(Databackbone.getinstance().pickup_to_process).getParcels();
+        for(int i =0 ; i < parcels.size();i++){
+            if(!parcels.get(i).getScanned()){
+
+                temp_ar_orders_remaining.add(new model_order_item(parcels.get(i).getParcelId(), "", "", "remain"));
+
+            }
+            else
+            {
+
+                temp_ar_orders_scanned.add(new model_order_item(parcels.get(i).getParcelId(),parcels.get(i).getScannedOn(), "", "scan"));
+            }
         }
         Databackbone.getinstance().ar_orders_scanned.addAll(temp_ar_orders_scanned);
         Databackbone.getinstance().ar_orders_remaining.addAll(temp_ar_orders_remaining);
-
-
+        update_view();
     }
+
+
     public void update_view(){
         tx_count_scanned.setText(Integer.toString(Databackbone.getinstance().ar_orders_scanned.size()));
         tx_count_remaining.setText(Integer.toString(Databackbone.getinstance().ar_orders_remaining.size()));

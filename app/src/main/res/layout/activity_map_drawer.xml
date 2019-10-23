@@ -8,6 +8,7 @@
     tools:openDrawer="start"
     android:id="@+id/slider_menu"
     android:layout_height="match_parent">
+
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
@@ -301,11 +302,11 @@
                     app:layout_constraintBottom_toBottomOf="@+id/profile_image2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toStartOf="@+id/textView19"
-                    app:layout_constraintTop_toBottomOf="@+id/textView19" />
+                    app:layout_constraintStart_toStartOf="@+id/tx_username_slider"
+                    app:layout_constraintTop_toBottomOf="@+id/tx_username_slider" />
 
                 <TextView
-                    android:id="@+id/textView19"
+                    android:id="@+id/tx_username_slider"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"

@@ -4,7 +4,7 @@ import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class User {
+public class RiderActivity {
 
     @SerializedName("firstName")
     @Expose
@@ -45,32 +45,15 @@ public class User {
     @SerializedName("profilePicture")
     @Expose
     private String profilePicture;
-    @SerializedName("isOnline")
-    @Expose
-    private Boolean isOnline;
     @SerializedName("isActive")
     @Expose
     private Boolean isActive;
-
-    public Boolean getIsOnline() {
-        return isOnline;
-    }
-
-    public void setIsOnline(Boolean isOnline) {
-        this.isOnline = isOnline;
-    }
-
-    public Boolean getActive() {
-        return isActive;
-    }
-
-    public void setActive(Boolean active) {
-        isActive = active;
-    }
-
     @SerializedName("type")
     @Expose
     private String type;
+    @SerializedName("isOnline")
+    @Expose
+    private Boolean isOnline;
 
     public String getFirstName() {
         return firstName;
@@ -190,6 +173,14 @@ public class User {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Boolean getIsOnline() {
+        return isOnline;
+    }
+
+    public void setIsOnline(Boolean isOnline) {
+        this.isOnline = isOnline;
     }
 
 }

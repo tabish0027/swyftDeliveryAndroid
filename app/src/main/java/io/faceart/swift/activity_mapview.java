@@ -1,14 +1,21 @@
 package io.faceart.swift;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,27 +28,44 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.navigation.NavigationView;
 import androidx.navigation.ui.AppBarConfiguration;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.faceart.swift.data_models.model_daily_package_item;
+import io.faceart.swift.interface_retrofit.DeliveryParcel;
+import io.faceart.swift.interface_retrofit.Rider;
+import io.faceart.swift.interface_retrofit.RiderActivity;
+import io.faceart.swift.interface_retrofit.*;
 import mumayank.com.airlocationlibrary.AirLocation;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 
 public class activity_mapview extends Activity implements OnMapReadyCallback {
     GoogleMap mMapServiceView;
     MapView mMapView;
-    ImageView img_rider_activity_button;
-    boolean img_rider_activity_button_State = false;
+    ImageView img_rider_activity_button,btn_navigation;
+
     ConstraintLayout offlineTag = null;
     ConstraintLayout Task1,Task2,Task3,Task4,Task5 = null;
     ConstraintLayout btn_walled,btn_earning = null;
+    TextView tx_username = null;
+    ProgressBar progressBar = null;
 
-    Boolean check_parcel_scanning_complete = false;
+
     ImageView btn_slider_menu;
     private AppBarConfiguration mAppBarConfiguration;
     NavigationView navigationView;
@@ -50,9 +74,10 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
     private AirLocation airLocation;
     ImageView btn_get_current_locationc,profile_image2;
     TextView tx_parcels_status_count;
+    Marker marker_destination_location = null;
 
-    //private BottomSheetBehavior sheetBehavior;
-    //private ConstraintLayout bottom_sheet;
+    ArrayList<MarkerOptions> markers = new ArrayList<>();
+
 
 
     @Override
@@ -71,26 +96,29 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         Task3= findViewById(R.id.item3);
         Task4= findViewById(R.id.item4);
         Task5= findViewById(R.id.item5);
-
+        btn_navigation = findViewById(R.id.btn_navigation);
+        tx_username = findViewById(R.id.tx_username_slider);
+        progressBar = (ProgressBar)findViewById(R.id.url_loading_animation);
         btn_walled= findViewById(R.id.btn_wallet);
         btn_earning= findViewById(R.id.btn_earning);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.slider_menu);
         btn_slider_menu = findViewById(R.id.btn_slider_menu);
         tx_parcels_status_count = findViewById(R.id.tx_parcels_status_count);
+        progressBar.setVisibility(View.GONE);
 
 
-        generate_test_Data_for_daily();
+       // generate_test_Data_for_daily();
 
         if(Databackbone.getinstance().ar_orders_daily.size() > 0)
         {
-            check_parcel_scanning_complete = true;
-            tx_parcels_status_count.setText(Integer.toString(Databackbone.getinstance().ar_orders_daily.size()) + " Pickups Remaining");
+           // check_parcel_scanning_complete = true;
+            //tx_parcels_status_count.setText(Integer.toString(Databackbone.getinstance().ar_orders_daily.size()) + " Pickups Remaining");
         }
         else
         {
-            check_parcel_scanning_complete = false;
-            tx_parcels_status_count.setText(Integer.toString(0) + " Scanning Parcels");
+            //check_parcel_scanning_complete = false;
+           // tx_parcels_status_count.setText(Integer.toString(0) + " Scanning Parcels");
 
         }
         Task1.setOnClickListener(new View.OnClickListener() {
@@ -159,15 +187,14 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         img_rider_activity_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(img_rider_activity_button_State)
-                {
-                    img_rider_activity_button_State = false;
-                    DeactivateRider();
+                EnableLoading();
+                if(Databackbone.getinstance().rider.getUser().getIsOnline())
+                     change_Activity_status(false);
+                else
+                    change_Activity_status(true);
 
-                }else{
-                    img_rider_activity_button_State = true;
-                    ActivateRider();
-                }
+
+
             }
         });
 
@@ -198,66 +225,57 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         pendingTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent openBarCode = null;
-                if(check_parcel_scanning_complete){
-                    openBarCode = new Intent(activity_mapview.this, activity_daily_order_status.class);
-                    activity_mapview.this.startActivity(openBarCode);
-                    overridePendingTransition( R.anim.slide_in_up, R.anim.slide_out_up );
-                }
-                else{
-                     openBarCode = new Intent(activity_mapview.this, activity_barcode_scanner.class);
-                    activity_mapview.this.startActivity(openBarCode);
-                    overridePendingTransition( R.anim.slide_in_up, R.anim.slide_out_up );
-                }
-
-
-            }
-        });
-
-        /*
-        bottom_sheet = findViewById(R.id.bottom_sheet);
-        sheetBehavior = BottomSheetBehavior.from(bottom_sheet);
-        // click event for show-dismiss bottom sheet
-        btn_get_current_locationc.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (sheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
-                    sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                    //btn_bottom_sheet.setText("Close sheet");
-                } else {
-                    sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                    //btn_bottom_sheet.setText("Expand sheet");
-                }
-            }
-        });
-// callback for do something
-        sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View view, int newState) {
-                switch (newState) {
-                    case BottomSheetBehavior.STATE_HIDDEN:
-                        break;
-                    case BottomSheetBehavior.STATE_EXPANDED: {
-                        //btn_bottom_sheet.setText("Close Sheet");
+                if(Databackbone.getinstance().rider.getUser().getIsOnline()){
+                    Intent pendingtask = null;
+                    if (Databackbone.getinstance().check_parcel_scanning_complete) {
+                        pendingtask = new Intent(activity_mapview.this, activity_daily_order_status.class);
+                        activity_mapview.this.startActivity(pendingtask);
+                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+                    } else {
+                        pendingtask = new Intent(activity_mapview.this, activity_barcode_scanner.class);
+                        activity_mapview.this.startActivity(pendingtask);
+                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
                     }
-                    break;
-                    case BottomSheetBehavior.STATE_COLLAPSED: {
-                       // btn_bottom_sheet.setText("Expand Sheet");
-                    }
-                    break;
-                    case BottomSheetBehavior.STATE_DRAGGING:
-                        break;
-                    case BottomSheetBehavior.STATE_SETTLING:
-                        break;
+                }else{
+                    Databackbone.getinstance().showAlsertBox(activity_mapview.this,"Error","Your Are Not Online");
                 }
-            }
 
-            @Override
-            public void onSlide(@NonNull View view, float v) {
 
             }
         });
-        */
+
+        btn_navigation.setVisibility(View.GONE);
+
+        // data attributes set from server
+        tx_username.setText("Hi "+Databackbone.getinstance().rider.getUser().getFirstName());
+        btn_navigation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(marker_destination_location != null){
+                    new AlertDialog.Builder(activity_mapview.this)
+                            .setTitle("Navigation Request")
+                            .setMessage("Activate Navigation for " + marker_destination_location.getTitle() )
+
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    Offlice_Activity(marker_destination_location.getPosition());
+
+                                }
+                            })
+                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            })
+
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                }
+            }
+        });
+        check_status_of_rider_activity();
+
 
     }
     // override and call airLocation object's method by the same name
@@ -282,7 +300,8 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
                 if(location == null || mMapServiceView == null)
                     return ;
                 LatLng current_location = new LatLng(location.getLatitude(),location.getLongitude());
-                mMapServiceView.addMarker(new MarkerOptions().position(current_location).title("Current Location"));
+                Databackbone.getinstance().current_location = current_location;
+                //mMapServiceView.addMarker(new MarkerOptions().position(current_location).title("Current Location"));
                 //mMapServiceView.moveCamera(CameraUpdateFactory.newLatLngZoom(current_location, 15));
                 CameraUpdate location_animation = CameraUpdateFactory.newLatLngZoom(current_location, 15);
                 mMapServiceView.animateCamera(location_animation);
@@ -296,7 +315,8 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
                 System.out.println(message);
             }
         });
-    }
+
+}
     public void ActivateRider(){
         img_rider_activity_button.setImageResource(R.drawable.icon_rider_event_start);
         offlineTag.setVisibility(View.GONE);
@@ -309,7 +329,25 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMapServiceView = googleMap;
+        mMapServiceView.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                if(marker.getTitle().contains("Pickup"))
+                {
+                    //btn_navigation.setVisibility(View.VISIBLE);
+                    marker_destination_location = marker;
+                }
+                return false;
+            }
+        });
+        mMapServiceView.setMyLocationEnabled(true);
+        mMapServiceView.getUiSettings().setMyLocationButtonEnabled(false);
+
         getCurrentLocation();
+        LoadParcels();
+
+
+
 
     }
     @Override
@@ -317,7 +355,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
 
        mMapView.onResume();
         super.onResume();
-        if(img_rider_activity_button_State)
+        if(Databackbone.getinstance().rider != null && Databackbone.getinstance().rider.getUser().getIsOnline())
         {
             ActivateRider();
 
@@ -350,18 +388,152 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////
-    public void generate_test_Data_for_daily() {
-        Databackbone.getinstance().ar_orders_daily.clear();
+        public void LoadParcels(){
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
+        swift_api riderapi = retrofit.create(swift_api.class);
+        EnableLoading();
+        Call<List<DeliveryParcel>>  call = riderapi.getParcelsByRiders(Databackbone.getinstance().rider.getId(),Databackbone.getinstance().rider.getUserId());
+        call.enqueue(new Callback<List<DeliveryParcel>>() {
+            @Override
+            public void onResponse(Call<List<DeliveryParcel>> call, Response<List<DeliveryParcel>> response) {
+                if(response.isSuccessful()){
 
-        ArrayList<model_daily_package_item> temp_ar_orders_daily = new ArrayList<>();
-        temp_ar_orders_daily.add(new model_daily_package_item("4384745", "Amir " + Integer.toString(0), "G 47 DHA lahore", "17."+Integer.toString(0)+" KM","DHA Phase 1",true));
+                    List<DeliveryParcel> parcels = response.body();
+                   // System.out.println(parcels.size());
+                    LoadLocation(parcels);
+                    Databackbone.getinstance().parcels = parcels;
+                    tx_parcels_status_count.setText(Integer.toString(parcels.size())+" Task Pending");
+                    DisableLoading();
 
-        for (int i = 1; i < 10; i++) {
-            temp_ar_orders_daily.add(new model_daily_package_item("4384745", "Amir " + Integer.toString(i), "G 47 DHA lahore", "17."+Integer.toString(i)+" KM","DHA Phase 1",false));
+                }
+                else{
+                    DisableLoading();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<List<DeliveryParcel>> call, Throwable t) {
+                System.out.println(t.getCause());
+                tx_parcels_status_count.setText("0 Task Pending");
+                DisableLoading();
+            }
+        });
+
+
+    }
+    public void check_status_of_rider_activity(){
+        if(Databackbone.getinstance().rider != null){
+            if(Databackbone.getinstance().rider.getUser().getIsOnline()){
+
+                ActivateRider();
+
+
+            }
+            else{
+
+                DeactivateRider();
+
+            }
         }
-        Databackbone.getinstance().ar_orders_daily.addAll(temp_ar_orders_daily);
+    }
+    public void change_Activity_status(Boolean status){
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
+        swift_api riderapi = retrofit.create(swift_api.class);
+
+        Call<RiderActivity> call = riderapi.setRiderOnlineStatus(Databackbone.getinstance().rider.getId(),Databackbone.getinstance().rider.getUserId(),new online(status));
+        call.enqueue(new Callback<RiderActivity>() {
+            @Override
+            public void onResponse(Call<RiderActivity> call, Response<RiderActivity> response) {
+                if(response.isSuccessful()){
+
+                    RiderActivity riderActivity = response.body();
+                    Databackbone.getinstance().riderActivity = riderActivity;
+                     if(Databackbone.getinstance().riderActivity.getIsOnline()) {
+                         ActivateRider();
+                         Databackbone.getinstance().rider.getUser().setIsOnline(true);
+                         Databackbone.getinstance().showAlsertBox(activity_mapview.this,"Rider App","Online");
+
+                     }
+                     else {
+
+                         Databackbone.getinstance().rider.getUser().setIsOnline(Databackbone.getinstance().riderActivity.getIsOnline());
+                         DeactivateRider();
+                         Databackbone.getinstance().showAlsertBox(activity_mapview.this,"Rider App","Offline");
+
+                     }
+                    DisableLoading();
+
+                }
+                else{
+                    DisableLoading();
+                    //DeactivateRider();
+                    Databackbone.getinstance().showAlsertBox(activity_mapview.this,"Error","Error Connecting To Server Error Code 33");
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<RiderActivity> call, Throwable t) {
+                System.out.println(t.getCause());
+                DisableLoading();
+                Databackbone.getinstance().showAlsertBox(activity_mapview.this,"Error","Error Connecting To Server Error Code 34");
+
+                //DeactivateRider();
+            }
+        });
+
 
 
 
     }
+    public void AddMarkers(Double lat,Double lng,final String title){
+
+        MarkerOptions marker = new MarkerOptions().position(new LatLng(lat, lng)).title("Pickup : "+title);
+        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.icon_pickup);
+
+        marker.icon(icon);
+        markers.add(marker);
+        mMapServiceView.addMarker(marker);
+    }
+    public void Offlice_Activity(LatLng location){
+        String location_to_string = Double.toString(location.latitude) + ","+Double.toString(location.longitude);
+        Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                Uri.parse("http://maps.google.com/maps?daddr="+location_to_string));
+        startActivity(intent);
+    }
+    public void DisableLoading(){
+        img_rider_activity_button.setEnabled(true);
+        progressBar.setVisibility(View.GONE);
+    }
+    public void EnableLoading(){
+        img_rider_activity_button.setEnabled(false);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+    public void LoadLocation(List<DeliveryParcel> parcels){
+        markers.clear();
+        btn_navigation.setVisibility(View.GONE);
+        for(int i =0;i<parcels.size();i++){
+            AddMarkers(parcels.get(i).getLocation().getGeoPoints().getLat(),parcels.get(i).getLocation().getGeoPoints().getLng(),parcels.get(i).getName());
+        }
+
+        LoadAllMarkers();
+
+
+    }
+    public void LoadAllMarkers(){
+        MarkerOptions currentmarker = new MarkerOptions().position(new LatLng(Databackbone.getinstance().current_location.latitude, Databackbone.getinstance().current_location.longitude));
+        markers.add(currentmarker);
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (MarkerOptions marker : markers) {
+            builder.include(marker.getPosition());
+        }
+        LatLngBounds bounds = builder.build();
+        int padding = 100; // offset from edges of the map in pixels
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+        mMapServiceView.moveCamera(cu);
+        mMapServiceView.animateCamera(cu);
+
+    }
+
 }

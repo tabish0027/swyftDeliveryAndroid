@@ -42,6 +42,8 @@ dependencies {
     implementation 'com.vivekkaushik.datepicker:datePickerTimeline:0.0.3'
     implementation 'com.squareup.retrofit2:retrofit:2.1.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
+    implementation 'com.github.ybq:Android-SpinKit:1.4.0'
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 
     /*
     implementation "com.mikepenz:materialdrawer:${lastestMaterialDrawerRelease}"

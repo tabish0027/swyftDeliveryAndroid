@@ -4,18 +4,14 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -34,16 +30,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.navigation.NavigationView;
 import androidx.navigation.ui.AppBarConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.faceart.swift.data_models.model_daily_package_item;
 import io.faceart.swift.interface_retrofit.DeliveryParcel;
-import io.faceart.swift.interface_retrofit.Rider;
 import io.faceart.swift.interface_retrofit.RiderActivity;
 import io.faceart.swift.interface_retrofit.*;
 import mumayank.com.airlocationlibrary.AirLocation;
@@ -52,6 +45,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import io.faceart.swift.interface_retrofit_delivery.*;
 
 
 public class activity_mapview extends Activity implements OnMapReadyCallback {
@@ -62,7 +57,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
     ConstraintLayout offlineTag = null;
     ConstraintLayout Task1,Task2,Task3,Task4,Task5 = null;
     ConstraintLayout btn_walled,btn_earning = null;
-    TextView tx_username = null;
+    TextView tx_username,tx_rating = null;
     ProgressBar progressBar = null;
 
 
@@ -101,12 +96,11 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         progressBar = (ProgressBar)findViewById(R.id.url_loading_animation);
         btn_walled= findViewById(R.id.btn_wallet);
         btn_earning= findViewById(R.id.btn_earning);
-
+        tx_rating = findViewById(R.id.tx_rating);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.slider_menu);
         btn_slider_menu = findViewById(R.id.btn_slider_menu);
         tx_parcels_status_count = findViewById(R.id.tx_parcels_status_count);
         progressBar.setVisibility(View.GONE);
-
 
        // generate_test_Data_for_daily();
 
@@ -130,22 +124,22 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         Task2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent openBarCode = new Intent(activity_mapview.this,activity_help.class);
-                activity_mapview.this.startActivity(openBarCode);
+                Intent openaactivity = new Intent(activity_mapview.this,activity_help.class);
+                activity_mapview.this.startActivity(openaactivity);
             }
         });
         Task3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent openBarCode = new Intent(activity_mapview.this,activity_faq.class);
-                activity_mapview.this.startActivity(openBarCode);
+                Intent openaactivity = new Intent(activity_mapview.this,activity_faq.class);
+                activity_mapview.this.startActivity(openaactivity);
             }
         });
         Task4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent openBarCode = new Intent(activity_mapview.this, activity_settings.class);
-                activity_mapview.this.startActivity(openBarCode);
+                Intent openaactivity = new Intent(activity_mapview.this, activity_settings.class);
+                activity_mapview.this.startActivity(openaactivity);
             }
         });
         Task5.setOnClickListener(new View.OnClickListener() {
@@ -163,16 +157,16 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         btn_walled.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent openBarCode = new Intent(activity_mapview.this,activity_wallet_orders.class);
-                activity_mapview.this.startActivity(openBarCode);
+                Intent openaactivity = new Intent(activity_mapview.this,activity_wallet_orders.class);
+                activity_mapview.this.startActivity(openaactivity);
             }
         });
 
         btn_earning.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent openBarCode = new Intent(activity_mapview.this,activity_earning.class);
-                activity_mapview.this.startActivity(openBarCode);
+                Intent openaactivity = new Intent(activity_mapview.this,activity_earning.class);
+                activity_mapview.this.startActivity(openaactivity);
             }
         });
         //mMapView.onResume();
@@ -229,10 +223,14 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
                     Intent pendingtask = null;
                     if (Databackbone.getinstance().check_parcel_scanning_complete) {
                         pendingtask = new Intent(activity_mapview.this, activity_daily_order_status.class);
+                        pendingtask.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        pendingtask.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                         activity_mapview.this.startActivity(pendingtask);
                         overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
                     } else {
                         pendingtask = new Intent(activity_mapview.this, activity_barcode_scanner.class);
+                        pendingtask.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        pendingtask.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                         activity_mapview.this.startActivity(pendingtask);
                         overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
                     }
@@ -248,6 +246,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
 
         // data attributes set from server
         tx_username.setText("Hi "+Databackbone.getinstance().rider.getUser().getFirstName());
+        tx_rating.setText(Databackbone.getinstance().rider.getUser().getType());
         btn_navigation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -283,6 +282,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         airLocation.onActivityResult(requestCode, resultCode, data);
+
     }
 
     // override and call airLocation object's method by the same name
@@ -344,7 +344,13 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         mMapServiceView.getUiSettings().setMyLocationButtonEnabled(false);
 
         getCurrentLocation();
-        LoadParcels();
+        /*
+        if(Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery"))
+            LoadParcelsForDelivery();
+        else
+            LoadParcels();
+
+         */
 
 
 
@@ -362,6 +368,11 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         }else{
             DeactivateRider();
         }
+        if(Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery"))
+            LoadParcelsForDelivery();
+        else
+            LoadParcels();
+
 
 
     }
@@ -533,6 +544,48 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
         mMapServiceView.moveCamera(cu);
         mMapServiceView.animateCamera(cu);
+
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public void LoadParcelsForDelivery(){
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
+        swift_api_delivery riderapidata = retrofit.create(swift_api_delivery.class);
+        EnableLoading();
+        Call<List<RiderActivityDelivery>> call = riderapidata.manageTaskfordelivery(Databackbone.getinstance().rider.getId(),(Databackbone.getinstance().rider.getUserId()));
+        call.enqueue(new Callback<List<RiderActivityDelivery>>() {
+            @Override
+            public void onResponse(Call<List<RiderActivityDelivery>> call, Response<List<RiderActivityDelivery>> response) {
+                if(response.isSuccessful()){
+
+                    List<RiderActivityDelivery> parcels = response.body();
+                    // System.out.println(parcels.size());
+                    if(parcels == null)
+                    {
+                        tx_parcels_status_count.setText("0 Task Pending");
+                    }
+                    else{
+                        Databackbone.getinstance().parcelsdelivery = parcels;
+                        tx_parcels_status_count.setText(Integer.toString(parcels.size()) + " Task Pending");
+                    }
+                    DisableLoading();
+
+                }
+                else{
+                    DisableLoading();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<List<RiderActivityDelivery>> call, Throwable t) {
+                System.out.println(t.getCause());
+                tx_parcels_status_count.setText("0 Task Pending");
+                DisableLoading();
+            }
+        });
+
 
     }
 

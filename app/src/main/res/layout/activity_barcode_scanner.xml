@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
             android:fontFamily="sans-serif-thin"
-            android:text="Remaining parcels"
+            android:text="0 Parcels to Scan"
             android:textColor="@color/color_app_theam_text"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -69,18 +69,21 @@
 
         <ImageView
             android:id="@+id/btn_refreash"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_marginStart="32dp"
+            android:layout_width="36dp"
+            android:layout_height="48dp"
+            android:padding="5dp"
+            android:layout_marginStart="24dp"
             app:layout_constraintBottom_toTopOf="@+id/guideline18"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline18"
+            app:layout_constraintVertical_bias="0.479"
             app:srcCompat="@drawable/icon_refreash" />
 
         <ImageView
             android:id="@+id/btn_add_parcel"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="36dp"
+            android:layout_height="48dp"
+            android:padding="5dp"
             android:layout_marginEnd="32dp"
             app:layout_constraintBottom_toTopOf="@+id/guideline18"
             app:layout_constraintEnd_toEndOf="parent"

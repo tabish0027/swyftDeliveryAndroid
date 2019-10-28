@@ -1,6 +1,8 @@
 package io.faceart.swift;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -8,11 +10,15 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.github.ybq.android.spinkit.sprite.Sprite;
 import com.github.ybq.android.spinkit.style.DoubleBounce;
 
+import me.dm7.barcodescanner.zxing.ZXingScannerView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -35,7 +41,9 @@ public class activity_login extends AppCompatActivity {
         username = findViewById(R.id.username);
         password = findViewById(R.id.password);
 
-        username.setText("923049494294");
+        //username.setText("923465175409");// pickup
+          username.setText("923049494294"); // delivery
+
         password.setText("12345");
         Sprite doubleBounce = new DoubleBounce();
         progressBar.setVisibility(View.GONE);
@@ -83,10 +91,16 @@ public class activity_login extends AppCompatActivity {
 
                     Rider rider = response.body();
                     Databackbone.getinstance().rider = rider;
+                    if (ContextCompat.checkSelfPermission(activity_login.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED)
+                        ActivityCompat.requestPermissions(activity_login.this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                   else
+                    {
+                        Intent i = new Intent(activity_login.this,activity_mapview.class);
+                        activity_login.this.startActivity(i);
 
+                    }
                    // Toast.makeText(activity_login.this,rider.getId(),Toast.LENGTH_LONG).show();
-                    Intent i = new Intent(activity_login.this,activity_mapview.class);
-                    activity_login.this.startActivity(i);
+
 
                 }
 
@@ -115,6 +129,18 @@ public class activity_login extends AppCompatActivity {
         super.onResume();
         EnableLogin();
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == 1 && grantResults[0] == 0 ){
+            Intent i = new Intent(activity_login.this,activity_mapview.class);
+            activity_login.this.startActivity(i);
+        }
+        else{
+            Databackbone.getinstance().showAlsertBox(activity_login.this,"Error","Please give permission for location");
+        }
     }
 
     public void EnableLogin(){

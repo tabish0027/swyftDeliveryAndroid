@@ -29,4 +29,7 @@ public interface swift_api {
     @POST("RiderTasks/{tasklid}")
     Call<List<DeliveryParcel>> RiderTasksupdate(@Header("Authorization") String Authorization, @Path("tasklid") String tasklid);
 
+    @POST("RiderTasks/{taskid}/manage-task")
+    Call<List<DeliveryParcel>> manageTask(@Header("Authorization") String Authorization, @Path("taskid") String parcelid,@Body manage_task user_task);
+
 }

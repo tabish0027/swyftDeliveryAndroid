@@ -52,6 +52,7 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
     ConstraintLayout barcode_remaining_parcels ;
     TextView tx_parcels_to_scan;
     ProgressBar progressBar = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,12 +85,7 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
         btn_refreash.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                layout_add_parcel.setVisibility(View.GONE);
-                layout_add_parcel.setVisibility(View.VISIBLE);
-
-                mScannerView.resumeCameraPreview(activity_barcode_scanner.this);
-                layout_scanned_id.setVisibility(View.INVISIBLE);
-                layout_add_parcel.setVisibility(View.GONE);
+                refreashScanner();
             }
         });
         //View child1 = LayoutInflater.from(this).inflate(mScannerView, null);
@@ -142,6 +138,14 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
 
 
     }
+    public void refreashScanner(){
+        layout_add_parcel.setVisibility(View.GONE);
+        layout_add_parcel.setVisibility(View.VISIBLE);
+
+        mScannerView.resumeCameraPreview(activity_barcode_scanner.this);
+        layout_scanned_id.setVisibility(View.INVISIBLE);
+        layout_add_parcel.setVisibility(View.GONE);
+    }
     public void scanparceldone(String id){
         tx_barcode.setText(id);
         layout_scanned_id.setVisibility(View.VISIBLE);
@@ -159,23 +163,47 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
 
             v.vibrate(500);
         }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    Thread.sleep(3000);
+                    runOnUiThread (new Thread(new Runnable() {
+                        public void run() {
+                            refreashScanner();
+                        }
+                    }));
+
+
+                }catch (Exception i){
+
+                }
+            }
+        }).start();
     }
     public void load_parcels_to_scan(){
         int size = 0;
+        if(!Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery")){
           List<Parcel> parcels=   Databackbone.getinstance().parcels.get(Databackbone.getinstance().pickup_to_process).getParcels();
             for(int i =0 ; i < parcels.size();i++){
                 if(!parcels.get(i).getScanned()){
                     size++;
                 }
             }
+            if(size == 0)
+                activity_barcode_scanner.this.finish();
+        }else{
 
+        }
           tx_parcels_to_scan.setText(Integer.toString(size)+ " Parcels to scan");
-        if(size == 0)
-            activity_barcode_scanner.this.finish();
+
 
     }
+
     public void check_parcel_to_scan(String id){
        Boolean check = false;
+       if(Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery"))
+           return;
         List<Parcel> parcels=   Databackbone.getinstance().parcels.get(Databackbone.getinstance().pickup_to_process).getParcels();
         for(int i =0 ; i < parcels.size();i++){
             if(parcels.get(i).getParcelId().equals(id)){
@@ -224,7 +252,23 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
                 System.out.println(t.getCause());
                 DisableLoading();
                 Databackbone.getinstance().showAlsertBox(activity_barcode_scanner.this,"Error","Barcode Not Found Error Code 38");
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try{
+                            Thread.sleep(3000);
+                            runOnUiThread (new Thread(new Runnable() {
+                                public void run() {
+                                    refreashScanner();
+                                }
+                            }));
 
+
+                        }catch (Exception i){
+
+                        }
+                    }
+                }).start();
 
             }
         });

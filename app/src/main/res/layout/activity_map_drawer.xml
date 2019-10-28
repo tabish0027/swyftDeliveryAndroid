@@ -291,7 +291,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout6">
 
                 <TextView
-                    android:id="@+id/textView28"
+                    android:id="@+id/tx_rating"
                     android:layout_width="0dp"
                     android:layout_height="18dp"
                     android:layout_marginEnd="8dp"
@@ -316,7 +316,7 @@
                     android:textColor="#231f20"
                     android:textSize="20dp"
                     android:textStyle="bold"
-                    app:layout_constraintBottom_toTopOf="@+id/textView28"
+                    app:layout_constraintBottom_toTopOf="@+id/tx_rating"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/profile_image2"
                     app:layout_constraintTop_toTopOf="@+id/profile_image2" />

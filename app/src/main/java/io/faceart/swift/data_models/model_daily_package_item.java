@@ -10,7 +10,8 @@ public class model_daily_package_item {
    public String mb_zone = "";
    public Boolean status = false;
    public LatLng m_location = null;
-   public model_daily_package_item(String mb_order_id, String mb_name, String mb_address, String mb_distance, String mb_zone,Boolean status,LatLng location) {
+   public int m_remaining_parcels_to_scan = 0;
+   public model_daily_package_item(String mb_order_id, String mb_name, String mb_address, String mb_distance, String mb_zone,Boolean status,LatLng location,int remaining_parcels_to_scan) {
       this.mb_order_id = mb_order_id;
       this.mb_name = mb_name;
       this.mb_address = mb_address;
@@ -18,5 +19,6 @@ public class model_daily_package_item {
       this.mb_zone = mb_zone;
       this.status = status;
       this.m_location = location;
+      this.m_remaining_parcels_to_scan = remaining_parcels_to_scan;
    }
 }

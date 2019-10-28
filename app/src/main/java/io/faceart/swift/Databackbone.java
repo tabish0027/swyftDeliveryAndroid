@@ -13,6 +13,7 @@ import io.faceart.swift.data_models.*;
 import io.faceart.swift.interface_retrofit.DeliveryParcel;
 import io.faceart.swift.interface_retrofit.Rider;
 import io.faceart.swift.interface_retrofit.RiderActivity;
+import io.faceart.swift.interface_retrofit_delivery.RiderActivityDelivery;
 
 public class Databackbone {
     public static Databackbone databackbone=null;
@@ -23,10 +24,12 @@ public class Databackbone {
     public RiderActivity riderActivity = null;
     public String Base_URL = "http://13.235.240.229:3000/api/";
     List<DeliveryParcel> parcels = null;
+    List<RiderActivityDelivery> parcelsdelivery = null;
     Boolean check_parcel_scanning_complete = true;
     Boolean user_type_pickup = true;
     LatLng current_location = null;
     public int pickup_to_process = -1 ;
+    public int delivery_to_show = -1 ;
     private Databackbone(){
 
     }

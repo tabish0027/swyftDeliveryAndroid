@@ -533,6 +533,10 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
 
     }
     public void LoadAllMarkers(){
+        if(Databackbone.getinstance().current_location == null) {
+            //Databackbone.getinstance().showAlsertBox(activity_mapview.this, "Error", "Activate your GPS");
+            return;
+        }
         MarkerOptions currentmarker = new MarkerOptions().position(new LatLng(Databackbone.getinstance().current_location.latitude, Databackbone.getinstance().current_location.longitude));
         markers.add(currentmarker);
         LatLngBounds.Builder builder = new LatLngBounds.Builder();

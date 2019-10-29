@@ -72,7 +72,7 @@ public class activity_daily_order_status  extends Activity {
         order_list_daily = findViewById(R.id.order_list_daily);
 
 
-        load_Data();
+
 
         //generate_test_Data();
         ad_orders_daily = new adapter_status_daily_packages(Databackbone.getinstance().ar_orders_daily, this);
@@ -129,7 +129,7 @@ public class activity_daily_order_status  extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-
+        load_Data();
         update_view();
     }
 
@@ -239,8 +239,22 @@ public class activity_daily_order_status  extends Activity {
             }
             Databackbone.getinstance().ar_orders_daily.addAll(temp_ar_orders_daily);
         }
+        check_is_task_active_and_complete();
+
+    }
+    public void check_is_task_active_and_complete(){
+        if(!Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery")) {
+            for (int i = 0; i < Databackbone.getinstance().ar_orders_daily.size(); i++) {
+                if(Databackbone.getinstance().ar_orders_daily.get(i).m_remaining_parcels_to_scan == 0 && Databackbone.getinstance().ar_orders_daily.get(i).status){
+                    activate_Task_activater(Databackbone.getinstance().ar_orders_daily.get(i).mb_order_id,"completed");
+                    return;
+                }
+            }
+        }else
+        {
 
 
+        }
     }
     public double CalculationByDistance(double Lat,double Lng) {
 
@@ -378,7 +392,7 @@ public class activity_daily_order_status  extends Activity {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
         swift_api riderapi = retrofit.create(swift_api.class);
         EnableLoading();
-        Call<List<DeliveryParcel>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),taskId,new manage_task("started"));
+        Call<List<DeliveryParcel>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),taskId,new manage_task(action));
         call.enqueue(new Callback<List<DeliveryParcel>>() {
             @Override
             public void onResponse(Call<List<DeliveryParcel>> call, Response<List<DeliveryParcel>> response) {

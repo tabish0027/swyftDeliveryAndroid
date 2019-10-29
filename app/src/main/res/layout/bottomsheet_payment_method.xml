@@ -37,8 +37,97 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout2212"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/round_bottom_sheet_button_back"
+                app:layout_constraintEnd_toStartOf="@+id/guideline26"
+                app:layout_constraintHorizontal_bias="0.62"
+                app:layout_constraintStart_toStartOf="@+id/guideline24"
+                app:layout_constraintTop_toTopOf="@+id/constraintLayout2">
+
+                <ImageView
+                    android:id="@+id/imageView14212"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="16dp"
+                    android:padding="2dp"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline23212"
+                    app:layout_constraintStart_toStartOf="@+id/guideline23212"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/icon_method_jazzcash" />
+
+                <TextView
+                    android:id="@+id/textView35212"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:fontFamily="sans-serif-thin"
+                    android:text="Jazz Cash Wallet"
+                    android:textColor="#231f20"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/imageView14212"
+                    app:layout_constraintStart_toStartOf="@+id/imageView14212"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView14212" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline23212"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.5" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout221"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/round_bottom_sheet_button_back"
+                app:layout_constraintEnd_toStartOf="@+id/guideline26"
+                app:layout_constraintHorizontal_bias="0.62"
+                app:layout_constraintStart_toStartOf="@+id/guideline24"
+                app:layout_constraintTop_toBottomOf="@+id/textView38">
+
+                <ImageView
+                    android:id="@+id/imageView1421"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="16dp"
+                    android:padding="2dp"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline2321"
+                    app:layout_constraintStart_toStartOf="@+id/guideline2321"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/icon_card" />
+
+                <TextView
+                    android:id="@+id/textView3521"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:fontFamily="sans-serif-thin"
+                    android:text="Credit/Debit Card"
+                    android:textColor="#231f20"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/imageView1421"
+                    app:layout_constraintStart_toStartOf="@+id/imageView1421"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView1421" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline2321"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.5" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
             <Button
-                android:id="@+id/btn_login3"
+                android:id="@+id/btn_submit"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_marginStart="16dp"
@@ -51,7 +140,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guideline26"
                 app:layout_constraintStart_toStartOf="@+id/guideline25"
-                app:layout_constraintTop_toBottomOf="@+id/btn_order_canceled" />
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
 
             <ImageView
                 android:id="@+id/btn_close"
@@ -70,33 +159,34 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:fontFamily="sans-serif-thin"
-                android:text="Order Declined"
+                android:text="Reattempt"
                 android:textColor="#231f20"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/btn_order_declined"
+                android:id="@+id/constraintLayout22"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
                 android:background="@drawable/round_bottom_sheet_button_back"
-                app:layout_constraintEnd_toStartOf="@+id/guideline26"
+                app:layout_constraintEnd_toStartOf="@+id/guideline24"
                 app:layout_constraintHorizontal_bias="0.62"
                 app:layout_constraintStart_toStartOf="@+id/guideline25"
                 app:layout_constraintTop_toBottomOf="@+id/textView38">
 
                 <ImageView
                     android:id="@+id/imageView142"
-                    android:layout_width="40dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:layout_marginTop="16dp"
                     android:padding="2dp"
                     app:layout_constraintEnd_toStartOf="@+id/guideline232"
                     app:layout_constraintStart_toStartOf="@+id/guideline232"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/icon_refreash_dark" />
+                    app:srcCompat="@drawable/icon_method_money" />
 
                 <TextView
                     android:id="@+id/textView352"
@@ -104,7 +194,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:fontFamily="sans-serif-thin"
-                    android:text="Reattempt"
+                    android:text="Cash on Delivey"
                     android:textColor="#231f20"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -121,25 +211,26 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/btn_order_canceled"
+                android:id="@+id/constraintLayout2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
+                android:layout_marginEnd="8dp"
                 android:background="@drawable/round_bottom_sheet_button_back"
-                app:layout_constraintEnd_toStartOf="@+id/guideline26"
+                app:layout_constraintEnd_toStartOf="@+id/guideline24"
                 app:layout_constraintStart_toStartOf="@+id/guideline25"
-                app:layout_constraintTop_toBottomOf="@+id/btn_order_declined">
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout22">
 
                 <ImageView
                     android:id="@+id/imageView14"
-                    android:layout_width="40dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:layout_marginTop="16dp"
                     android:padding="2dp"
                     app:layout_constraintEnd_toStartOf="@+id/guideline23"
                     app:layout_constraintStart_toStartOf="@+id/guideline23"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/icon_cross" />
+                    app:srcCompat="@drawable/icon_method_easypaisa" />
 
                 <TextView
                     android:id="@+id/textView35"
@@ -147,7 +238,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:fontFamily="sans-serif-thin"
-                    android:text="Cancelled"
+                    android:text="EasyPaisa Wallet"
                     android:textColor="#231f20"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -175,14 +266,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.15" />
+                app:layout_constraintGuide_percent="0.1" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline26"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.85" />
+                app:layout_constraintGuide_percent="0.9" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline30"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.25" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline31"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.75" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

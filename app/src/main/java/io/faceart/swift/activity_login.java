@@ -41,8 +41,8 @@ public class activity_login extends AppCompatActivity {
         username = findViewById(R.id.username);
         password = findViewById(R.id.password);
 
-        //username.setText("923465175409");// pickup
-          username.setText("923049494294"); // delivery
+        username.setText("923465175409");// pickup
+        //  username.setText("923049494294"); // delivery
 
         password.setText("12345");
         Sprite doubleBounce = new DoubleBounce();

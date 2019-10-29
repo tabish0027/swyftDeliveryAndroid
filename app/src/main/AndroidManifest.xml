@@ -23,54 +23,57 @@
         <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/map_api_key"/>
         <uses-library android:name="org.apache.http.legacy" android:required="false" />
 
-        <activity android:name=".activity_login">
+        <activity  android:screenOrientation="portrait" android:name=".activity_login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity_barcode_scanner">
+        <activity  android:screenOrientation="portrait" android:name=".activity_barcode_scanner">
 
         </activity>
-        <activity android:name=".activity_form">
+        <activity  android:screenOrientation="portrait" android:name=".activity_form">
 
         </activity>
 
-        <activity android:name=".Splash">
+        <activity  android:screenOrientation="portrait" android:name=".Splash">
 
         </activity>
-        <activity android:name=".activity_mapview">
+        <activity  android:screenOrientation="portrait" android:name=".activity_mapview">
 
         </activity>
-        <activity android:name=".activity_earning">
+        <activity  android:screenOrientation="portrait" android:name=".activity_earning">
 
         </activity>
-        <activity android:name=".activity_profile">
+        <activity  android:screenOrientation="portrait" android:name=".activity_profile">
 
         </activity>
-        <activity android:name=".activity_order_status">
+        <activity  android:screenOrientation="portrait" android:name=".activity_order_status">
 
         </activity>
-        <activity android:name=".activity_order_status_scanning">
+        <activity  android:screenOrientation="portrait" android:name=".activity_order_status_scanning">
 
         </activity>
-        <activity android:name=".activity_daily_order_status">
+        <activity  android:screenOrientation="portrait" android:name=".activity_daily_order_status">
 
         </activity>
-        <activity android:name=".activity_signature_pad">
+        <activity  android:screenOrientation="portrait" android:name=".activity_signature_pad">
 
         </activity>
-        <activity android:name=".activity_faq">
+        <activity  android:screenOrientation="portrait" android:name=".activity_faq">
 
         </activity>
-        <activity android:name=".activity_settings">
+        <activity  android:screenOrientation="portrait" android:name=".activity_settings">
 
         </activity>
-        <activity android:name=".activity_help">
+        <activity  android:screenOrientation="portrait" android:name=".activity_help">
 
         </activity>
-        <activity android:name=".activity_wallet_orders">
+        <activity  android:screenOrientation="portrait" android:name=".activity_wallet_orders">
+
+        </activity>
+        <activity  android:screenOrientation="portrait" android:name=".activity_delivery_status">
 
         </activity>
 

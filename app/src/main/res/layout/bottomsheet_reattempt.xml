@@ -37,6 +37,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <com.vivekkaushik.datepicker.DatePickerTimeline
+                android:id="@+id/datePickerTimeline"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toStartOf="@+id/guideline31"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/guideline30"
+                app:layout_constraintTop_toBottomOf="@+id/textView38" />
+
             <Button
                 android:id="@+id/btn_login3"
                 android:layout_width="0dp"
@@ -51,7 +61,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guideline26"
                 app:layout_constraintStart_toStartOf="@+id/guideline25"
-                app:layout_constraintTop_toBottomOf="@+id/btn_order_canceled" />
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
 
             <ImageView
                 android:id="@+id/btn_close"
@@ -70,22 +80,22 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:fontFamily="sans-serif-thin"
-                android:text="Order Declined"
+                android:text="Reattempt"
                 android:textColor="#231f20"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/btn_order_declined"
+                android:id="@+id/constraintLayout22"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/round_bottom_sheet_button_back"
                 app:layout_constraintEnd_toStartOf="@+id/guideline26"
                 app:layout_constraintHorizontal_bias="0.62"
                 app:layout_constraintStart_toStartOf="@+id/guideline25"
-                app:layout_constraintTop_toBottomOf="@+id/textView38">
+                app:layout_constraintTop_toBottomOf="@+id/datePickerTimeline">
 
                 <ImageView
                     android:id="@+id/imageView142"
@@ -96,7 +106,7 @@
                     app:layout_constraintEnd_toStartOf="@+id/guideline232"
                     app:layout_constraintStart_toStartOf="@+id/guideline232"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/icon_refreash_dark" />
+                    app:srcCompat="@drawable/icon_day" />
 
                 <TextView
                     android:id="@+id/textView352"
@@ -104,7 +114,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:fontFamily="sans-serif-thin"
-                    android:text="Reattempt"
+                    android:text="Morning/ Afternoon"
                     android:textColor="#231f20"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -121,14 +131,14 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/btn_order_canceled"
+                android:id="@+id/constraintLayout2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:background="@drawable/round_bottom_sheet_button_back"
                 app:layout_constraintEnd_toStartOf="@+id/guideline26"
                 app:layout_constraintStart_toStartOf="@+id/guideline25"
-                app:layout_constraintTop_toBottomOf="@+id/btn_order_declined">
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout22">
 
                 <ImageView
                     android:id="@+id/imageView14"
@@ -139,7 +149,7 @@
                     app:layout_constraintEnd_toStartOf="@+id/guideline23"
                     app:layout_constraintStart_toStartOf="@+id/guideline23"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/icon_cross" />
+                    app:srcCompat="@drawable/icon_night" />
 
                 <TextView
                     android:id="@+id/textView35"
@@ -147,7 +157,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:fontFamily="sans-serif-thin"
-                    android:text="Cancelled"
+                    android:text="Evening"
                     android:textColor="#231f20"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -183,6 +193,19 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.85" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline30"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.25" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline31"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.75" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -282,6 +282,8 @@ public class activity_daily_order_status  extends Activity {
         int meterInDec = Integer.valueOf(newFormat.format(meter));
         double finalDistance = 0.0;
         finalDistance = round(km, 1);
+        if(finalDistance < 0)
+            finalDistance = finalDistance * -1;
         return finalDistance;
     }
     public void LoadParcels(){

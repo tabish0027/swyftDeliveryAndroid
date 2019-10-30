@@ -21,6 +21,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 
+import io.faceart.swift.Databackbone;
 import io.faceart.swift.R;
 import io.faceart.swift.activity_mapview;
 import io.faceart.swift.data_models.model_daily_package_item;
@@ -73,13 +74,15 @@ public class adapter_status_daily_packages extends RecyclerView.Adapter<adapter_
             holder.mb_parcel_type.setImageResource(R.drawable.icon_circle_deliverd);
             holder.parcel_type_bottom_bar.setBackgroundColor(Color.parseColor("#90703090"));
             holder.mb_parcel_type_background.setBackgroundResource(R.drawable.round_daily_package_active);
-            holder.btn_navigation.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            if(!Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery")) {
+
+                holder.btn_navigation.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
                         new AlertDialog.Builder(mContext)
                                 .setTitle("Navigation Request")
-                                .setMessage("Activate Navigation for " + m_orderList.get(position).mb_name )
+                                .setMessage("Activate Navigation for " + m_orderList.get(position).mb_name)
 
                                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
@@ -98,6 +101,9 @@ public class adapter_status_daily_packages extends RecyclerView.Adapter<adapter_
                                 .show();
                     }
                 });
+            }else{
+                holder.btn_navigation.setVisibility(View.INVISIBLE);
+            }
 
 
 

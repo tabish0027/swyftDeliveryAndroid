@@ -1,6 +1,7 @@
 package io.faceart.swift;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -11,14 +12,17 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+
+import io.faceart.swift.interface_retrofit.GeoPoints;
 
 public class activity_form extends AppCompatActivity {
     ImageView btn_back;
     TextView tx_name,tx_address,tx_parcel_id,tx_payment_method;
     Button btn_delivered;
-    ImageView btn_payment_method;
+    ImageView btn_payment_method,btn_navigation;
     Button btn_diclined;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +31,7 @@ public class activity_form extends AppCompatActivity {
         btn_back = findViewById(R.id.btn_back);
         btn_delivered = findViewById(R.id.btn_delivered);
         btn_payment_method = findViewById(R.id.btn_payment_method);
+        btn_navigation = findViewById(R.id.btn_navigation);
 
 
         btn_diclined = findViewById(R.id.btn_diclined);
@@ -51,6 +56,13 @@ public class activity_form extends AppCompatActivity {
 
             }
         });
+        btn_navigation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GeoPoints points = Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().delivery_to_show).getData().get(0).getLocation().getGeoPoints();
+                Offlice_Activity(new LatLng(points.getLat(),points.getLng()));
+            }
+        });
         btn_payment_method.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,5 +85,13 @@ public class activity_form extends AppCompatActivity {
         tx_address.setText(Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().delivery_to_show).getData().get(0).getLocation().getAddress());
         tx_parcel_id.setText(Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().delivery_to_show).getData().get(0).getParcels().get(0).getParcelId());
         tx_payment_method.setText("Cash");
+    }
+    public void Offlice_Activity(LatLng location){
+        String location_to_string = Double.toString(location.latitude) + ","+Double.toString(location.longitude);
+        Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                Uri.parse("http://maps.google.com/maps?daddr="+location_to_string));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        this.getApplicationContext().startActivity(intent);
     }
 }

@@ -23,10 +23,12 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import io.faceart.swift.data_models.model_daily_package_item;
 import io.faceart.swift.interface_retrofit.DeliveryParcel;
 import io.faceart.swift.interface_retrofit.parcel_scan;
 
 import com.github.gcacace.signaturepad.views.SignaturePad;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
 
@@ -36,6 +38,10 @@ import io.faceart.swift.interface_retrofit.Parcel;
 import io.faceart.swift.interface_retrofit.RiderActivity;
 import io.faceart.swift.interface_retrofit.online;
 import io.faceart.swift.interface_retrofit.swift_api;
+import io.faceart.swift.interface_retrofit_delivery.Datum;
+import io.faceart.swift.interface_retrofit_delivery.RiderActivityDelivery;
+import io.faceart.swift.interface_retrofit_delivery.parcel_scan_delivery;
+import io.faceart.swift.interface_retrofit_delivery.swift_api_delivery;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -52,6 +58,7 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
     ConstraintLayout barcode_remaining_parcels ;
     TextView tx_parcels_to_scan;
     ProgressBar progressBar = null;
+    int pending_parcels_to_scan = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,25 +170,10 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
 
             v.vibrate(500);
         }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try{
-                    Thread.sleep(3000);
-                    runOnUiThread (new Thread(new Runnable() {
-                        public void run() {
-                            refreashScanner();
-                        }
-                    }));
-
-
-                }catch (Exception i){
-
-                }
-            }
-        }).start();
+       refreahScanner();
     }
     public void load_parcels_to_scan(){
+
         int size = 0;
         if(!Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery")){
           List<Parcel> parcels=   Databackbone.getinstance().parcels.get(Databackbone.getinstance().pickup_to_process).getParcels();
@@ -192,33 +184,74 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
             }
             if(size == 0)
                 activity_barcode_scanner.this.finish();
+            tx_parcels_to_scan.setText(Integer.toString(size)+ " Parcels to scan");
         }else{
+            if(Databackbone.getinstance().task_to_show >= Databackbone.getinstance().parcelsdelivery.size()   )
+                activity_barcode_scanner.this.finish();
+            List<Datum> Locations= Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData();
+            pending_parcels_to_scan = 0 ;
+            for (int i = 0; i < Locations.size(); i++) {
+                Datum data = Locations.get(i);
 
+                for (int j = 0; j < data.getParcels().size(); j++) {
+                    if((data.getParcels().get(j).getStatus().equals("pending"))){
+                        pending_parcels_to_scan = pending_parcels_to_scan + 1;
+                    }
+                }
+            }
+            tx_parcels_to_scan.setText(Integer.toString(pending_parcels_to_scan)+ " Parcels to scan");
         }
-          tx_parcels_to_scan.setText(Integer.toString(size)+ " Parcels to scan");
+
 
 
     }
 
     public void check_parcel_to_scan(String id){
-       Boolean check = false;
        if(Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery"))
-           return;
-        List<Parcel> parcels=   Databackbone.getinstance().parcels.get(Databackbone.getinstance().pickup_to_process).getParcels();
-        for(int i =0 ; i < parcels.size();i++){
-            if(parcels.get(i).getParcelId().equals(id)){
-                check = true;
-                break;
-            }
-        }
-        if(!check){
-            Databackbone.getinstance().showAlsertBox(this,"Error","Parcel not found");
-            DisableLoading();
-        }
-        else
-        {
-            send_request_to_server(id);
-        }
+       {
+           Boolean check = false;
+           if(Databackbone.getinstance().task_to_show >= Databackbone.getinstance().parcelsdelivery.size()   )
+               activity_barcode_scanner.this.finish();
+           List<Datum> Locations= Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData();
+
+           for (int i = 0; i < Locations.size(); i++) {
+               Datum data = Locations.get(i);
+
+               for (int j = 0; j < data.getParcels().size(); j++) {
+                   if(data.getParcels().get(j).getParcelId().equals(id)){
+                       check = true;
+                       break;
+
+                   }
+               }
+               if(check)break;
+           }
+           if(!check){
+               Databackbone.getinstance().showAlsertBox(this, "Error", "Parcel not found");
+               DisableLoading();
+               refreahScanner();
+           }else{
+               send_request_to_server_for_delivery(id);
+           }
+       }
+       else {
+           Boolean check = false;
+           List<Parcel> parcels = Databackbone.getinstance().parcels.get(Databackbone.getinstance().pickup_to_process).getParcels();
+           for (int i = 0; i < parcels.size(); i++) {
+               if (parcels.get(i).getParcelId().equals(id)) {
+                   check = true;
+                   break;
+               }
+           }
+           if (!check) {
+               Databackbone.getinstance().showAlsertBox(this, "Error", "Parcel not found");
+
+               DisableLoading();
+               refreahScanner();
+           } else {
+               send_request_to_server(id);
+           }
+       }
 
     }
     public void send_request_to_server(final String id){
@@ -274,6 +307,64 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
         });
 
     }
+    public void send_request_to_server_for_delivery(final String id){
+
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
+        swift_api_delivery riderapi = retrofit.create(swift_api_delivery.class);
+
+        Call<List<RiderActivityDelivery>> call = riderapi.scan_parcels_delivery(Databackbone.getinstance().rider.getId(),new parcel_scan_delivery(Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getTaskId(),id));
+        call.enqueue(new Callback<List<RiderActivityDelivery>>() {
+            @Override
+            public void onResponse(Call<List<RiderActivityDelivery>> call, Response<List<RiderActivityDelivery>> response) {
+                if(response.isSuccessful()){
+                    List<RiderActivityDelivery> parcels = response.body();
+
+                    Databackbone.getinstance().parcelsdelivery = parcels;
+                    Databackbone.getinstance().remove_location_complete();
+                    Scan_successfull_delivery(id);
+
+
+                }
+                else{
+                    DisableLoading();
+                    //DeactivateRider();
+                    Databackbone.getinstance().showAlsertBox(activity_barcode_scanner.this,"Error","QRcode Not Found Error Code 37");
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<List<RiderActivityDelivery>> call, Throwable t) {
+                System.out.println(t.getCause());
+                DisableLoading();
+                Databackbone.getinstance().showAlsertBox(activity_barcode_scanner.this,"Error","Barcode Not Found Error Code 38");
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try{
+                            Thread.sleep(3000);
+                            runOnUiThread (new Thread(new Runnable() {
+                                public void run() {
+                                    refreashScanner();
+                                }
+                            }));
+
+
+                        }catch (Exception i){
+
+                        }
+                    }
+                }).start();
+
+            }
+        });
+
+    }
+    public void Scan_successfull_delivery(String id){
+        scanparceldone(id);
+        LoadParcelsForDelivery();
+
+    }
     public void Scan_successfull(String id){
         scanparceldone(id);
         load_parcels_to_scan();
@@ -292,5 +383,60 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
         btn_refreash.setEnabled(false);
         barcode_remaining_parcels.setClickable(false);
         progressBar.setVisibility(View.VISIBLE);
+    }
+    public void LoadParcelsForDelivery(){
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
+        swift_api_delivery riderapidata = retrofit.create(swift_api_delivery.class);
+        EnableLoading();
+        Call<List<RiderActivityDelivery>> call = riderapidata.manageTaskfordelivery(Databackbone.getinstance().rider.getId(),(Databackbone.getinstance().rider.getUserId()));
+        call.enqueue(new Callback<List<RiderActivityDelivery>>() {
+            @Override
+            public void onResponse(Call<List<RiderActivityDelivery>> call, Response<List<RiderActivityDelivery>> response) {
+                if(response.isSuccessful()){
+
+                    List<RiderActivityDelivery> parcels = response.body();
+                    // System.out.println(parcels.size());
+                    Databackbone.getinstance().parcelsdelivery = parcels;
+                    Databackbone.getinstance().remove_location_complete();
+                    load_parcels_to_scan();
+
+                    DisableLoading();
+
+                }
+                else{
+                    DisableLoading();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<List<RiderActivityDelivery>> call, Throwable t) {
+                System.out.println(t.getCause());
+
+                DisableLoading();
+
+            }
+        });
+
+
+    }
+    public void refreahScanner(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    Thread.sleep(3000);
+                    runOnUiThread (new Thread(new Runnable() {
+                        public void run() {
+                            refreashScanner();
+                        }
+                    }));
+
+
+                }catch (Exception i){
+
+                }
+            }
+        }).start();
     }
 }

@@ -31,6 +31,8 @@ public class activity_login extends AppCompatActivity {
     Button btn_login;
     ProgressBar progressBar = null;
     EditText username , password;
+    Button btn_forget;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +42,24 @@ public class activity_login extends AppCompatActivity {
         progressBar = (ProgressBar)findViewById(R.id.url_loading_animation);
         username = findViewById(R.id.username);
         password = findViewById(R.id.password);
-
+        btn_forget = findViewById(R.id.btn_forget);
+        btn_forget.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               Intent forget = new Intent(activity_login.this, activity_forget_password.class);
+                forget.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                forget.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                activity_login.this.startActivity(forget);
+            }
+        });
         //username.setText("923465175409");// pickup
-         username.setText("923049494294"); // delivery
+
+
+        username.setText("923049494294"); // delivery
+
+
+
+       // username.setText("923004820761"); // delivery
 
         password.setText("12345");
         Sprite doubleBounce = new DoubleBounce();
@@ -54,7 +71,9 @@ public class activity_login extends AppCompatActivity {
                 //Intent i = new Intent(activity_login.this,activity_mapview.class);
                 //activity_login.this.startActivity(i);
 
-
+                if(Databackbone.getinstance().checkInternet(activity_login.this)){
+                    return;
+                }
                 Start_login();
 
     }
@@ -102,6 +121,9 @@ public class activity_login extends AppCompatActivity {
                    // Toast.makeText(activity_login.this,rider.getId(),Toast.LENGTH_LONG).show();
 
 
+                }else{
+                    Databackbone.getinstance().showAlsertBox(activity_login.this,"error","wrong username or password");
+                            EnableLogin();
                 }
 
             }

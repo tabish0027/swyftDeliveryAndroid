@@ -53,12 +53,13 @@
         app:layout_constraintTop_toTopOf="parent">
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
     <TextView
         android:id="@+id/textView36"
         android:layout_width="wrap_content"
-        android:layout_height="34dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:fontFamily="sans-serif-thin"
+        android:fontFamily="@font/avenirfile"
         android:gravity="center_vertical"
         android:text="Wallet"
         android:textColor="#ffffff"
@@ -81,7 +82,7 @@
         android:layout_width="wrap_content"
         android:layout_height="34dp"
         android:layout_marginTop="16dp"
-        android:fontFamily="sans-serif-thin"
+        android:fontFamily="@font/avenirfile"
         android:gravity="center_vertical"
         android:text="Cash Transactions"
         android:textColor="@color/color_app_theam"

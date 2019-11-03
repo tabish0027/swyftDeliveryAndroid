@@ -16,14 +16,19 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.faceart.swift.interface_retrofit.GeoPoints;
+import io.faceart.swift.interface_retrofit_delivery.Datum;
 
 public class activity_form extends AppCompatActivity {
     ImageView btn_back;
-    TextView tx_name,tx_address,tx_parcel_id,tx_payment_method;
+    TextView tx_name,tx_address,tx_parcel_id,tx_payment_method,tx_amount_to_collect;
     Button btn_delivered;
-    ImageView btn_payment_method,btn_navigation;
+    ImageView btn_payment_method,btn_navigation,btn_parcel_selection;
     Button btn_diclined;
+    TextView tx_description_title,tx_description_detail;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +37,10 @@ public class activity_form extends AppCompatActivity {
         btn_delivered = findViewById(R.id.btn_delivered);
         btn_payment_method = findViewById(R.id.btn_payment_method);
         btn_navigation = findViewById(R.id.btn_navigation);
+        tx_amount_to_collect = findViewById(R.id.tx_amount_to_collect);
+        btn_parcel_selection= findViewById(R.id.btn_parcel_selection);
+        tx_description_detail = findViewById(R.id.tx_description_detail);
+        tx_description_title = findViewById(R.id.tx_description_title);
 
 
         btn_diclined = findViewById(R.id.btn_diclined);
@@ -39,6 +48,7 @@ public class activity_form extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // using BottomSheetDialogFragment
+                mark_all_parcels_to_process();
                 bottomsheet_orderdeclined bottomSheetFragment = new bottomsheet_orderdeclined();
 
                 bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
@@ -48,12 +58,22 @@ public class activity_form extends AppCompatActivity {
         btn_delivered.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mark_all_parcels_to_process();
                 Intent declined = new Intent(activity_form.this, activity_signature_pad.class);
                 declined.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 declined.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 activity_form.this.startActivity(declined);
 
 
+            }
+        });
+        btn_parcel_selection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent declined = new Intent(activity_form.this, activity_parcel_selection_for_delivery.class);
+                declined.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                declined.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                activity_form.this.startActivity(declined);
             }
         });
         btn_navigation.setOnClickListener(new View.OnClickListener() {
@@ -71,6 +91,101 @@ public class activity_form extends AppCompatActivity {
                 bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
             }
         });
+
+    }
+    public void Offlice_Activity(LatLng location){
+        String location_to_string = Double.toString(location.latitude) + ","+Double.toString(location.longitude);
+        Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                Uri.parse("http://maps.google.com/maps?daddr="+location_to_string));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        this.getApplicationContext().startActivity(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        load_data();
+        checkIfAnyParcelLeft();
+    }
+
+    public void mark_park_parcel_to_complete(){
+         Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData().get(Databackbone.getinstance().delivery_to_show).markAllParcelToBeComplete();
+
+    }
+    public void checkIfAnyParcelLeft(){
+        Boolean check_any_parcel_left = true;
+        if(Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().delivery_to_show).getData().size() == 0)
+        {
+            activity_form.this.finish();
+            return;
+        }
+        Datum data = Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData().get(Databackbone.getinstance().delivery_to_show);
+        for(int i=0;i<data.getParcels().size();i++)
+            if(data.getParcels().get(i).getStatus().equals("started")||data.getParcels().get(i).getStatus().equals("pending"))
+            {
+                check_any_parcel_left = false;
+                break;
+            }
+        if(check_any_parcel_left){
+
+            activity_form.this.finish();
+        }
+
+    }
+    public Boolean checkIforderActive(){
+        Boolean check_any_parcel_left = true;
+        Datum data = Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData().get(Databackbone.getinstance().delivery_to_show);
+        for(int i=0;i<data.getParcels().size();i++)
+            if(data.getParcels().get(i).getStatus().equals("pending"))
+                return true;
+            else
+                return false;
+
+        return false;
+
+    }
+    public int totalamounttocollect(){
+        int amount = 0;
+        int parcel_count = 0;
+        Datum data = Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData().get(Databackbone.getinstance().delivery_to_show);
+        for(int i=0;i<data.getParcels().size();i++)
+            if(data.getParcels().get(i).getStatus().equals("started")||data.getParcels().get(i).getStatus().equals("pending")||data.getParcels().get(i).getStatus().equals("scanned")) {
+                amount += data.getParcels().get(i).getAmount();
+                parcel_count++;
+            }
+
+        if(parcel_count == 1 ){
+            btn_parcel_selection.setVisibility(View.INVISIBLE);
+            btn_delivered.setText("DELIVERED");
+            btn_diclined.setText("DECLINED");
+            tx_parcel_id.setText("Parcels Id : " + data.getParcels().get(0).getParcelId());
+            tx_description_detail.setText(data.getParcels().get(0).getDescription());
+            tx_description_title.setText("Parcel Description");
+        }
+        else{
+            tx_parcel_id.setText("Parcels count : " + Integer.toString(parcel_count));
+
+            btn_delivered.setText("DELIVERED ALL");
+            btn_diclined.setText("DECLINED ALL");
+            tx_description_detail.setText("Please process all Parcels to mark this task complete");
+            tx_description_title.setText("Disclaimer");
+        }
+        return amount;
+
+    }
+    public void mark_all_parcels_to_process(){
+        Datum data = Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData().get(Databackbone.getinstance().delivery_to_show);
+        List<String> parcels_id = new ArrayList<String>();
+
+        for (int j = 0; j < data.getParcels().size(); j++) {
+            if(data.getParcels().get(j).parcel_to_mark_complete)
+                parcels_id.add(data.getParcels().get(j).getParcelId());
+        }
+        Databackbone.getinstance().parcel_to_process =  parcels_id;
+    }
+    public void load_data(){
+        Datum data=   Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData().get(Databackbone.getinstance().delivery_to_show) ;
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -81,17 +196,18 @@ public class activity_form extends AppCompatActivity {
         tx_address= findViewById(R.id.tx_address);
         tx_parcel_id= findViewById(R.id.tx_parcel_id);
         tx_payment_method= findViewById(R.id.tx_payment_method);
-        tx_name.setText(Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().delivery_to_show).getData().get(0).getName());
-        tx_address.setText(Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().delivery_to_show).getData().get(0).getLocation().getAddress());
-        tx_parcel_id.setText(Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().delivery_to_show).getData().get(0).getParcels().get(0).getParcelId());
+        tx_name.setText(data.getName());
+        tx_address.setText(data.getLocation().getAddress());
         tx_payment_method.setText("Cash");
-    }
-    public void Offlice_Activity(LatLng location){
-        String location_to_string = Double.toString(location.latitude) + ","+Double.toString(location.longitude);
-        Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                Uri.parse("http://maps.google.com/maps?daddr="+location_to_string));
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        mark_park_parcel_to_complete();
 
-        this.getApplicationContext().startActivity(intent);
+        if(checkIforderActive()){
+            btn_diclined.setEnabled(false);
+            btn_delivered.setEnabled(false);
+            btn_delivered.setVisibility(View.INVISIBLE);
+            btn_diclined.setVisibility(View.INVISIBLE);
+        }
+        tx_amount_to_collect.setText(Integer.toString(totalamounttocollect()));
     }
+
 }

@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -23,17 +24,16 @@ import java.util.ArrayList;
 
 import io.faceart.swift.Databackbone;
 import io.faceart.swift.R;
-import io.faceart.swift.activity_mapview;
 import io.faceart.swift.data_models.model_daily_package_item;
 
-public class adapter_status_daily_packages extends RecyclerView.Adapter<adapter_status_daily_packages.model_order_daily_item_holder> {
+public class adapter_status_daily_task extends RecyclerView.Adapter<adapter_status_daily_task.model_order_daily_item_holder> {
 
 
     public ArrayList<model_daily_package_item> m_orderList =null;
     public Context mContext;
 
     private static ClickListener clickListener;
-    public adapter_status_daily_packages(ArrayList<model_daily_package_item> orderList, Context context) {
+    public adapter_status_daily_task(ArrayList<model_daily_package_item> orderList, Context context) {
         this.m_orderList = orderList;
         this.mContext = context;
     }
@@ -119,7 +119,7 @@ public class adapter_status_daily_packages extends RecyclerView.Adapter<adapter_
         }
     }
     public void setOnItemClickListener(ClickListener clickListener) {
-        adapter_status_daily_packages.clickListener = clickListener;
+        adapter_status_daily_task.clickListener = clickListener;
     }
 
     public class model_order_daily_item_holder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener{
@@ -148,6 +148,7 @@ public class adapter_status_daily_packages extends RecyclerView.Adapter<adapter_
             mb_parcel_type_background =itemView.findViewById(R.id.parcel_type_background);
             btn_navigation =itemView.findViewById(R.id.btn_navigation);
             btn_activate =itemView.findViewById(R.id.btn_activate);
+
             btn_activate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -155,6 +156,7 @@ public class adapter_status_daily_packages extends RecyclerView.Adapter<adapter_
 
                 }
             });
+
 
 
         }
@@ -172,7 +174,7 @@ public class adapter_status_daily_packages extends RecyclerView.Adapter<adapter_
     }
     public void Offlice_Activity(LatLng location){
         String location_to_string = Double.toString(location.latitude) + ","+Double.toString(location.longitude);
-        Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+        Intent intent = new Intent(Intent.ACTION_VIEW,
                 Uri.parse("http://maps.google.com/maps?daddr="+location_to_string));
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 

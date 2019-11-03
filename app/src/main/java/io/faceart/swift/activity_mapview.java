@@ -222,7 +222,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
                 if(Databackbone.getinstance().rider.getUser().getIsOnline()){
                     Intent pendingtask = null;
                     if (Databackbone.getinstance().check_parcel_scanning_complete) {
-                        pendingtask = new Intent(activity_mapview.this, activity_daily_order_status.class);
+                        pendingtask = new Intent(activity_mapview.this, activity_daily_task_status.class);
                         pendingtask.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         pendingtask.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                         activity_mapview.this.startActivity(pendingtask);
@@ -571,6 +571,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
                     }
                     else{
                         Databackbone.getinstance().parcelsdelivery = parcels;
+                        Databackbone.getinstance().remove_location_complete();
                         tx_parcels_status_count.setText(Integer.toString(parcels.size()) + " Task Pending");
                     }
                     DisableLoading();

@@ -17,6 +17,7 @@ import java.util.List;
 import io.faceart.swift.adapters.adapter_status_packages_scanning;
 import io.faceart.swift.data_models.model_order_item;
 import io.faceart.swift.interface_retrofit.Parcel;
+import io.faceart.swift.interface_retrofit_delivery.Datum;
 
 public class activity_order_status_scanning extends Activity {
 
@@ -99,11 +100,13 @@ public class activity_order_status_scanning extends Activity {
     }
 
     public void load_parcels(){
+
         Databackbone.getinstance().ar_orders_scanned.clear();
         Databackbone.getinstance().ar_orders_remaining.clear();
 
         ArrayList<model_order_item>  temp_ar_orders_scanned = new ArrayList<>();
         ArrayList<model_order_item>  temp_ar_orders_remaining= new ArrayList<>();
+
        if(!Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery")) {
            List<Parcel> parcels = Databackbone.getinstance().parcels.get(Databackbone.getinstance().pickup_to_process).getParcels();
            for (int i = 0; i < parcels.size(); i++) {
@@ -116,6 +119,26 @@ public class activity_order_status_scanning extends Activity {
                    temp_ar_orders_scanned.add(new model_order_item(parcels.get(i).getParcelId(), parcels.get(i).getScannedOn(), "", "scan"));
                }
            }
+       }else{
+           if(Databackbone.getinstance().task_to_show >= Databackbone.getinstance().parcelsdelivery.size()   )
+               activity_order_status_scanning.this.finish();
+           List<Datum> Locations= Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData();
+
+           for (int i = 0; i < Locations.size(); i++) {
+               Datum data = Locations.get(i);
+
+               for (int j = 0; j < data.getParcels().size(); j++) {
+                   if(!(data.getParcels().get(j).getStatus().equals("scanned")||data.getParcels().get(j).getStatus().equals("started"))){
+                       temp_ar_orders_remaining.add(new model_order_item(data.getParcels().get(j).getParcelId(), "", "", "remain"));
+
+                   }
+                   else{
+                       temp_ar_orders_scanned.add(new model_order_item(data.getParcels().get(j).getParcelId(),data.getParcels().get(j).getScannedOn(), "", "scan"));
+
+                   }
+               }
+           }
+
        }
         Databackbone.getinstance().ar_orders_scanned.addAll(temp_ar_orders_scanned);
         Databackbone.getinstance().ar_orders_remaining.addAll(temp_ar_orders_remaining);

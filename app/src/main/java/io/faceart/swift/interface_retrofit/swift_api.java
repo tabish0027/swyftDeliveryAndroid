@@ -32,4 +32,10 @@ public interface swift_api {
     @POST("RiderTasks/{taskid}/manage-task")
     Call<List<DeliveryParcel>> manageTask(@Header("Authorization") String Authorization, @Path("taskid") String parcelid,@Body manage_task user_task);
 
+    @POST("Riders/forgot-password")
+    Call<PasswordResetRequest> requestotp(@Body username name);
+
+    @POST("Riders/reset-password-via-otp")
+    Call<PasswordResetRequest> reset_password_forget(@Body reset_password name);
+
 }

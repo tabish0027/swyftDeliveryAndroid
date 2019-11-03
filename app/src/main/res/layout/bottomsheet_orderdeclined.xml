@@ -38,7 +38,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <Button
-                android:id="@+id/btn_login3"
+                android:id="@+id/btn_submit"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_marginStart="16dp"
@@ -69,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:fontFamily="sans-serif-thin"
+                android:fontFamily="@font/avenirfile"
                 android:text="Order Declined"
                 android:textColor="#231f20"
                 android:textStyle="bold"
@@ -81,7 +81,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/round_bottom_sheet_button_back"
+                android:background="@drawable/round_bottom_sheet_button_back_unselected"
                 app:layout_constraintEnd_toStartOf="@+id/guideline26"
                 app:layout_constraintHorizontal_bias="0.62"
                 app:layout_constraintStart_toStartOf="@+id/guideline25"
@@ -103,7 +103,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    android:fontFamily="sans-serif-thin"
+                    android:fontFamily="@font/avenirfile"
                     android:text="Reattempt"
                     android:textColor="#231f20"
                     android:textStyle="bold"
@@ -125,7 +125,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:background="@drawable/round_bottom_sheet_button_back"
+                android:background="@drawable/round_bottom_sheet_button_back_unselected"
                 app:layout_constraintEnd_toStartOf="@+id/guideline26"
                 app:layout_constraintStart_toStartOf="@+id/guideline25"
                 app:layout_constraintTop_toBottomOf="@+id/btn_order_declined">
@@ -146,7 +146,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    android:fontFamily="sans-serif-thin"
+                    android:fontFamily="@font/avenirfile"
                     android:text="Cancelled"
                     android:textColor="#231f20"
                     android:textStyle="bold"

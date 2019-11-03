@@ -38,15 +38,15 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayout2212"
+                android:id="@+id/btn_payment_method_jazzcash"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:background="@drawable/round_bottom_sheet_button_back"
+                android:background="@drawable/round_bottom_sheet_button_back_unselected"
                 app:layout_constraintEnd_toStartOf="@+id/guideline26"
                 app:layout_constraintHorizontal_bias="0.62"
                 app:layout_constraintStart_toStartOf="@+id/guideline24"
-                app:layout_constraintTop_toTopOf="@+id/constraintLayout2">
+                app:layout_constraintTop_toTopOf="@+id/btn_payment_method_easy_paisa">
 
                 <ImageView
                     android:id="@+id/imageView14212"
@@ -64,7 +64,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    android:fontFamily="sans-serif-thin"
+                    android:fontFamily="@font/avenirfile"
+                    android:padding="4dp"
                     android:text="Jazz Cash Wallet"
                     android:textColor="#231f20"
                     android:textStyle="bold"
@@ -82,12 +83,12 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayout221"
+                android:id="@+id/btn_payment_method_card"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/round_bottom_sheet_button_back"
+                android:background="@drawable/round_bottom_sheet_button_back_unselected"
                 app:layout_constraintEnd_toStartOf="@+id/guideline26"
                 app:layout_constraintHorizontal_bias="0.62"
                 app:layout_constraintStart_toStartOf="@+id/guideline24"
@@ -109,7 +110,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    android:fontFamily="sans-serif-thin"
+                    android:fontFamily="@font/avenirfile"
+                    android:gravity="center"
+                    android:padding="4dp"
                     android:text="Credit/Debit Card"
                     android:textColor="#231f20"
                     android:textStyle="bold"
@@ -140,7 +143,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guideline26"
                 app:layout_constraintStart_toStartOf="@+id/guideline25"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
+                app:layout_constraintTop_toBottomOf="@+id/btn_payment_method_easy_paisa" />
 
             <ImageView
                 android:id="@+id/btn_close"
@@ -166,12 +169,12 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayout22"
+                android:id="@+id/btn_payment_method_cod"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:background="@drawable/round_bottom_sheet_button_back"
+                android:background="@drawable/round_bottom_sheet_button_back_unselected"
                 app:layout_constraintEnd_toStartOf="@+id/guideline24"
                 app:layout_constraintHorizontal_bias="0.62"
                 app:layout_constraintStart_toStartOf="@+id/guideline25"
@@ -193,7 +196,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    android:fontFamily="sans-serif-thin"
+                    android:fontFamily="@font/avenirfile"
+                    android:padding="4dp"
                     android:text="Cash on Delivey"
                     android:textColor="#231f20"
                     android:textStyle="bold"
@@ -211,15 +215,15 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayout2"
+                android:id="@+id/btn_payment_method_easy_paisa"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="8dp"
-                android:background="@drawable/round_bottom_sheet_button_back"
+                android:background="@drawable/round_bottom_sheet_button_back_unselected"
                 app:layout_constraintEnd_toStartOf="@+id/guideline24"
                 app:layout_constraintStart_toStartOf="@+id/guideline25"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayout22">
+                app:layout_constraintTop_toBottomOf="@+id/btn_payment_method_cod">
 
                 <ImageView
                     android:id="@+id/imageView14"
@@ -237,14 +241,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    android:fontFamily="sans-serif-thin"
+                    android:fontFamily="@font/avenirfile"
+                    android:padding="4dp"
                     android:text="EasyPaisa Wallet"
                     android:textColor="#231f20"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/imageView14"
-                    app:layout_constraintStart_toStartOf="@+id/imageView14"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView14" />
+                    app:layout_constraintEnd_toStartOf="@+id/guideline23"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@+id/guideline23"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView14"
+                    app:layout_constraintVertical_bias="0.0" />
 
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/guideline23"

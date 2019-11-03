@@ -6,7 +6,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import io.faceart.swift.interface_retrofit.Location;
-import io.faceart.swift.interface_retrofit.Parcel;
+import io.faceart.swift.interface_retrofit_delivery.Parcel;
 
 public class Datum {
 
@@ -55,4 +55,9 @@ public class Datum {
         this.parcels = parcels;
     }
 
+    public void markAllParcelToBeComplete(){
+        for(int i =0 ; i<parcels.size();i++){
+            parcels.get(i).parcel_to_mark_complete = true;
+        }
+    }
 }

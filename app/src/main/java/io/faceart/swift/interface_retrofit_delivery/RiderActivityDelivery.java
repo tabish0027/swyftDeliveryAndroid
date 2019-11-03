@@ -1,6 +1,7 @@
 
 package io.faceart.swift.interface_retrofit_delivery;
 
+import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -40,5 +41,16 @@ public class RiderActivityDelivery {
     public void setTaskStatus(String taskStatus) {
         this.taskStatus = taskStatus;
     }
-
+    public void removeCompletedActivities(){
+        List<Datum> process_data = new ArrayList<>();
+        for(int i=0;i<data.size();i++){
+            for(int j=0;j<data.get(i).getParcels().size() ;j++){
+                if(data.get(i).getParcels().get(j).getStatus().equals("pending")||data.get(i).getParcels().get(j).getStatus().equals("scanned")||data.get(i).getParcels().get(j).getStatus().equals("started")){
+                    process_data.add(data.get(i));
+                    break;
+                }
+            }
+        }
+        data = process_data;
+    }
 }

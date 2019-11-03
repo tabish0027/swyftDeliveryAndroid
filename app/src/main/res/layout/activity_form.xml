@@ -52,7 +52,7 @@
             <TextView
                 android:id="@+id/textView4"
                 android:layout_width="wrap_content"
-                android:layout_height="34dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:fontFamily="@font/avenirfile"
                 android:gravity="center_vertical"
@@ -169,7 +169,7 @@
                         android:layout_height="@dimen/form_height"
                         android:padding="0dp"
                         app:layout_constraintStart_toStartOf="@+id/guideline4"
-                        app:layout_constraintTop_toTopOf="@+id/tx_payment_method3"
+                        app:layout_constraintTop_toTopOf="@+id/tx_description_title"
                         app:srcCompat="@drawable/ic_description" />
 
                     <ImageView
@@ -191,6 +191,17 @@
                         app:layout_constraintEnd_toStartOf="@+id/guideline5"
                         app:layout_constraintStart_toStartOf="@+id/btn_navigation"
                         app:layout_constraintTop_toTopOf="@+id/tx_payment_method2" />
+
+                    <ImageView
+                        android:id="@+id/btn_parcel_selection"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/icon_down_arrow"
+                        android:rotation="-90"
+                        app:layout_constraintBottom_toBottomOf="@+id/tx_parcel_id"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+                        app:layout_constraintStart_toStartOf="@+id/btn_navigation"
+                        app:layout_constraintTop_toTopOf="@+id/tx_parcel_id" />
 
                     <LinearLayout
                         android:id="@+id/underbar_card"
@@ -226,7 +237,7 @@
                         app:layout_constraintEnd_toStartOf="@+id/guideline5"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="@+id/guideline4"
-                        app:layout_constraintTop_toBottomOf="@+id/tx_payment_method4" />
+                        app:layout_constraintTop_toBottomOf="@+id/tx_description_detail" />
 
                     <LinearLayout
                         android:id="@+id/bottom_name"
@@ -284,13 +295,13 @@
                         app:layout_constraintTop_toBottomOf="@+id/underbar_discription" />
 
                     <TextView
-                        android:id="@+id/tx_payment_method3"
+                        android:id="@+id/tx_description_title"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="8dp"
                         android:fontFamily="@font/avenirfile"
-                        android:text="Parcel Description"
+                        android:text="Disclaimer"
                         android:textColor="#231f20"
                         android:textSize="@dimen/app_text_size"
                         android:textStyle="bold"
@@ -300,19 +311,19 @@
                         app:layout_constraintTop_toBottomOf="@+id/underbar_parcel" />
 
                     <TextView
-                        android:id="@+id/tx_payment_method4"
+                        android:id="@+id/tx_description_detail"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:layout_marginEnd="8dp"
                         android:fontFamily="@font/avenirfile"
-                        android:text="this is a test data"
+                        android:text="Please process all Parcels to mark this task complete"
                         android:textColor="#231f20"
                         android:textSize="14dp"
                         app:layout_constraintEnd_toStartOf="@+id/guideline3"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="@+id/tx_parcel_id"
-                        app:layout_constraintTop_toBottomOf="@+id/tx_payment_method3" />
+                        app:layout_constraintTop_toBottomOf="@+id/tx_description_title" />
 
                     <TextView
                         android:id="@+id/tx_address"
@@ -372,7 +383,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/underbar_card">
 
                         <TextView
-                            android:id="@+id/price_500"
+                            android:id="@+id/tx_amount_to_collect"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="2dp"
@@ -399,10 +410,10 @@
                             android:textColor="#231f20"
                             android:textSize="@dimen/app_text_size"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="@+id/price_500"
+                            app:layout_constraintEnd_toEndOf="@+id/tx_amount_to_collect"
                             app:layout_constraintHorizontal_bias="0.512"
-                            app:layout_constraintStart_toStartOf="@+id/price_500"
-                            app:layout_constraintTop_toBottomOf="@+id/price_500" />
+                            app:layout_constraintStart_toStartOf="@+id/tx_amount_to_collect"
+                            app:layout_constraintTop_toBottomOf="@+id/tx_amount_to_collect" />
 
                         <TextView
                             android:id="@+id/textView13"
@@ -479,7 +490,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="24dp"
             android:background="@drawable/roundleft"
-            android:text="Declined"
+            android:text="Declined All"
             android:textColor="#ffffff"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/outguideline2"
@@ -491,7 +502,7 @@
             android:layout_height="40dp"
             android:layout_marginStart="8dp"
             android:background="@drawable/roundright"
-            android:text="Delivered"
+            android:text="Delivered All"
             android:textColor="#ffffff"
             app:layout_constraintBottom_toBottomOf="@+id/btn_diclined"
             app:layout_constraintEnd_toStartOf="@+id/outguideline3"

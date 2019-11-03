@@ -16,6 +16,44 @@ public class Parcel {
     @Expose
     private String scannedOn;
 
+    @SerializedName("amount")
+    @Expose
+    private Integer amount;
+
+    @SerializedName("description")
+    @Expose
+    private String description;
+
+    public Boolean parcel_to_mark_complete = false;
+
+    public Integer getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Integer amount) {
+        this.amount = amount;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getOrderType() {
+        return orderType;
+    }
+
+    public void setOrderType(String orderType) {
+        this.orderType = orderType;
+    }
+
+    @SerializedName("orderType")
+    @Expose
+    private String orderType;
+
     public String getParcelId() {
         return parcelId;
     }

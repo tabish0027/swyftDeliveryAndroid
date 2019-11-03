@@ -29,7 +29,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="24dp"
         android:background="@drawable/round_daily_package_active"
-        app:layout_constraintBottom_toTopOf="@+id/btn_login2"
+        app:layout_constraintBottom_toTopOf="@+id/btn_submit"
         app:layout_constraintEnd_toStartOf="@+id/guideline5"
         app:layout_constraintStart_toStartOf="@+id/guideline4"
         app:layout_constraintTop_toBottomOf="@+id/textView6">
@@ -52,7 +52,7 @@
                 app:layout_constraintGuide_percent="0.15" />
 
             <EditText
-                android:id="@+id/editText"
+                android:id="@+id/tx_note"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
@@ -72,7 +72,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <Button
-        android:id="@+id/btn_login2"
+        android:id="@+id/btn_submit"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginBottom="24dp"
@@ -106,13 +106,13 @@
     <TextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
-        android:layout_height="34dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:fontFamily="sans-serif-thin"
+        android:gravity="center_vertical"
         android:text="Delivery Status"
         android:textColor="#ffffff"
         android:textSize="@dimen/border_title"
-        android:gravity="center_vertical"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/btn_back"
         app:layout_constraintStart_toEndOf="@+id/btn_back"
@@ -175,17 +175,17 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <CheckBox
-                android:id="@+id/checkBox2"
+                android:id="@+id/cb_incomplete"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
-                android:text="Imcomplete address"
+                android:text="Incomplete address"
                 app:layout_constraintEnd_toEndOf="@+id/textView11"
                 app:layout_constraintStart_toStartOf="@+id/textView11"
                 app:layout_constraintTop_toBottomOf="@+id/textView17" />
 
             <CheckBox
-                android:id="@+id/checkBox3"
+                android:id="@+id/cb_funds"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -194,27 +194,27 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/textView11"
                 app:layout_constraintStart_toStartOf="@+id/textView11"
-                app:layout_constraintTop_toBottomOf="@+id/checkBox4" />
+                app:layout_constraintTop_toBottomOf="@+id/cb_refure" />
 
             <CheckBox
-                android:id="@+id/checkBox4"
+                android:id="@+id/cb_refure"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="Refused to receive the parcel"
                 app:layout_constraintEnd_toEndOf="@+id/textView11"
                 app:layout_constraintStart_toStartOf="@+id/textView11"
-                app:layout_constraintTop_toBottomOf="@+id/checkBox" />
+                app:layout_constraintTop_toBottomOf="@+id/cb_consignee" />
 
             <CheckBox
-                android:id="@+id/checkBox"
+                android:id="@+id/cb_consignee"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="consignee not availabe"
                 app:layout_constraintEnd_toEndOf="@+id/textView11"
                 app:layout_constraintStart_toStartOf="@+id/textView11"
-                app:layout_constraintTop_toBottomOf="@+id/checkBox2" />
+                app:layout_constraintTop_toBottomOf="@+id/cb_incomplete" />
 
             <TextView
                 android:id="@+id/textView11"
@@ -261,5 +261,23 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline23"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
 
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:id="@+id/url_loading_animation"
+        style="@style/SpinKitView.Large.Circle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="invisible"
+        app:SpinKit_Color="@color/color_app_theam"
+        app:layout_constraintBottom_toTopOf="@+id/guideline23"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toTopOf="@+id/guideline23" />
 </androidx.constraintlayout.widget.ConstraintLayout>

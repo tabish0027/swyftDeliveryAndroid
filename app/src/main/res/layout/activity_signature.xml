@@ -8,8 +8,15 @@
 
     android:orientation="vertical">
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline33"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+
     <Button
-        android:id="@+id/btn_login2"
+        android:id="@+id/btn_submit"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginBottom="24dp"
@@ -43,13 +50,13 @@
     <TextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/border_title_back"
+        android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:fontFamily="sans-serif-thin"
+        android:fontFamily="@font/avenirfile"
+        android:gravity="center_vertical"
         android:text="Customer Signature"
         android:textColor="#ffffff"
         android:textSize="@dimen/border_title"
-        android:gravity="center_vertical"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/btn_back"
         app:layout_constraintStart_toEndOf="@+id/btn_back"
@@ -84,13 +91,6 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.1" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.90" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout4"
         android:layout_width="0dp"
@@ -98,7 +98,7 @@
         android:layout_marginTop="24dp"
         android:layout_marginBottom="16dp"
         android:background="@drawable/round_daily_package_active"
-        app:layout_constraintBottom_toTopOf="@+id/btn_login2"
+        app:layout_constraintBottom_toTopOf="@+id/btn_submit"
         app:layout_constraintEnd_toStartOf="@+id/guideline5"
         app:layout_constraintStart_toStartOf="@+id/guideline4"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
@@ -113,6 +113,32 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <ImageView
+                android:id="@+id/btn_cross"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/signature_pad"
+                app:srcCompat="@android:drawable/ic_delete" />
+
+            <TextView
+                android:id="@+id/textView11"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
+                android:fontFamily="@font/avenirfile"
+                android:gravity="center"
+                android:text="Please Sign below the dotted line using your finger"
+                android:textColor="#231f20"
+                android:textSize="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <TextView
                 android:id="@+id/textView17"
                 android:layout_width="0dp"
@@ -120,7 +146,7 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="13dp"
                 android:layout_marginEnd="24dp"
-                android:fontFamily="sans-serif-thin"
+                android:fontFamily="@font/avenirfile"
                 android:gravity="center"
                 android:text="--------------------------------------"
                 android:textColor="#231f20"
@@ -130,23 +156,6 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView11" />
-
-            <TextView
-                android:id="@+id/textView11"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="24dp"
-                android:fontFamily="sans-serif-thin"
-                android:gravity="center"
-                android:text="Please Sign below the dotted line using your finger"
-                android:textColor="#231f20"
-                android:textSize="12dp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline12"
@@ -164,18 +173,28 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView17"
                 app:penColor="@android:color/black" />
-
-            <ImageView
-                android:id="@+id/btn_cross"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/signature_pad"
-                app:srcCompat="@android:drawable/ic_delete" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.90" />
+
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:id="@+id/url_loading_animation"
+        style="@style/SpinKitView.Large.Circle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="invisible"
+        app:SpinKit_Color="@color/color_app_theam"
+        app:layout_constraintBottom_toTopOf="@+id/guideline33"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toTopOf="@+id/guideline33" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

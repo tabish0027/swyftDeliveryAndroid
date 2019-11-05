@@ -185,29 +185,36 @@ public class activity_form extends AppCompatActivity {
         Databackbone.getinstance().parcel_to_process =  parcels_id;
     }
     public void load_data(){
-        Datum data=   Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData().get(Databackbone.getinstance().delivery_to_show) ;
-        btn_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                activity_form.this.finish();
-            }
-        });
-        tx_name= findViewById(R.id.tx_name);
-        tx_address= findViewById(R.id.tx_address);
-        tx_parcel_id= findViewById(R.id.tx_parcel_id);
-        tx_payment_method= findViewById(R.id.tx_payment_method);
-        tx_name.setText(data.getName());
-        tx_address.setText(data.getLocation().getAddress());
-        tx_payment_method.setText("Cash");
-        mark_park_parcel_to_complete();
 
-        if(checkIforderActive()){
-            btn_diclined.setEnabled(false);
-            btn_delivered.setEnabled(false);
-            btn_delivered.setVisibility(View.INVISIBLE);
-            btn_diclined.setVisibility(View.INVISIBLE);
+        try {
+            Datum data = Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData().get(Databackbone.getinstance().delivery_to_show);
+
+
+            btn_back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    activity_form.this.finish();
+                }
+            });
+            tx_name = findViewById(R.id.tx_name);
+            tx_address = findViewById(R.id.tx_address);
+            tx_parcel_id = findViewById(R.id.tx_parcel_id);
+            tx_payment_method = findViewById(R.id.tx_payment_method);
+            tx_name.setText(data.getName());
+            tx_address.setText(data.getLocation().getAddress());
+            tx_payment_method.setText("Cash");
+            mark_park_parcel_to_complete();
+
+            if (checkIforderActive()) {
+                btn_diclined.setEnabled(false);
+                btn_delivered.setEnabled(false);
+                btn_delivered.setVisibility(View.INVISIBLE);
+                btn_diclined.setVisibility(View.INVISIBLE);
+            }
+            tx_amount_to_collect.setText(Integer.toString(totalamounttocollect()));
+        }catch (Exception i){
+            activity_form.this.finish();
         }
-        tx_amount_to_collect.setText(Integer.toString(totalamounttocollect()));
     }
 
 }

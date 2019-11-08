@@ -84,7 +84,7 @@ public class adapter_status_packages_scanning extends RecyclerView.Adapter<adapt
         }
 
         public void setmb_date(String data) {
-            mb_date.setText(data);
+            mb_date.setText(data.replace("T"," ").replace("Z",""));
         }
         public void setmb_time(String data) {
             mb_time.setText(data);

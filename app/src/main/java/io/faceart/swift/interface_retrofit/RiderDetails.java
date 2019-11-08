@@ -1,20 +1,21 @@
 package io.faceart.swift.interface_retrofit;
 
-import java.util.List;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class User {
+import java.util.List;
 
+public class RiderDetails {
     @SerializedName("firstName")
     @Expose
-    private String firstName;
+    private String firstName = "";
     @SerializedName("lastName")
     @Expose
-    private String lastName;
+    private String lastName= "";;
     @SerializedName("phone")
     @Expose
-    private String phone;
+    private String phone= "";;
     @SerializedName("zoneIds")
     @Expose
     private List<String> zoneIds = null;
@@ -23,55 +24,58 @@ public class User {
     private List<String> timeSlotIds = null;
     @SerializedName("vehicleId")
     @Expose
-    private String vehicleId;
+    private String vehicleId= "";;
     @SerializedName("isOnline")
     @Expose
-    private Boolean isOnline;
+    private Boolean isOnline= false;
     @SerializedName("username")
     @Expose
-    private String username;
+    private String username= "";
     @SerializedName("email")
     @Expose
-    private String email;
+    private String email= "";
     @SerializedName("id")
     @Expose
-    private String id;
+    private String id= "";
     @SerializedName("createdAt")
     @Expose
-    private String createdAt;
+    private String createdAt= "";
     @SerializedName("updatedAt")
     @Expose
-    private String updatedAt;
+    private String updatedAt= "";
     @SerializedName("address")
     @Expose
-    private String address;
+    private String address= "";
     @SerializedName("profilePicture")
     @Expose
-    private String profilePicture;
+    private String profilePicture= "";
     @SerializedName("isActive")
     @Expose
-    private Boolean isActive;
+    private Boolean isActive = false;
     @SerializedName("type")
     @Expose
-    private String type;
+    private String type = "";
     @SerializedName("todayHours")
     @Expose
-    private Double todayHours;
+    private Double todayHours = 0.0;
     @SerializedName("previousWeekHours")
     @Expose
-    private Double previousWeekHours;
+    private Double previousWeekHours= 0.0;
     @SerializedName("previousMonthHours")
     @Expose
-    private Double previousMonthHours;
+    private Double previousMonthHours= 0.0;
     @SerializedName("todayDistance")
     @Expose
-    private Double todayDistance;
+    private Double todayDistance= 0.0;
     @SerializedName("previousWeekDistance")
     @Expose
-    private Double previousWeekDistance;
+    private Double previousWeekDistance= 0.0;
     @SerializedName("previousMonthDistance")
     @Expose
-    private Double previousMonthDistance;
+    private Double previousMonthDistance= 0.0;
+    @SerializedName("attendanceId")
+    @Expose
+    private String attendanceId = "";
 
     public String getFirstName() {
         return firstName;
@@ -225,7 +229,7 @@ public class User {
         this.previousMonthHours = previousMonthHours;
     }
 
-    public Object getTodayDistance() {
+    public Double getTodayDistance() {
         return todayDistance;
     }
 
@@ -247,6 +251,14 @@ public class User {
 
     public void setPreviousMonthDistance(Double previousMonthDistance) {
         this.previousMonthDistance = previousMonthDistance;
+    }
+
+    public String getAttendanceId() {
+        return attendanceId;
+    }
+
+    public void setAttendanceId(String attendanceId) {
+        this.attendanceId = attendanceId;
     }
 
 }

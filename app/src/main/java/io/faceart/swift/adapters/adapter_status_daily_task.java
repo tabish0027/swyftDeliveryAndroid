@@ -75,7 +75,7 @@ public class adapter_status_daily_task extends RecyclerView.Adapter<adapter_stat
             holder.parcel_type_bottom_bar.setBackgroundColor(Color.parseColor("#90703090"));
             holder.mb_parcel_type_background.setBackgroundResource(R.drawable.round_daily_package_active);
             if(!Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery")) {
-
+                holder.btn_navigation.setVisibility(View.VISIBLE);
                 holder.btn_navigation.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

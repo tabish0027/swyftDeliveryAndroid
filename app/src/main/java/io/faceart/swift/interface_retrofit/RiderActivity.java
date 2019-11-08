@@ -48,9 +48,37 @@ public class RiderActivity {
     @SerializedName("isActive")
     @Expose
     private Boolean isActive;
+
+    public Boolean getActive() {
+        return isActive;
+    }
+
+    public void setActive(Boolean active) {
+        isActive = active;
+    }
+
+    public String getAttendanceId() {
+        return attendanceId;
+    }
+
+    public void setAttendanceId(String attendanceId) {
+        this.attendanceId = attendanceId;
+    }
+
+    public Boolean getOnline() {
+        return isOnline;
+    }
+
+    public void setOnline(Boolean online) {
+        isOnline = online;
+    }
+
     @SerializedName("type")
     @Expose
     private String type;
+    @SerializedName("attendanceId")
+    @Expose
+    private String attendanceId;
     @SerializedName("isOnline")
     @Expose
     private Boolean isOnline;

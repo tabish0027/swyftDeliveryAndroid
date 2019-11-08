@@ -103,13 +103,13 @@
 
 
                     <ImageView
-                        android:id="@+id/imageView10"
+                        android:id="@+id/btn_phone"
                         android:layout_width="@dimen/form_width"
                         android:layout_height="@dimen/form_height"
                         android:layout_marginEnd="8dp"
                         android:padding="2dp"
                         app:layout_constraintBottom_toBottomOf="@+id/tx_name"
-                        app:layout_constraintEnd_toStartOf="@+id/imageView8"
+                        app:layout_constraintEnd_toStartOf="@+id/btn_sms"
                         app:layout_constraintTop_toTopOf="@+id/tx_name"
                         app:srcCompat="@drawable/ic_phone" />
 
@@ -125,7 +125,7 @@
                         app:srcCompat="@drawable/ic_map" />
 
                     <ImageView
-                        android:id="@+id/imageView8"
+                        android:id="@+id/btn_sms"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         app:layout_constraintBottom_toBottomOf="@+id/tx_name"
@@ -351,7 +351,7 @@
                         android:text="Aamir Rashid"
                         android:textColor="#231f20"
                         android:textSize="@dimen/app_text_size"
-                        app:layout_constraintEnd_toStartOf="@+id/imageView10"
+                        app:layout_constraintEnd_toStartOf="@+id/btn_phone"
                         app:layout_constraintStart_toEndOf="@+id/imageView4"
                         app:layout_constraintTop_toTopOf="parent" />
 

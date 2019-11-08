@@ -90,6 +90,7 @@ public class activity_daily_order_status  extends Activity {
         ad_orders_daily.setOnItemClickListener(new adapter_status_daily_packages.ClickListener() {
             @Override
             public void onItemClick(int position, View v,Boolean check) {
+                Databackbone.getinstance().delivery_to_show = position;
                 if(check) {
                     if (Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery"))
                         StartDeliveryorder(position);
@@ -104,7 +105,7 @@ public class activity_daily_order_status  extends Activity {
 
                         //    return ;
                         //}
-                        Databackbone.getinstance().delivery_to_show = position;
+
 
                         Intent orders = new Intent(activity_daily_order_status.this,activity_form.class);
                         orders.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -267,6 +268,8 @@ public class activity_daily_order_status  extends Activity {
             List<Datum> Locations= Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData();
             String orderid = Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getTaskId();
             pending_parcels_to_scan = 0 ;
+            if(Locations.size() == 0)
+                this.finish();
             for (int i = 0; i < Locations.size(); i++) {
                 Datum data = Locations.get(i);
                 LatLng m_location = new LatLng(data.getLocation().getGeoPoints().getLat(), data.getLocation().getGeoPoints().getLng());
@@ -287,7 +290,9 @@ public class activity_daily_order_status  extends Activity {
                 activated_order = false;
             }
             Databackbone.getinstance().ar_orders_daily.addAll(temp_ar_orders_daily);
-            tx_parcels_status_count.setText(Integer.toString(pending_parcels_to_scan)+" Parcels Not Scanned");
+            if(pending_parcels_to_scan <= 1)
+            tx_parcels_status_count.setText(Integer.toString(pending_parcels_to_scan)+" Parcel left to Scan");
+            else tx_parcels_status_count.setText(Integer.toString(pending_parcels_to_scan)+" Parcel left to Scan");
 
 
         }
@@ -447,7 +452,7 @@ public class activity_daily_order_status  extends Activity {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
         swift_api riderapi = retrofit.create(swift_api.class);
         EnableLoading();
-        Call<List<DeliveryParcel>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),orderId,new manage_task(action));
+        Call<List<DeliveryParcel>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),orderId,new manage_task(action,0));
         call.enqueue(new Callback<List<DeliveryParcel>>() {
             @Override
             public void onResponse(Call<List<DeliveryParcel>> call, Response<List<DeliveryParcel>> response) {
@@ -518,7 +523,7 @@ public class activity_daily_order_status  extends Activity {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
         swift_api_delivery riderapi = retrofit.create(swift_api_delivery.class);
         EnableLoading();
-        Call<List<RiderActivityDelivery>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),orderId,new manage_task(action));
+        Call<List<RiderActivityDelivery>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),orderId,new manage_task(action,0));
         call.enqueue(new Callback<List<RiderActivityDelivery>>() {
             @Override
             public void onResponse(Call<List<RiderActivityDelivery>> call, Response<List<RiderActivityDelivery>> response) {
@@ -639,7 +644,23 @@ public class activity_daily_order_status  extends Activity {
                     Databackbone.getinstance().remove_location_complete();
 
                     DisableLoading();
-                    Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this, "Confirmation", "Order Started");
+
+                    //Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this, "Confirmation", "Order Started");
+                    new AlertDialog.Builder(activity_daily_order_status.this)
+                            .setTitle("confirmation")
+                            .setMessage("Order Starte")
+
+                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent orders = new Intent(activity_daily_order_status.this,activity_form.class);
+                                    orders.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    orders.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                                    activity_daily_order_status.this.startActivity(orders);
+                                }
+                            })
+
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
                     load_Data();
                     update_view();
 

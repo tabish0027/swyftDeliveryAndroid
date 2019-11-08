@@ -108,7 +108,7 @@ public class activity_order_status_scanning extends Activity {
         ArrayList<model_order_item>  temp_ar_orders_remaining= new ArrayList<>();
 
        if(!Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery")) {
-           List<Parcel> parcels = Databackbone.getinstance().parcels.get(Databackbone.getinstance().pickup_to_process).getParcels();
+           List<Parcel> parcels = Databackbone.getinstance().parcels.get(Databackbone.getinstance().task_to_show).getParcels();
            for (int i = 0; i < parcels.size(); i++) {
                if (!parcels.get(i).getScanned()) {
 

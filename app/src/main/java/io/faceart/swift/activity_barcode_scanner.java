@@ -1,6 +1,8 @@
 package io.faceart.swift;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
@@ -174,17 +176,20 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
     }
     public void load_parcels_to_scan(){
 
-        int size = 0;
+
         if(!Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery")){
-          List<Parcel> parcels=   Databackbone.getinstance().parcels.get(Databackbone.getinstance().pickup_to_process).getParcels();
+          List<Parcel> parcels=   Databackbone.getinstance().parcels.get(Databackbone.getinstance().task_to_show).getParcels();
+            pending_parcels_to_scan = 0 ;
             for(int i =0 ; i < parcels.size();i++){
                 if(!parcels.get(i).getScanned()){
-                    size++;
+                    pending_parcels_to_scan++;
                 }
             }
-            if(size == 0)
-                activity_barcode_scanner.this.finish();
-            tx_parcels_to_scan.setText(Integer.toString(size)+ " Parcels to scan");
+
+            if(pending_parcels_to_scan <= 1)
+                tx_parcels_to_scan.setText(Integer.toString(pending_parcels_to_scan)+" Parcel left to Scan");
+            else tx_parcels_to_scan.setText(Integer.toString(pending_parcels_to_scan)+" Parcel left to Scan");
+
         }else{
             if(Databackbone.getinstance().task_to_show >= Databackbone.getinstance().parcelsdelivery.size()   )
                 activity_barcode_scanner.this.finish();
@@ -199,7 +204,10 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
                     }
                 }
             }
-            tx_parcels_to_scan.setText(Integer.toString(pending_parcels_to_scan)+ " Parcels to scan");
+            if(pending_parcels_to_scan <= 1)
+                tx_parcels_to_scan.setText(Integer.toString(pending_parcels_to_scan)+" Parcel left to Scan");
+            else tx_parcels_to_scan.setText(Integer.toString(pending_parcels_to_scan)+" Parcel left to Scan");
+
         }
 
 
@@ -235,8 +243,16 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
            }
        }
        else {
+           if(!Databackbone.getinstance().parcels.get(Databackbone.getinstance().task_to_show).getTaskStatus().equals("started")){
+               Databackbone.getinstance().showAlsertBox(this, "Error", "Task Not Active");
+
+               DisableLoading();
+               refreahScanner();
+               return;
+           }
+
            Boolean check = false;
-           List<Parcel> parcels = Databackbone.getinstance().parcels.get(Databackbone.getinstance().pickup_to_process).getParcels();
+           List<Parcel> parcels = Databackbone.getinstance().parcels.get(Databackbone.getinstance().task_to_show).getParcels();
            for (int i = 0; i < parcels.size(); i++) {
                if (parcels.get(i).getParcelId().equals(id)) {
                    check = true;
@@ -259,7 +275,7 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
         swift_api riderapi = retrofit.create(swift_api.class);
 
-        Call<List<DeliveryParcel>> call = riderapi.scanParcels(Databackbone.getinstance().rider.getId(),(id),new parcel_scan(Databackbone.getinstance().parcels.get(Databackbone.getinstance().pickup_to_process).getTaskId(),Databackbone.getinstance().rider.getUserId()));
+        Call<List<DeliveryParcel>> call = riderapi.scanParcels(Databackbone.getinstance().rider.getId(),(id),new parcel_scan(Databackbone.getinstance().parcels.get(Databackbone.getinstance().task_to_show).getTaskId(),Databackbone.getinstance().rider.getUserId()));
         call.enqueue(new Callback<List<DeliveryParcel>>() {
             @Override
             public void onResponse(Call<List<DeliveryParcel>> call, Response<List<DeliveryParcel>> response) {
@@ -420,6 +436,22 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
 
 
     }
+    public void AllParcelScanned(){
+        if(pending_parcels_to_scan == 0)
+            //return ;
+        new AlertDialog.Builder(activity_barcode_scanner.this)
+                .setTitle("confirmation")
+                .setMessage("All Parcels Scanned ")
+
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        activity_barcode_scanner.this.finish();
+                    }
+                })
+
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
     public void refreahScanner(){
         new Thread(new Runnable() {
             @Override
@@ -429,6 +461,7 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
                     runOnUiThread (new Thread(new Runnable() {
                         public void run() {
                             refreashScanner();
+                            AllParcelScanned();
                         }
                     }));
 

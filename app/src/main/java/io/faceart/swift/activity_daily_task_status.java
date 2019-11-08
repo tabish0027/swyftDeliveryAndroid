@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.Task;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -37,8 +38,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class activity_daily_task_status extends Activity {
 
 
-    public RecyclerView task_list_daily;
-    public adapter_status_daily_task ad_task_daily;
+    public RecyclerView task_list;
+    public adapter_status_daily_task ad_task;
     public SwipeRefreshLayout swipeToRefresh;
     ProgressBar progressBar = null;
     ConstraintLayout pendingTask;
@@ -61,20 +62,28 @@ public class activity_daily_task_status extends Activity {
                 activity_daily_task_status.this.finish();
             }
         });
-        task_list_daily = findViewById(R.id.task_list_daily);
+        task_list = findViewById(R.id.task_list_daily);
 
 
 
 
         //generate_test_Data();
-        ad_task_daily = new adapter_status_daily_task(Databackbone.getinstance().ar_task_daily_delivery, this);
+        if(Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery"))
+        {
+            ad_task = new adapter_status_daily_task(Databackbone.getinstance().ar_task_daily_delivery, this);
+        }
+        else{
+            ad_task = new adapter_status_daily_task(Databackbone.getinstance().ar_task_daily_pickup, this);
+
+        }
 
 
-        task_list_daily.setAdapter(ad_task_daily);
+        task_list.setAdapter(ad_task);
 
-        ad_task_daily.setOnItemClickListener(new adapter_status_daily_task.ClickListener() {
+        ad_task.setOnItemClickListener(new adapter_status_daily_task.ClickListener() {
             @Override
             public void onItemClick(int position, View v,Boolean check) {
+                Databackbone.getinstance().task_to_show = position;
                 if(check) {
                     if (Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery"))
                         StartDeliveryTask(position);
@@ -83,7 +92,7 @@ public class activity_daily_task_status extends Activity {
                 }else{
                     if (Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery"))
                     {
-                        Databackbone.getinstance().task_to_show = position;
+                        //Databackbone.getinstance().task_to_show = position;
                         Intent orders = new Intent(activity_daily_task_status.this,activity_daily_order_status.class);
                         orders.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         orders.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
@@ -91,7 +100,10 @@ public class activity_daily_task_status extends Activity {
                     }
                     else
                     {
-
+                        Intent orders = new Intent(activity_daily_task_status.this,activity_barcode_scanner.class);
+                        orders.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        orders.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                        activity_daily_task_status.this.startActivity(orders);
                     }
                 }
 
@@ -115,10 +127,9 @@ public class activity_daily_task_status extends Activity {
                 LoadParcels();
             }
         });
-        if(!Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery"))
-        {
-            pendingTask.setVisibility(View.GONE);
-        }
+
+        // check for null values exception generted //// 
+
         /*
         pendingTask.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,7 +154,7 @@ public class activity_daily_task_status extends Activity {
 
     public void startPicupTask(int position){
 //Toast.makeText(activity_daily_order_status.this,"onItemClick position: " + position,Toast.LENGTH_LONG).show();
-        if(Databackbone.getinstance().ar_task_daily_delivery.get(position).m_remaining_parcels_to_scan ==0){
+        if(Databackbone.getinstance().ar_task_daily_pickup.get(position).m_remaining_parcels_to_scan == 0){
             completeTaskConfirmation(Databackbone.getinstance().parcels.get(position).getTaskId());
 
         }
@@ -169,6 +180,7 @@ public class activity_daily_task_status extends Activity {
         }
     }
     public void StartDeliveryTask(int position){
+
             if(Databackbone.getinstance().parcelsdelivery.get(position).getData().size() == 0)
             {
                 completeTaskConfirmation(Databackbone.getinstance().parcelsdelivery.get(position).getTaskId());
@@ -199,9 +211,9 @@ public class activity_daily_task_status extends Activity {
     public void load_Data() {
 
         if(!Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery")) {
-            Databackbone.getinstance().ar_task_daily_delivery.clear();
+            Databackbone.getinstance().ar_task_daily_pickup.clear();
 
-            ArrayList<model_daily_package_item> temp_ar_task_daily_delivery = new ArrayList<>();
+            ArrayList<model_daily_package_item> ar_task_daily_pickup = new ArrayList<>();
             if (Databackbone.getinstance().parcels == null)
                 return;
             Boolean activated_task = false;
@@ -216,12 +228,14 @@ public class activity_daily_task_status extends Activity {
                     if (!Databackbone.getinstance().parcels.get(i).getParcels().get(parcelscancount).getScanned())
                         size++;
                 }
+
+
                 double distance = CalculationByDistance(Databackbone.getinstance().parcels.get(i).getLocation().getGeoPoints().getLat(), Databackbone.getinstance().parcels.get(i).getLocation().getGeoPoints().getLng());
                 model_daily_package_item dataModelValue = new model_daily_package_item(Databackbone.getinstance().parcels.get(i).getTaskId(), Databackbone.getinstance().parcels.get(i).getName(), Databackbone.getinstance().parcels.get(i).getLocation().getAddress(), Double.toString(distance) + "KM", Databackbone.getinstance().parcels.get(i).getLocation().getAddress(), activated_task, m_location, size);
-                temp_ar_task_daily_delivery.add(dataModelValue);
+                ar_task_daily_pickup.add(dataModelValue);
                 activated_task = false;
             }
-            Databackbone.getinstance().ar_task_daily_delivery.addAll(temp_ar_task_daily_delivery);
+            Databackbone.getinstance().ar_task_daily_pickup.addAll(ar_task_daily_pickup);
         }else{
             Databackbone.getinstance().ar_task_daily_delivery.clear();
 
@@ -250,13 +264,14 @@ public class activity_daily_task_status extends Activity {
                 String mb_address ="Status : " + Databackbone.getinstance().parcelsdelivery.get(i).getTaskStatus();
                 String mb_distance = Integer.toString(Total_parcels);
                 String mb_zone = "Parcel";
+                int location_left = Databackbone.getinstance().parcelsdelivery.get(i).getData().size();
                 if(Total_parcels > 1)
                     mb_zone += "s";
                 Boolean status = activated_task;
                 LatLng location = null;
 
                 int remaining_parcels_to_scan = Total_parcels_remaining_to_scan;
-                model_daily_package_item dataModelValue = new model_daily_package_item(mb_task_id,mb_name,mb_address,mb_distance,mb_zone,status,location,remaining_parcels_to_scan);
+                model_daily_package_item dataModelValue = new model_daily_package_item(mb_task_id,mb_name,mb_address,mb_distance,mb_zone,status,location,remaining_parcels_to_scan,location_left);
 
                 temp_ar_task_daily_delivery.add(dataModelValue);
                 activated_task = false;
@@ -268,15 +283,20 @@ public class activity_daily_task_status extends Activity {
     }
     public void check_is_task_active_and_complete(){
         if(!Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery")) {
-            for (int i = 0; i < Databackbone.getinstance().ar_task_daily_delivery.size(); i++) {
-                if(Databackbone.getinstance().ar_task_daily_delivery.get(i).m_remaining_parcels_to_scan == 0 && Databackbone.getinstance().ar_task_daily_delivery.get(i).status){
-                    activate_Task_activater(Databackbone.getinstance().ar_task_daily_delivery.get(i).mb_task_id,"completed");
+            for (int i = 0; i < Databackbone.getinstance().ar_task_daily_pickup.size(); i++) {
+                if(Databackbone.getinstance().ar_task_daily_pickup.get(i).m_remaining_parcels_to_scan  == 0 && Databackbone.getinstance().ar_task_daily_pickup.get(i).status){
+                    activate_Task_activater(Databackbone.getinstance().ar_task_daily_pickup.get(i).mb_task_id,"completed");
                     return;
                 }
             }
         }else
         {
-
+            for (int i = 0; i < Databackbone.getinstance().ar_task_daily_delivery.size(); i++) {
+                if(Databackbone.getinstance().ar_task_daily_delivery.get(i).m_remaining_parcels_Addresses  == 0 && Databackbone.getinstance().ar_task_daily_delivery.get(i).status){
+                    activate_Task_delivery_activater(Databackbone.getinstance().ar_task_daily_delivery.get(i).mb_task_id,"completed");
+                    return;
+                }
+            }
 
         }
     }
@@ -355,7 +375,7 @@ public class activity_daily_task_status extends Activity {
     }
     public void update_view() {
 
-        ad_task_daily.update_list();
+        ad_task.update_list();
 
     }
     public static double round(double value, int places) {
@@ -418,7 +438,7 @@ public class activity_daily_task_status extends Activity {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
         swift_api riderapi = retrofit.create(swift_api.class);
         EnableLoading();
-        Call<List<DeliveryParcel>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),taskId,new manage_task(action));
+        Call<List<DeliveryParcel>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),taskId,new manage_task(action,1));
         call.enqueue(new Callback<List<DeliveryParcel>>() {
             @Override
             public void onResponse(Call<List<DeliveryParcel>> call, Response<List<DeliveryParcel>> response) {
@@ -430,8 +450,32 @@ public class activity_daily_task_status extends Activity {
                     Databackbone.getinstance().parcels = parcels;
                     load_Data();
                     update_view();
-                    Databackbone.getinstance().showAlsertBox(activity_daily_task_status.this,"confirmation","Task "+action);
-                    DisableLoading();
+                   DisableLoading();
+                    if(action.equals("started")){
+                        new AlertDialog.Builder(activity_daily_task_status.this)
+                                .setTitle("confirmation")
+                                .setMessage("Task "+action)
+
+                                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                      if(Databackbone.getinstance().RiderTypeDelivery) {
+                                          Intent orders = new Intent(activity_daily_task_status.this, activity_daily_order_status.class);
+                                          orders.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                          orders.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                                          activity_daily_task_status.this.startActivity(orders);
+                                      }
+
+                                    }
+                                })
+
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .show();
+
+                    }
+                    else{
+                        Databackbone.getinstance().showAlsertBox(activity_daily_task_status.this,"confirmation","Task "+action);
+
+                    }
 
                 }
                 else{
@@ -454,7 +498,7 @@ public class activity_daily_task_status extends Activity {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
         swift_api_delivery riderapi = retrofit.create(swift_api_delivery.class);
         EnableLoading();
-        Call<List<RiderActivityDelivery>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),taskId,new manage_task(action));
+        Call<List<RiderActivityDelivery>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),taskId,new manage_task(action,1));
         call.enqueue(new Callback<List<RiderActivityDelivery>>() {
             @Override
             public void onResponse(Call<List<RiderActivityDelivery>> call, Response<List<RiderActivityDelivery>> response) {
@@ -467,8 +511,27 @@ public class activity_daily_task_status extends Activity {
                     load_Data();
                     update_view();
                     DisableLoading();
-                    Databackbone.getinstance().showAlsertBox(activity_daily_task_status.this,"confirmation","Task "+action);
+                    if(action.equals("started"))
+                    {
+                        new AlertDialog.Builder(activity_daily_task_status.this)
+                                .setTitle("confirmation")
+                                .setMessage("Task "+action)
 
+                                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent orders = new Intent(activity_daily_task_status.this,activity_daily_order_status.class);
+                                        orders.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        orders.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                                        activity_daily_task_status.this.startActivity(orders);
+                                    }
+                                })
+
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .show();
+                    }else{
+                        Databackbone.getinstance().showAlsertBox(activity_daily_task_status.this,"confirmation","Task "+action);
+
+                    }
 
                 }
                 else{

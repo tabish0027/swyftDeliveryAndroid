@@ -32,7 +32,7 @@ public interface swift_api_delivery {
     Call<List<RiderActivityDelivery>> manageTaskfordelivery(@Header("Authorization") String Authorization,@Query("riderId") String riderid);
 
     @POST("RiderTasks/{taskid}/manage-task")
-    Call<List<RiderActivityDelivery>> manageTask(@Header("Authorization") String Authorization, @Path("taskid") String parcelid,@Body manage_task user_task);
+    Call<List<RiderActivityDelivery>> manageTask(@Header("Authorization") String Authorization, @Path("taskid") String taskid,@Body manage_task user_task);
 
 
     @POST("Parcels/manage-parcel")

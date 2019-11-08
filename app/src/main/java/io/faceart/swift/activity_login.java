@@ -52,16 +52,21 @@ public class activity_login extends AppCompatActivity {
                 activity_login.this.startActivity(forget);
             }
         });
-        //username.setText("923465175409");// pickup
+
+
+        //username.setText("923004820761");// pickup
+        //password.setText("123456789");
+
 
 
         username.setText("923049494294"); // delivery
-
-
-
-       // username.setText("923004820761"); // delivery
-
         password.setText("12345");
+
+
+        //username.setText("923004820761"); // delivery
+
+
+
         Sprite doubleBounce = new DoubleBounce();
         progressBar.setVisibility(View.GONE);
         progressBar.setIndeterminateDrawable(doubleBounce);
@@ -102,7 +107,7 @@ public class activity_login extends AppCompatActivity {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
         swift_api riderapi = retrofit.create(swift_api.class);
 
-        Call<Rider> call = riderapi.getRider(loginCredentials);
+        Call<Rider> call = riderapi.getRiderFromLogin(loginCredentials);
         call.enqueue(new Callback<Rider>() {
             @Override
             public void onResponse(Call<Rider> call, Response<Rider> response) {

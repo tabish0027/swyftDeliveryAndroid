@@ -31,7 +31,7 @@ public class parcel_signature_upload {
     private Integer qty;
     @SerializedName("vendorParcelId")
     @Expose
-    private Integer vendorParcelId;
+    private String vendorParcelId;
     @SerializedName("amount")
     @Expose
     private Integer amount;
@@ -121,11 +121,11 @@ public class parcel_signature_upload {
         this.qty = qty;
     }
 
-    public Integer getVendorParcelId() {
+    public String getVendorParcelId() {
         return vendorParcelId;
     }
 
-    public void setVendorParcelId(Integer vendorParcelId) {
+    public void setVendorParcelId(String vendorParcelId) {
         this.vendorParcelId = vendorParcelId;
     }
 

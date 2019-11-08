@@ -102,7 +102,7 @@ public class activity_parcel_selection_for_delivery extends AppCompatActivity {
         mark_park_parcel_to_complete();
 
         if(checkIforderActive()){
-
+                disable_process_button();
         }
         ad_orders_selections.setOnItemClickListener(new adapter_status_daily_packages_delivery_selection.ClickListener() {
             @Override
@@ -130,6 +130,10 @@ public class activity_parcel_selection_for_delivery extends AppCompatActivity {
         LoadData();
     }
     public void LoadData(){
+        if(Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData().size() ==0){
+            activity_parcel_selection_for_delivery.this.finish();
+            return;
+        }
         Datum data=   Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData().get(Databackbone.getinstance().delivery_to_show) ;
         Databackbone.getinstance().ar_orders_parcels_selections.clear();
         ArrayList<model_parcel> parcels= new ArrayList<>();
@@ -170,15 +174,20 @@ public class activity_parcel_selection_for_delivery extends AppCompatActivity {
             }
         }
 
-        if(Totalparcels!=0){
-            able_process_button();
-        }else{
-            disable_process_button();
-        }
+
         tx_count_delivered.setText(Integer.toString(Totalparcels));
         tx_amount_to_collect.setText(Integer.toString(TotalAmount));
         ad_orders_selections.update_list();
-
+        if(checkIforderActive()){
+            disable_process_button();
+        }else
+        {
+            if(Totalparcels!=0){
+                able_process_button();
+            }else{
+                disable_process_button();
+            }
+        }
     }
     public void RefreashData(Boolean check){
 
@@ -231,7 +240,7 @@ public class activity_parcel_selection_for_delivery extends AppCompatActivity {
     }
     public Boolean checkIforderActive(){
         Boolean check_any_parcel_left = true;
-        Datum data = Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().delivery_to_show).getData().get(Databackbone.getinstance().task_to_show);
+        Datum data = Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData().get(Databackbone.getinstance().delivery_to_show);
         for(int i=0;i<data.getParcels().size();i++)
             if(data.getParcels().get(i).getStatus().equals("pending"))
                 return true;
@@ -243,7 +252,7 @@ public class activity_parcel_selection_for_delivery extends AppCompatActivity {
     }
     public int totalamounttocollect(){
         int amount = 0;
-        Datum data = Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().delivery_to_show).getData().get(Databackbone.getinstance().task_to_show);
+        Datum data = Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData().get(Databackbone.getinstance().delivery_to_show);
         for(int i=0;i<data.getParcels().size();i++)
             //if(data.getParcels().get(i).getStatus().equals("started")||data.getParcels().get(i).getStatus().equals("pending"))
                 amount += data.getParcels().get(i).getAmount();

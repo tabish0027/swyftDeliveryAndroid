@@ -9,7 +9,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/textView30"
+        android:id="@+id/tx_pro_name"
         android:layout_width="287dp"
         android:layout_height="56dp"
         android:layout_marginBottom="8dp"
@@ -17,14 +17,14 @@
         android:gravity="center"
         android:text="Mian Tabish Manzoor mohi ud Din"
         android:textColor="#231f20"
-        android:textSize="@dimen/app_text_size"
+        android:textSize="22dp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/textView29"
+        app:layout_constraintBottom_toTopOf="@+id/tx_pro_rating"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintStart_toStartOf="@+id/guideline" />
 
     <TextView
-        android:id="@+id/textView29"
+        android:id="@+id/tx_pro_rating"
         android:layout_width="wrap_content"
         android:layout_height="24dp"
         android:layout_marginBottom="16dp"
@@ -51,12 +51,12 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_image"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:src="@drawable/icon_profile_image_offline"
         app:civ_border_color="#FF000000"
         app:civ_border_width="3dp"
-        app:layout_constraintBottom_toTopOf="@+id/textView30"
+        app:layout_constraintBottom_toTopOf="@+id/tx_pro_name"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
@@ -74,7 +74,7 @@
         app:layout_constraintStart_toStartOf="@+id/guideline4" />
 
     <TextView
-        android:id="@+id/textView27"
+        android:id="@+id/tx_pro_phone"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="24dp"
@@ -89,7 +89,7 @@
         app:layout_constraintTop_toTopOf="@+id/imageView16" />
 
     <TextView
-        android:id="@+id/textView18"
+        android:id="@+id/tx_pro_location"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="24dp"
@@ -263,7 +263,7 @@
             app:layout_constraintTop_toBottomOf="@+id/imageView12" />
 
         <TextView
-            android:id="@+id/textView14"
+            android:id="@+id/tx_pro_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
@@ -277,7 +277,7 @@
             app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
         <TextView
-            android:id="@+id/textView20"
+            android:id="@+id/tx_pro_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
@@ -326,10 +326,11 @@
         android:layout_width="35dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
+        android:visibility="gone"
         android:foregroundGravity="center|center_horizontal"
-        app:layout_constraintBottom_toBottomOf="@+id/textView29"
-        app:layout_constraintStart_toEndOf="@+id/textView29"
-        app:layout_constraintTop_toTopOf="@+id/textView29"
+        app:layout_constraintBottom_toBottomOf="@+id/tx_pro_rating"
+        app:layout_constraintStart_toEndOf="@+id/tx_pro_rating"
+        app:layout_constraintTop_toTopOf="@+id/tx_pro_rating"
         android:src="@drawable/icon_star_rating" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

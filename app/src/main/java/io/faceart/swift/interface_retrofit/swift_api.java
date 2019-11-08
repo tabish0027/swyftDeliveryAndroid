@@ -14,11 +14,20 @@ import retrofit2.http.Query;
 public interface swift_api {
 
     @POST("Riders/login?include=user")
-    Call<Rider> getRider(@Body login credentials);
+    Call<Rider> getRiderFromLogin(@Body login credentials);
 
 
-    @PATCH("Riders/{riderId}")
-    Call<RiderActivity> setRiderOnlineStatus(@Header("Authorization") String Authorization,@Path("riderId") String riderId,@Body online status);
+    //@PATCH("Riders/{riderId}")
+    //Call<RiderActivity> getRiderFromLogin(@Header("Authorization") String Authorization,@Path("riderId") String riderId);
+
+    @GET("Riders/{riderId}")
+    Call<RiderDetails> getRider(@Header("Authorization") String Authorization,@Path("riderId") String riderId);
+
+
+    @POST("Riders/mark-attendance")
+    Call<RiderDetails> markattendance(@Header("Authorization") String Authorization,@Body markattendance status);
+
+
 
     @GET("Riders/get-tasks")
     Call<List<DeliveryParcel>> getParcelsByRiders(@Header("Authorization") String Authorization, @Query("riderId") String riderId);

@@ -26,7 +26,7 @@ public class activity_form extends AppCompatActivity {
     ImageView btn_back;
     TextView tx_name,tx_address,tx_parcel_id,tx_payment_method,tx_amount_to_collect;
     Button btn_delivered;
-    ImageView btn_payment_method,btn_navigation,btn_parcel_selection;
+    ImageView btn_payment_method,btn_navigation,btn_parcel_selection,btn_sms,btn_phone;
     Button btn_diclined;
     TextView tx_description_title,tx_description_detail;
     @Override
@@ -41,8 +41,20 @@ public class activity_form extends AppCompatActivity {
         btn_parcel_selection= findViewById(R.id.btn_parcel_selection);
         tx_description_detail = findViewById(R.id.tx_description_detail);
         tx_description_title = findViewById(R.id.tx_description_title);
-
-
+        btn_sms = findViewById(R.id.btn_sms);
+        btn_phone = findViewById(R.id.btn_phone);
+        btn_sms.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OpenMessege();
+            }
+        });
+        btn_phone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OpenDiler();
+            }
+        });
         btn_diclined = findViewById(R.id.btn_diclined);
         btn_diclined.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,27 +127,28 @@ public class activity_form extends AppCompatActivity {
     }
     public void checkIfAnyParcelLeft(){
         Boolean check_any_parcel_left = true;
-        if(Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().delivery_to_show).getData().size() == 0)
-        {
-            activity_form.this.finish();
-            return;
-        }
-        Datum data = Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData().get(Databackbone.getinstance().delivery_to_show);
-        for(int i=0;i<data.getParcels().size();i++)
-            if(data.getParcels().get(i).getStatus().equals("started")||data.getParcels().get(i).getStatus().equals("pending"))
-            {
-                check_any_parcel_left = false;
-                break;
+        try {
+            if (Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData().get(Databackbone.getinstance().delivery_to_show).getParcels().size() == 0) {
+                activity_form.this.finish();
+                return;
             }
-        if(check_any_parcel_left){
+            Datum data = Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData().get(Databackbone.getinstance().delivery_to_show);
+            for (int i = 0; i < data.getParcels().size(); i++)
+                if (data.getParcels().get(i).getStatus().equals("started") || data.getParcels().get(i).getStatus().equals("pending")) {
+                    check_any_parcel_left = false;
+                    break;
+                }
+            if (check_any_parcel_left) {
 
+                activity_form.this.finish();
+            }
+        }catch (Exception index_out_of_boud){
             activity_form.this.finish();
         }
 
     }
     public Boolean checkIforderActive(){
-        Boolean check_any_parcel_left = true;
-        Datum data = Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData().get(Databackbone.getinstance().delivery_to_show);
+         Datum data = Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData().get(Databackbone.getinstance().delivery_to_show);
         for(int i=0;i<data.getParcels().size();i++)
             if(data.getParcels().get(i).getStatus().equals("pending"))
                 return true;
@@ -216,5 +229,17 @@ public class activity_form extends AppCompatActivity {
             activity_form.this.finish();
         }
     }
+    public void OpenDiler(){
+        Intent phoneintent = new Intent(Intent.ACTION_DIAL);
+        phoneintent.setData(Uri.parse("tel:0"+Databackbone.getinstance().rider.getUser().getPhone()));
+        startActivity(phoneintent);
+    }
 
+    public void OpenMessege(){
+        Intent smsIntent = new Intent(Intent.ACTION_VIEW);
+        smsIntent.setType("vnd.android-dir/mms-sms");
+        smsIntent.putExtra("address", "0"+Databackbone.getinstance().rider.getUser().getPhone());
+        smsIntent.putExtra("sms_body","");
+        startActivity(smsIntent);
+    }
 }

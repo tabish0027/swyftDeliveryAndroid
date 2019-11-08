@@ -31,12 +31,15 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.navigation.NavigationView;
+import com.squareup.picasso.Picasso;
+
 import androidx.navigation.ui.AppBarConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import io.faceart.swift.interface_retrofit.DeliveryParcel;
+import io.faceart.swift.interface_retrofit.Parcel;
 import io.faceart.swift.interface_retrofit.RiderActivity;
 import io.faceart.swift.interface_retrofit.*;
 import mumayank.com.airlocationlibrary.AirLocation;
@@ -182,10 +185,13 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
             @Override
             public void onClick(View v) {
                 EnableLoading();
+                String attandanceID = "";
+                if(Databackbone.getinstance().riderdetails != null)
+                    attandanceID = Databackbone.getinstance().riderdetails.getAttendanceId();
                 if(Databackbone.getinstance().rider.getUser().getIsOnline())
-                     change_Activity_status(false);
+                     change_Activity_status(attandanceID,true);
                 else
-                    change_Activity_status(true);
+                    change_Activity_status(attandanceID,true);
 
 
 
@@ -246,6 +252,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
 
         // data attributes set from server
         tx_username.setText("Hi "+Databackbone.getinstance().rider.getUser().getFirstName());
+        Picasso.with(this).load(Databackbone.getinstance().rider.getUser().getProfilePicture()).into(profile_image2);
         tx_rating.setText(Databackbone.getinstance().rider.getUser().getType());
         btn_navigation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -368,10 +375,14 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         }else{
             DeactivateRider();
         }
-        if(Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery"))
+        if(Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery")) {
+            Databackbone.getinstance().RiderTypeDelivery=  true;
             LoadParcelsForDelivery();
-        else
+        }
+        else {
+            Databackbone.getinstance().RiderTypeDelivery=  false;
             LoadParcels();
+        }
 
 
 
@@ -438,7 +449,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
             if(Databackbone.getinstance().rider.getUser().getIsOnline()){
 
                 ActivateRider();
-
+                change_Activity_status("",false);
 
             }
             else{
@@ -447,30 +458,34 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
 
             }
         }
+
+        //change_Activity_status("",false);
     }
-    public void change_Activity_status(Boolean status){
+    public void change_Activity_status(String id,final Boolean check){
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
         swift_api riderapi = retrofit.create(swift_api.class);
 
-        Call<RiderActivity> call = riderapi.setRiderOnlineStatus(Databackbone.getinstance().rider.getId(),Databackbone.getinstance().rider.getUserId(),new online(status));
-        call.enqueue(new Callback<RiderActivity>() {
+        Call<RiderDetails> call = riderapi.markattendance(Databackbone.getinstance().rider.getId(),new markattendance(Databackbone.getinstance().rider.getUserId(),id));
+        call.enqueue(new Callback<RiderDetails>() {
             @Override
-            public void onResponse(Call<RiderActivity> call, Response<RiderActivity> response) {
+            public void onResponse(Call<RiderDetails> call, Response<RiderDetails> response) {
                 if(response.isSuccessful()){
 
-                    RiderActivity riderActivity = response.body();
-                    Databackbone.getinstance().riderActivity = riderActivity;
-                     if(Databackbone.getinstance().riderActivity.getIsOnline()) {
+                    RiderDetails riderActivity = response.body();
+                    Databackbone.getinstance().riderdetails = riderActivity;
+                     if(Databackbone.getinstance().riderdetails.getIsOnline()) {
                          ActivateRider();
                          Databackbone.getinstance().rider.getUser().setIsOnline(true);
-                         Databackbone.getinstance().showAlsertBox(activity_mapview.this,"Rider App","Online");
+                         if(check)
+                            Databackbone.getinstance().showAlsertBox(activity_mapview.this,"Rider App","Online");
 
                      }
                      else {
 
-                         Databackbone.getinstance().rider.getUser().setIsOnline(Databackbone.getinstance().riderActivity.getIsOnline());
+                         Databackbone.getinstance().rider.getUser().setIsOnline(Databackbone.getinstance().riderdetails.getIsOnline());
                          DeactivateRider();
-                         Databackbone.getinstance().showAlsertBox(activity_mapview.this,"Rider App","Offline");
+                         if(check)
+                            Databackbone.getinstance().showAlsertBox(activity_mapview.this,"Rider App","Offline");
 
                      }
                     DisableLoading();
@@ -485,7 +500,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
             }
 
             @Override
-            public void onFailure(Call<RiderActivity> call, Throwable t) {
+            public void onFailure(Call<RiderDetails> call, Throwable t) {
                 System.out.println(t.getCause());
                 DisableLoading();
                 Databackbone.getinstance().showAlsertBox(activity_mapview.this,"Error","Error Connecting To Server Error Code 34");
@@ -498,15 +513,16 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
 
 
     }
-    public void AddMarkers(Double lat,Double lng,final String title){
+    public void AddMarkers(Double lat,Double lng,final String title,int marker_image){
 
         MarkerOptions marker = new MarkerOptions().position(new LatLng(lat, lng)).title("Pickup : "+title);
-        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.icon_pickup);
+        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(marker_image);
 
         marker.icon(icon);
         markers.add(marker);
         mMapServiceView.addMarker(marker);
     }
+
     public void Offlice_Activity(LatLng location){
         String location_to_string = Double.toString(location.latitude) + ","+Double.toString(location.longitude);
         Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
@@ -525,7 +541,23 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         markers.clear();
         btn_navigation.setVisibility(View.GONE);
         for(int i =0;i<parcels.size();i++){
-            AddMarkers(parcels.get(i).getLocation().getGeoPoints().getLat(),parcels.get(i).getLocation().getGeoPoints().getLng(),parcels.get(i).getName());
+            AddMarkers(parcels.get(i).getLocation().getGeoPoints().getLat(),parcels.get(i).getLocation().getGeoPoints().getLng(),parcels.get(i).getName(),R.drawable.icon_pickup);
+        }
+
+        LoadAllMarkers();
+
+
+    }
+    public void LoadLocationForActiveParcels(List<RiderActivityDelivery> parcels){
+        markers.clear();
+        btn_navigation.setVisibility(View.GONE);
+
+        for(int k=0;k<parcels.size();k++) {
+            if(parcels.get(k).getTaskStatus().equals("started"))
+            for (int i = 0; i < parcels.get(k).getData().size(); i++) {
+                Datum data = parcels.get(k).getData().get(i);
+                AddMarkers(data.getLocation().getGeoPoints().getLat(), data.getLocation().getGeoPoints().getLng(), data.getName(),R.drawable.icon_delivery);
+            }
         }
 
         LoadAllMarkers();
@@ -564,6 +596,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
                 if(response.isSuccessful()){
 
                     List<RiderActivityDelivery> parcels = response.body();
+                    LoadLocationForActiveParcels(parcels);
                     // System.out.println(parcels.size());
                     if(parcels == null)
                     {

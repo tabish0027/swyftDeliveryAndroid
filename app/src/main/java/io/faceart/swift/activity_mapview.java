@@ -106,7 +106,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         progressBar.setVisibility(View.GONE);
 
        // generate_test_Data_for_daily();
-
+        startService(new Intent(this, maneger_location.class));
         if(Databackbone.getinstance().ar_orders_daily.size() > 0)
         {
            // check_parcel_scanning_complete = true;

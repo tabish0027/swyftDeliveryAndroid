@@ -128,7 +128,7 @@ public class activity_daily_task_status extends Activity {
             }
         });
 
-        // check for null values exception generted //// 
+        // check for null values exception generted ////
 
         /*
         pendingTask.setOnClickListener(new View.OnClickListener() {
@@ -230,7 +230,7 @@ public class activity_daily_task_status extends Activity {
                 }
 
 
-                double distance = CalculationByDistance(Databackbone.getinstance().parcels.get(i).getLocation().getGeoPoints().getLat(), Databackbone.getinstance().parcels.get(i).getLocation().getGeoPoints().getLng());
+                double distance = Databackbone.getinstance().CalculationByDistance(Databackbone.getinstance().parcels.get(i).getLocation().getGeoPoints().getLat(), Databackbone.getinstance().parcels.get(i).getLocation().getGeoPoints().getLng());
                 model_daily_package_item dataModelValue = new model_daily_package_item(Databackbone.getinstance().parcels.get(i).getTaskId(), Databackbone.getinstance().parcels.get(i).getName(), Databackbone.getinstance().parcels.get(i).getLocation().getAddress(), Double.toString(distance) + "KM", Databackbone.getinstance().parcels.get(i).getLocation().getAddress(), activated_task, m_location, size);
                 ar_task_daily_pickup.add(dataModelValue);
                 activated_task = false;
@@ -300,36 +300,7 @@ public class activity_daily_task_status extends Activity {
 
         }
     }
-    public double CalculationByDistance(double Lat,double Lng) {
 
-        if(Databackbone.getinstance().current_location == null)
-            return -1;
-        LatLng EndP = new LatLng(Lat,Lng);
-        LatLng StartP = Databackbone.getinstance().current_location;
-        int Radius = 6371;// radius of earth in Km
-        double lat1 = StartP.latitude;
-        double lat2 = EndP.latitude;
-        double lon1 = StartP.longitude;
-        double lon2 = EndP.longitude;
-        double dLat = Math.toRadians(lat2 - lat1);
-        double dLon = Math.toRadians(lon2 - lon1);
-        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
-                + Math.cos(Math.toRadians(lat1))
-                * Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2)
-                * Math.sin(dLon / 2);
-        double c = 2 * Math.asin(Math.sqrt(a));
-        double valueResult = Radius * c;
-        double km = valueResult / 1;
-        DecimalFormat newFormat = new DecimalFormat("####");
-        int kmInDec = Integer.valueOf(newFormat.format(km));
-        double meter = valueResult % 1000;
-        int meterInDec = Integer.valueOf(newFormat.format(meter));
-        double finalDistance = 0.0;
-        finalDistance = round(km, 1);
-        if(finalDistance < 0)
-            finalDistance = finalDistance * -1;
-        return finalDistance;
-    }
     public void LoadParcels(){
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
         swift_api riderapi = retrofit.create(swift_api.class);
@@ -378,14 +349,7 @@ public class activity_daily_task_status extends Activity {
         ad_task.update_list();
 
     }
-    public static double round(double value, int places) {
-        if (places < 0) throw new IllegalArgumentException();
 
-        long factor = (long) Math.pow(10, places);
-        value = value * factor;
-        long tmp = Math.round(value);
-        return (double) tmp / factor;
-    }
     public void startTaskConfirmation(final String name , final String taskid){
         new AlertDialog.Builder(activity_daily_task_status.this)
                 .setTitle("Notice")
@@ -434,11 +398,13 @@ public class activity_daily_task_status extends Activity {
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
     }
-    public void activate_Task_activater(String taskId,final String action){
+    public void activate_Task_activater(final String taskId,final String action){
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
         swift_api riderapi = retrofit.create(swift_api.class);
         EnableLoading();
-        Call<List<DeliveryParcel>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),taskId,new manage_task(action,1));
+        double distance = Databackbone.getinstance().getfinalcouvereddistance (taskId,activity_daily_task_status.this);
+
+        Call<List<DeliveryParcel>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),taskId,new manage_task(action,(int)distance));
         call.enqueue(new Callback<List<DeliveryParcel>>() {
             @Override
             public void onResponse(Call<List<DeliveryParcel>> call, Response<List<DeliveryParcel>> response) {
@@ -446,6 +412,7 @@ public class activity_daily_task_status extends Activity {
 
                     List<DeliveryParcel> parcels = response.body();
                     // System.out.println(parcels.size());
+                    Databackbone.getinstance().taskStart (taskId,Databackbone.getinstance().current_location.latitude,Databackbone.getinstance().current_location.longitude,0.0,activity_daily_task_status.this);
 
                     Databackbone.getinstance().parcels = parcels;
                     load_Data();
@@ -474,6 +441,7 @@ public class activity_daily_task_status extends Activity {
                     }
                     else{
                         Databackbone.getinstance().showAlsertBox(activity_daily_task_status.this,"confirmation","Task "+action);
+                        Databackbone.getinstance().SaveData("swift_work_progress","none",getApplicationContext());
 
                     }
 
@@ -494,11 +462,13 @@ public class activity_daily_task_status extends Activity {
     }
 
 
-    public void activate_Task_delivery_activater(String taskId,final String action){
+    public void activate_Task_delivery_activater(final String taskId, final String action){
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
         swift_api_delivery riderapi = retrofit.create(swift_api_delivery.class);
         EnableLoading();
-        Call<List<RiderActivityDelivery>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),taskId,new manage_task(action,1));
+        double distance = Databackbone.getinstance().getfinalcouvereddistance (taskId,activity_daily_task_status.this);
+
+        Call<List<RiderActivityDelivery>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),taskId,new manage_task(action,(int)distance));
         call.enqueue(new Callback<List<RiderActivityDelivery>>() {
             @Override
             public void onResponse(Call<List<RiderActivityDelivery>> call, Response<List<RiderActivityDelivery>> response) {
@@ -508,6 +478,7 @@ public class activity_daily_task_status extends Activity {
                     // System.out.println(parcels.size());
                     Databackbone.getinstance().parcelsdelivery = parcels;
                     Databackbone.getinstance().remove_location_complete();
+                    Databackbone.getinstance().taskStart (taskId,Databackbone.getinstance().current_location.latitude,Databackbone.getinstance().current_location.longitude,0.0,activity_daily_task_status.this);
                     load_Data();
                     update_view();
                     DisableLoading();
@@ -530,6 +501,7 @@ public class activity_daily_task_status extends Activity {
                                 .show();
                     }else{
                         Databackbone.getinstance().showAlsertBox(activity_daily_task_status.this,"confirmation","Task "+action);
+                        Databackbone.getinstance().SaveData("swift_work_progress","none",getApplicationContext());
 
                     }
 

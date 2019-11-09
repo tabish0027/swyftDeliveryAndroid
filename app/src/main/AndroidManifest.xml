@@ -89,6 +89,8 @@
         <activity  android:screenOrientation="portrait" android:name=".activity_parcel_selection_for_delivery">
 
         </activity>
+        <service
+            android:name=".maneger_location" ></service>
 
 
     </application>

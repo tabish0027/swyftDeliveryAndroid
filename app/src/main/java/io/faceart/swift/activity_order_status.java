@@ -61,7 +61,6 @@ public class activity_order_status  extends Activity {
         ad_orders_diclined = new adapter_status_packages_list(Databackbone.getinstance().ar_orders_diclined, this);
         ad_orders_reattempt = new adapter_status_packages_list(Databackbone.getinstance().ar_orders_reattempt, this);
         ad_orders_delivered = new adapter_status_packages_list(Databackbone.getinstance().ar_orders_delivered, this);
-
         order_list_reattempt.setAdapter(ad_orders_reattempt);
         order_list_declined.setAdapter(ad_orders_diclined);
         order_list_delivered.setAdapter(ad_orders_delivered);

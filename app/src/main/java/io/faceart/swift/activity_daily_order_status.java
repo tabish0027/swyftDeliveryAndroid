@@ -26,7 +26,7 @@ import java.util.List;
 
 import io.faceart.swift.adapters.*;
 import io.faceart.swift.data_models.*;
-import io.faceart.swift.interface_retrofit.DeliveryParcel;
+import io.faceart.swift.interface_retrofit.PickupParcel;
 import io.faceart.swift.interface_retrofit.Location;
 import io.faceart.swift.interface_retrofit.RiderActivity;
 import io.faceart.swift.interface_retrofit.manage_task;
@@ -99,12 +99,7 @@ public class activity_daily_order_status  extends Activity {
                 }else{
                     if (Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery"))
                     {
-                        //if(!Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getTaskStatus().equals("started"))
-                        //{
-                        //    Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this,"Error","Please Start the task before you scan parcels");
 
-                        //    return ;
-                        //}
 
 
                         Intent orders = new Intent(activity_daily_order_status.this,activity_form.class);
@@ -250,7 +245,7 @@ public class activity_daily_order_status  extends Activity {
                         size++;
                 }
                 double distance = CalculationByDistance(Databackbone.getinstance().parcels.get(i).getLocation().getGeoPoints().getLat(), Databackbone.getinstance().parcels.get(i).getLocation().getGeoPoints().getLng());
-                model_daily_package_item dataModelValue = new model_daily_package_item(Databackbone.getinstance().parcels.get(i).getTaskId(), Databackbone.getinstance().parcels.get(i).getName(), Databackbone.getinstance().parcels.get(i).getLocation().getAddress(), Double.toString(distance) + "KM", Databackbone.getinstance().parcels.get(i).getLocation().getAddress(), activated_order, m_location, size);
+                model_daily_package_item dataModelValue = new model_daily_package_item(Databackbone.getinstance().parcels.get(i).getTaskId(), Databackbone.getinstance().parcels.get(i).getName(), Databackbone.getinstance().parcels.get(i).getLocation().getAddress(), Double.toString(Databackbone.getinstance().parcels.get(i).getDistance()) + "KM", Databackbone.getinstance().parcels.get(i).getLocation().getAddress(), activated_order, m_location, size);
                 temp_ar_orders_daily.add(dataModelValue);
                 activated_order = false;
             }
@@ -285,7 +280,7 @@ public class activity_daily_order_status  extends Activity {
                 int total_parcel = Locations.get(i).getParcels().size();
 
                 double distance = CalculationByDistance( Locations.get(i).getLocation().getGeoPoints().getLat(),  Locations.get(i).getLocation().getGeoPoints().getLng());
-                model_daily_package_item dataModelValue = new model_daily_package_item(orderid, data.getName(), data.getLocation().getAddress(), Double.toString(distance) + "KM", data.getLocation().getAddress(), activated_order, m_location, total_parcel,data.getParcels());
+                model_daily_package_item dataModelValue = new model_daily_package_item(orderid, data.getName(), data.getLocation().getAddress(), Double.toString(data.getDistance()) + "KM", data.getLocation().getAddress(), activated_order, m_location, total_parcel,data.getParcels());
                 temp_ar_orders_daily.add(dataModelValue);
                 activated_order = false;
             }
@@ -348,16 +343,17 @@ public class activity_daily_order_status  extends Activity {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
         swift_api riderapi = retrofit.create(swift_api.class);
         EnableLoading();
-        retrofit2.Call<List<DeliveryParcel>> call = riderapi.getParcelsByRiders(Databackbone.getinstance().rider.getId(),Databackbone.getinstance().rider.getUserId());
-        call.enqueue(new Callback<List<DeliveryParcel>>() {
+        retrofit2.Call<List<PickupParcel>> call = riderapi.getParcelsByRiders(Databackbone.getinstance().rider.getId(),Databackbone.getinstance().rider.getUserId());
+        call.enqueue(new Callback<List<PickupParcel>>() {
             @Override
-            public void onResponse(retrofit2.Call<List<DeliveryParcel>> call, Response<List<DeliveryParcel>> response) {
+            public void onResponse(retrofit2.Call<List<PickupParcel>> call, Response<List<PickupParcel>> response) {
                 if(response.isSuccessful()){
 
-                    List<DeliveryParcel> parcels = response.body();
+                    List<PickupParcel> parcels = response.body();
                     // System.out.println(parcels.size());
+                    Databackbone.getinstance().parcels = Databackbone.getinstance().resortParcelsPickup(parcels);
 
-                    Databackbone.getinstance().parcels = parcels;
+                    //Databackbone.getinstance().parcels = parcels;
                     load_Data();
                     update_view();
                     DisableLoading();
@@ -370,7 +366,7 @@ public class activity_daily_order_status  extends Activity {
             }
 
             @Override
-            public void onFailure(Call<List<DeliveryParcel>> call, Throwable t) {
+            public void onFailure(Call<List<PickupParcel>> call, Throwable t) {
                 System.out.println(t.getCause());
 
                 DisableLoading();
@@ -452,16 +448,17 @@ public class activity_daily_order_status  extends Activity {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
         swift_api riderapi = retrofit.create(swift_api.class);
         EnableLoading();
-        Call<List<DeliveryParcel>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),orderId,new manage_task(action,0));
-        call.enqueue(new Callback<List<DeliveryParcel>>() {
+        Call<List<PickupParcel>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),orderId,new manage_task(action,0));
+        call.enqueue(new Callback<List<PickupParcel>>() {
             @Override
-            public void onResponse(Call<List<DeliveryParcel>> call, Response<List<DeliveryParcel>> response) {
+            public void onResponse(Call<List<PickupParcel>> call, Response<List<PickupParcel>> response) {
                 if(response.isSuccessful()){
 
-                    List<DeliveryParcel> parcels = response.body();
+                    List<PickupParcel> parcels = response.body();
                     // System.out.println(parcels.size());
+                    Databackbone.getinstance().parcels = Databackbone.getinstance().resortParcelsPickup(parcels);
 
-                    Databackbone.getinstance().parcels = parcels;
+                    //Databackbone.getinstance().parcels = parcels;
                     load_Data();
                     update_view();
                     Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this,"confirmation","order "+action);
@@ -475,7 +472,7 @@ public class activity_daily_order_status  extends Activity {
             }
 
             @Override
-            public void onFailure(Call<List<DeliveryParcel>> call, Throwable t) {
+            public void onFailure(Call<List<PickupParcel>> call, Throwable t) {
                 DisableLoading();
             }
         });
@@ -487,16 +484,17 @@ public class activity_daily_order_status  extends Activity {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
         swift_api riderapi = retrofit.create(swift_api.class);
         EnableLoading();
-        Call<List<DeliveryParcel>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),orderId,new manage_order(Action));
-        call.enqueue(new Callback<List<DeliveryParcel>>() {
+        Call<List<PickupParcel>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),orderId,new manage_order(Action));
+        call.enqueue(new Callback<List<PickupParcel>>() {
             @Override
-            public void onResponse(Call<List<DeliveryParcel>> call, Response<List<DeliveryParcel>> response) {
+            public void onResponse(Call<List<PickupParcel>> call, Response<List<PickupParcel>> response) {
                 if(response.isSuccessful()){
 
-                    List<DeliveryParcel> parcels = response.body();
+                    List<PickupParcel> parcels = response.body();
                     // System.out.println(parcels.size());
+                    Databackbone.getinstance().parcels = Databackbone.getinstance().resortParcelsPickup(parcels);
 
-                    Databackbone.getinstance().parcels = parcels;
+                    //Databackbone.getinstance().parcels = parcels;
                     load_Data();
                     update_view();
                     Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this,"confirmation","Task Completed");
@@ -510,7 +508,7 @@ public class activity_daily_order_status  extends Activity {
             }
 
             @Override
-            public void onFailure(Call<List<DeliveryParcel>> call, Throwable t) {
+            public void onFailure(Call<List<PickupParcel>> call, Throwable t) {
                 DisableLoading();
             }
         });
@@ -531,6 +529,7 @@ public class activity_daily_order_status  extends Activity {
 
                     List<RiderActivityDelivery> parcels = response.body();
                     // System.out.println(parcels.size());
+                    parcels = Databackbone.getinstance().resortDelivery(parcels);
                     Databackbone.getinstance().parcelsdelivery = parcels;
                     Databackbone.getinstance().remove_location_complete();
                     load_Data();
@@ -568,6 +567,7 @@ public class activity_daily_order_status  extends Activity {
 
                     List<RiderActivityDelivery> parcels = response.body();
                     // System.out.println(parcels.size());
+                    parcels = Databackbone.getinstance().resortDelivery(parcels);
                     Databackbone.getinstance().parcelsdelivery = parcels;
                     Databackbone.getinstance().remove_location_complete();
 
@@ -640,6 +640,7 @@ public class activity_daily_order_status  extends Activity {
                 if(response.isSuccessful()){
 
                     List<RiderActivityDelivery> parcels = response.body();
+                    parcels = Databackbone.getinstance().resortDelivery(parcels);
                     Databackbone.getinstance().parcelsdelivery = parcels;
                     Databackbone.getinstance().remove_location_complete();
 

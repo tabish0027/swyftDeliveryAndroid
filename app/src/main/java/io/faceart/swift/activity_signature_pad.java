@@ -207,6 +207,7 @@ public class activity_signature_pad extends AppCompatActivity {
                 if(response.isSuccessful()){
 
                     List<RiderActivityDelivery> parcels = response.body();
+                    parcels = Databackbone.getinstance().resortDelivery(parcels);
                     Databackbone.getinstance().parcelsdelivery = parcels;
                     Databackbone.getinstance().remove_location_complete();
 

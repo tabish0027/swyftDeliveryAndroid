@@ -26,7 +26,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import io.faceart.swift.data_models.model_daily_package_item;
-import io.faceart.swift.interface_retrofit.DeliveryParcel;
+import io.faceart.swift.interface_retrofit.PickupParcel;
 import io.faceart.swift.interface_retrofit.parcel_scan;
 
 import com.github.gcacace.signaturepad.views.SignaturePad;
@@ -69,6 +69,7 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
         barcodescannerview =  findViewById(R.id.barcodescannerview);
         tx_barcode = findViewById(R.id.tx_barcode);
         mScannerView = new ZXingScannerView(this);
+        mScannerView.setAspectTolerance(0.5f);
         btn_refreash = findViewById(R.id.btn_refreash);
         tx_parcels_to_scan = findViewById(R.id.tx_parcels_to_scan);
         btn_add_parcel = findViewById(R.id.btn_add_parcel);
@@ -275,14 +276,15 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
         swift_api riderapi = retrofit.create(swift_api.class);
 
-        Call<List<DeliveryParcel>> call = riderapi.scanParcels(Databackbone.getinstance().rider.getId(),(id),new parcel_scan(Databackbone.getinstance().parcels.get(Databackbone.getinstance().task_to_show).getTaskId(),Databackbone.getinstance().rider.getUserId()));
-        call.enqueue(new Callback<List<DeliveryParcel>>() {
+        Call<List<PickupParcel>> call = riderapi.scanParcels(Databackbone.getinstance().rider.getId(),(id),new parcel_scan(Databackbone.getinstance().parcels.get(Databackbone.getinstance().task_to_show).getTaskId(),Databackbone.getinstance().rider.getUserId()));
+        call.enqueue(new Callback<List<PickupParcel>>() {
             @Override
-            public void onResponse(Call<List<DeliveryParcel>> call, Response<List<DeliveryParcel>> response) {
+            public void onResponse(Call<List<PickupParcel>> call, Response<List<PickupParcel>> response) {
                 if(response.isSuccessful()){
-                    List<DeliveryParcel> parcels = response.body();
+                    List<PickupParcel> parcels = response.body();
 
-                    Databackbone.getinstance().parcels = parcels;
+                   // Databackbone.getinstance().parcels = parcels;
+                    Databackbone.getinstance().parcels = Databackbone.getinstance().resortParcelsPickup(parcels);
 
                     Scan_successfull(id);
 
@@ -297,7 +299,7 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
             }
 
             @Override
-            public void onFailure(Call<List<DeliveryParcel>> call, Throwable t) {
+            public void onFailure(Call<List<PickupParcel>> call, Throwable t) {
                 System.out.println(t.getCause());
                 DisableLoading();
                 Databackbone.getinstance().showAlsertBox(activity_barcode_scanner.this,"Error","Barcode Not Found Error Code 38");
@@ -334,7 +336,7 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
             public void onResponse(Call<List<RiderActivityDelivery>> call, Response<List<RiderActivityDelivery>> response) {
                 if(response.isSuccessful()){
                     List<RiderActivityDelivery> parcels = response.body();
-
+                    parcels = Databackbone.getinstance().resortDelivery(parcels);
                     Databackbone.getinstance().parcelsdelivery = parcels;
                     Databackbone.getinstance().remove_location_complete();
                     Scan_successfull_delivery(id);
@@ -412,6 +414,7 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
 
                     List<RiderActivityDelivery> parcels = response.body();
                     // System.out.println(parcels.size());
+                    parcels = Databackbone.getinstance().resortDelivery(parcels);
                     Databackbone.getinstance().parcelsdelivery = parcels;
                     Databackbone.getinstance().remove_location_complete();
                     load_parcels_to_scan();

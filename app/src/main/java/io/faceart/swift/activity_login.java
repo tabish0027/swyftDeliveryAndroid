@@ -54,8 +54,8 @@ public class activity_login extends AppCompatActivity {
         });
 
 
-        //username.setText("923004820761");// pickup
-        //password.setText("123456789");
+        username.setText("923004820761");// pickup
+        password.setText("123456789");
 
 
 
@@ -64,8 +64,8 @@ public class activity_login extends AppCompatActivity {
 
 
         //username.setText("923004820761"); // delivery
-        username.setText("03044377462"); // delivery
-        password.setText("12345");
+        //username.setText("03044377462"); // delivery
+        //password.setText("12345");
 
 
 

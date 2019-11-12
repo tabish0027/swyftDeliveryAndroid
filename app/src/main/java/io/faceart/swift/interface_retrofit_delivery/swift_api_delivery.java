@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 
 import java.util.List;
 
-import io.faceart.swift.interface_retrofit.DeliveryParcel;
+import io.faceart.swift.interface_retrofit.PickupParcel;
 import io.faceart.swift.interface_retrofit.Rider;
 import io.faceart.swift.interface_retrofit.RiderActivity;
 import io.faceart.swift.interface_retrofit.login;

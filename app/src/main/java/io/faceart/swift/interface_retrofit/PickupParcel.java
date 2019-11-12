@@ -5,12 +5,22 @@ import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class DeliveryParcel {
+public class PickupParcel implements Comparable<PickupParcel> {
 
     private double distance_from_current_location = 0.0;
     @SerializedName("name")
     @Expose
     private String name;
+    private double distance=0.0;
+
+    public double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(double distance) {
+        this.distance = distance;
+    }
+
     @SerializedName("location")
     @Expose
     private Location location;
@@ -26,6 +36,18 @@ public class DeliveryParcel {
     @SerializedName("taskStatus")
     @Expose
     private String taskStatus="";
+
+    @Override
+    public int compareTo(PickupParcel o) {
+        if (o == null) {
+            return -1;
+        }
+        int c = Double.valueOf(distance).compareTo(o.distance);
+        if (c != 0) {
+            return c;
+        }
+        return name.compareTo(o.name);
+    }
 
     public double getDistance_from_current_location() {
         return distance_from_current_location;

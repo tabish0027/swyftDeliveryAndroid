@@ -15,9 +15,22 @@ public class Parcel {
     @Expose
     private String scannedOn;
 
+    public String getParcelBatchId() {
+        return parcelBatchId;
+    }
+
+    public void setParcelBatchId(String parcelBatchId) {
+        this.parcelBatchId = parcelBatchId;
+    }
+
     @SerializedName("scanned")
     @Expose
     private Boolean scanned;
+
+    @SerializedName("parcelBatchId")
+    @Expose
+    private String parcelBatchId;
+
 
     public String getParcelId() {
         return parcelId;

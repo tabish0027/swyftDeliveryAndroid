@@ -24,7 +24,7 @@ import java.util.List;
 
 import io.faceart.swift.adapters.*;
 import io.faceart.swift.data_models.model_daily_package_item;
-import io.faceart.swift.interface_retrofit.DeliveryParcel;
+import io.faceart.swift.interface_retrofit.PickupParcel;
 import io.faceart.swift.interface_retrofit.manage_task;
 import io.faceart.swift.interface_retrofit.swift_api;
 import io.faceart.swift.interface_retrofit_delivery.RiderActivityDelivery;
@@ -43,6 +43,7 @@ public class activity_daily_task_status extends Activity {
     public SwipeRefreshLayout swipeToRefresh;
     ProgressBar progressBar = null;
     ConstraintLayout pendingTask;
+    private Call<List<PickupParcel>> call;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -231,7 +232,7 @@ public class activity_daily_task_status extends Activity {
 
 
                 double distance = Databackbone.getinstance().CalculationByDistance(Databackbone.getinstance().parcels.get(i).getLocation().getGeoPoints().getLat(), Databackbone.getinstance().parcels.get(i).getLocation().getGeoPoints().getLng());
-                model_daily_package_item dataModelValue = new model_daily_package_item(Databackbone.getinstance().parcels.get(i).getTaskId(), Databackbone.getinstance().parcels.get(i).getName(), Databackbone.getinstance().parcels.get(i).getLocation().getAddress(), Double.toString(distance) + "KM", Databackbone.getinstance().parcels.get(i).getLocation().getAddress(), activated_task, m_location, size);
+                model_daily_package_item dataModelValue = new model_daily_package_item(Databackbone.getinstance().parcels.get(i).getTaskId(), Databackbone.getinstance().parcels.get(i).getName(), Databackbone.getinstance().parcels.get(i).getLocation().getAddress(), Double.toString(Databackbone.getinstance().parcels.get(i).getDistance()) + "KM", Databackbone.getinstance().parcels.get(i).getLocation().getAddress(), activated_task, m_location, size);
                 ar_task_daily_pickup.add(dataModelValue);
                 activated_task = false;
             }
@@ -305,16 +306,17 @@ public class activity_daily_task_status extends Activity {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
         swift_api riderapi = retrofit.create(swift_api.class);
         EnableLoading();
-        Call<List<DeliveryParcel>> call = riderapi.getParcelsByRiders(Databackbone.getinstance().rider.getId(),Databackbone.getinstance().rider.getUserId());
-        call.enqueue(new Callback<List<DeliveryParcel>>() {
+        Call<List<PickupParcel>> call = riderapi.getParcelsByRiders(Databackbone.getinstance().rider.getId(),Databackbone.getinstance().rider.getUserId());
+        call.enqueue(new Callback<List<PickupParcel>>() {
             @Override
-            public void onResponse(Call<List<DeliveryParcel>> call, Response<List<DeliveryParcel>> response) {
+            public void onResponse(Call<List<PickupParcel>> call, Response<List<PickupParcel>> response) {
                 if(response.isSuccessful()){
 
-                    List<DeliveryParcel> parcels = response.body();
+                    List<PickupParcel> parcels = response.body();
                     // System.out.println(parcels.size());
+                     Databackbone.getinstance().parcels = Databackbone.getinstance().resortParcelsPickup(parcels);
 
-                    Databackbone.getinstance().parcels = parcels;
+                    //Databackbone.getinstance().parcels = parcels;
                     load_Data();
                     update_view();
                     DisableLoading();
@@ -327,7 +329,7 @@ public class activity_daily_task_status extends Activity {
             }
 
             @Override
-            public void onFailure(Call<List<DeliveryParcel>> call, Throwable t) {
+            public void onFailure(Call<List<PickupParcel>> call, Throwable t) {
                 System.out.println(t.getCause());
 
                 DisableLoading();
@@ -404,17 +406,18 @@ public class activity_daily_task_status extends Activity {
         EnableLoading();
         double distance = Databackbone.getinstance().getfinalcouvereddistance (taskId,activity_daily_task_status.this);
 
-        Call<List<DeliveryParcel>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),taskId,new manage_task(action,(int)distance));
-        call.enqueue(new Callback<List<DeliveryParcel>>() {
+        Call<List<PickupParcel>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),taskId,new manage_task(action,(int)distance));
+        call.enqueue(new Callback<List<PickupParcel>>() {
             @Override
-            public void onResponse(Call<List<DeliveryParcel>> call, Response<List<DeliveryParcel>> response) {
+            public void onResponse(Call<List<PickupParcel>> call, Response<List<PickupParcel>> response) {
                 if(response.isSuccessful()){
 
-                    List<DeliveryParcel> parcels = response.body();
+                    List<PickupParcel> parcels = response.body();
                     // System.out.println(parcels.size());
                     Databackbone.getinstance().taskStart (taskId,Databackbone.getinstance().current_location.latitude,Databackbone.getinstance().current_location.longitude,0.0,activity_daily_task_status.this);
+                    Databackbone.getinstance().parcels = Databackbone.getinstance().resortParcelsPickup(parcels);
 
-                    Databackbone.getinstance().parcels = parcels;
+                    //Databackbone.getinstance().parcels = parcels;
                     load_Data();
                     update_view();
                    DisableLoading();
@@ -453,7 +456,7 @@ public class activity_daily_task_status extends Activity {
             }
 
             @Override
-            public void onFailure(Call<List<DeliveryParcel>> call, Throwable t) {
+            public void onFailure(Call<List<PickupParcel>> call, Throwable t) {
                 DisableLoading();
             }
         });
@@ -476,7 +479,9 @@ public class activity_daily_task_status extends Activity {
 
                     List<RiderActivityDelivery> parcels = response.body();
                     // System.out.println(parcels.size());
+                    parcels = Databackbone.getinstance().resortDelivery(parcels);
                     Databackbone.getinstance().parcelsdelivery = parcels;
+
                     Databackbone.getinstance().remove_location_complete();
                     Databackbone.getinstance().taskStart (taskId,Databackbone.getinstance().current_location.latitude,Databackbone.getinstance().current_location.longitude,0.0,activity_daily_task_status.this);
                     load_Data();
@@ -534,6 +539,7 @@ public class activity_daily_task_status extends Activity {
 
                     List<RiderActivityDelivery> parcels = response.body();
                     // System.out.println(parcels.size());
+                    parcels = Databackbone.getinstance().resortDelivery(parcels);
                     Databackbone.getinstance().parcelsdelivery = parcels;
                     Databackbone.getinstance().remove_location_complete();
                     DisableLoading();

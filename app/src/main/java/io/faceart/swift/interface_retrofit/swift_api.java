@@ -30,16 +30,16 @@ public interface swift_api {
 
 
     @GET("Riders/get-tasks")
-    Call<List<DeliveryParcel>> getParcelsByRiders(@Header("Authorization") String Authorization, @Query("riderId") String riderId);
+    Call<List<PickupParcel>> getParcelsByRiders(@Header("Authorization") String Authorization, @Query("riderId") String riderId);
 
     @POST("Parcels/{parcelid}/scan-parcel")
-    Call<List<DeliveryParcel>> scanParcels(@Header("Authorization") String Authorization, @Path("parcelid") String parcelid,@Body parcel_scan user_task);
+    Call<List<PickupParcel>> scanParcels(@Header("Authorization") String Authorization, @Path("parcelid") String parcelid,@Body parcel_scan user_task);
 
     @POST("RiderTasks/{tasklid}")
-    Call<List<DeliveryParcel>> RiderTasksupdate(@Header("Authorization") String Authorization, @Path("tasklid") String tasklid);
+    Call<List<PickupParcel>> RiderTasksupdate(@Header("Authorization") String Authorization, @Path("tasklid") String tasklid);
 
     @POST("RiderTasks/{taskid}/manage-task")
-    Call<List<DeliveryParcel>> manageTask(@Header("Authorization") String Authorization, @Path("taskid") String parcelid,@Body manage_task user_task);
+    Call<List<PickupParcel>> manageTask(@Header("Authorization") String Authorization, @Path("taskid") String parcelid,@Body manage_task user_task);
 
     @POST("Riders/forgot-password")
     Call<PasswordResetRequest> requestotp(@Body username name);

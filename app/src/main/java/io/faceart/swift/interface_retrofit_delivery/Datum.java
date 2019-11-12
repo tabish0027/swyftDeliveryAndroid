@@ -6,9 +6,13 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import io.faceart.swift.interface_retrofit.Location;
+import io.faceart.swift.interface_retrofit.PickupParcel;
 import io.faceart.swift.interface_retrofit_delivery.Parcel;
 
-public class Datum {
+public class Datum implements Comparable<Datum>{
+
+
+    private double distance=0.0;
 
     @SerializedName("location")
     @Expose
@@ -23,6 +27,17 @@ public class Datum {
     @Expose
     private List<Parcel> parcels = null;
 
+    @Override
+    public int compareTo(Datum o) {
+        if (o == null) {
+            return -1;
+        }
+        int c = Double.valueOf(distance).compareTo(o.distance);
+        if (c != 0) {
+            return c;
+        }
+        return name.compareTo(o.name);
+    }
     public Location getLocation() {
         return location;
     }
@@ -47,6 +62,13 @@ public class Datum {
         this.phone = phone;
     }
 
+    public double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(double distance) {
+        this.distance = distance;
+    }
     public List<Parcel> getParcels() {
         return parcels;
     }

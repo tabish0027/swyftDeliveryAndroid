@@ -4,18 +4,26 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Path;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import com.akexorcist.googledirection.DirectionCallback;
+import com.akexorcist.googledirection.GoogleDirection;
+import com.akexorcist.googledirection.constant.TransportMode;
+import com.akexorcist.googledirection.model.Direction;
+import com.akexorcist.googledirection.request.DirectionOriginRequest;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import io.faceart.swift.data_models.*;
-import io.faceart.swift.interface_retrofit.DeliveryParcel;
+import io.faceart.swift.interface_retrofit.PickupParcel;
 import io.faceart.swift.interface_retrofit.Location;
 import io.faceart.swift.interface_retrofit.Rider;
 import io.faceart.swift.interface_retrofit.RiderActivity;
@@ -38,17 +46,22 @@ public class Databackbone {
 
     public RiderDetails riderdetails = null;
     //testcase
-    // public String Base_URL = "http://13.235.240.229:3000/api/";
+     public String Base_URL = "http://13.235.240.229:3000/api/";
     // real
-    public String Base_URL = "http://18.136.172.141:3000/api/";
-    List<DeliveryParcel> parcels = null;
+    //public String Base_URL = "http://18.136.172.141:3000/api/";
+    List<PickupParcel> parcels = null;
     List<RiderActivityDelivery> parcelsdelivery = null;
     Boolean check_parcel_scanning_complete = true;
 
     LatLng current_location = null;
     public int pickup_to_process = -1 ;
-    public int delivery_to_show = -1 ;
+
     public int task_to_show = -1 ;
+    public int delivery_to_show = -1 ;
+
+    //public String task_to_show = "" ;
+    //public String delivery_to_show = "" ;
+
 
     public List<String> parcel_to_process= new ArrayList<String>();
 
@@ -206,5 +219,158 @@ public class Databackbone {
         value = value * factor;
         long tmp = Math.round(value);
         return (double) tmp / factor;
+    }
+    public List<PickupParcel> calculateDistancePickup(List<PickupParcel> parcel){
+         if(current_location != null)
+        for(int i=0;i < parcel.size();i++){
+            double Lat = parcel.get(i).getLocation().getGeoPoints().getLat();
+            double Lng = parcel.get(i).getLocation().getGeoPoints().getLng();
+            parcel.get(i).setDistance(CalculationByDistance(Lat,Lng));
+        }
+        return parcel;
+    }
+    public List<RiderActivityDelivery> calculateDistanceDelivery(List<RiderActivityDelivery> parcel){
+         if(current_location != null)
+            for(int i=0;i < parcel.size();i++){
+                for(int j=0;j<parcel.get(i).getData().size();j++) {
+                    double Lat = parcel.get(i).getData().get(j).getLocation().getGeoPoints().getLat();
+                    double Lng = parcel.get(i).getData().get(j).getLocation().getGeoPoints().getLng();
+                    parcel.get(i).getData().get(j).setDistance(CalculationByDistance(Lat, Lng));
+                }
+
+            }
+        return parcel;
+    }
+    public List<PickupParcel> resortParcelsPickup(List<PickupParcel> parcel){
+
+        List<PickupParcel> parcelProcessedPending = new ArrayList<PickupParcel>();
+        List<PickupParcel> parcelProcessedStarted = new ArrayList<PickupParcel>();
+        parcel = calculateDistancePickup(parcel);
+        Collections.sort(parcel);
+
+        for(int i =0;i<parcel.size();i++){
+            if(parcel.get(i).getTaskStatus().equals("started"))
+                parcelProcessedStarted.add(parcel.get(i));
+            else
+                parcelProcessedPending.add(parcel.get(i));
+
+        }
+        parcelProcessedStarted.addAll(parcelProcessedPending);
+        return parcelProcessedStarted;
+    }
+    public List<RiderActivityDelivery> deliveryDelivery(List<RiderActivityDelivery> parcel){
+        List<RiderActivityDelivery> ProcessedStarted = new ArrayList<RiderActivityDelivery>();
+
+        return ProcessedStarted;
+    }
+    public List<RiderActivityDelivery> resortDelivery(List<RiderActivityDelivery> parcel){
+        List<RiderActivityDelivery> parcelProcessedPending = new ArrayList<RiderActivityDelivery>();
+        List<RiderActivityDelivery> parcelProcessedStarted = new ArrayList<RiderActivityDelivery>();
+
+        parcel = calculateDistanceDelivery(parcel);
+
+        for(int i =0;i<parcel.size();i++){
+            Collections.sort(parcel.get(i).getData());
+        }
+        for(int i =0;i<parcel.size();i++){
+            if(parcel.get(i).getTaskStatus().equals("started"))
+                parcelProcessedStarted.add(parcel.get(i));
+            else
+                parcelProcessedPending.add(parcel.get(i));
+
+        }
+        parcelProcessedStarted.addAll(parcelProcessedPending);
+        return parcelProcessedStarted;
+    }
+    public void CalculateLocationFromDeliveryParcels(List<RiderActivityDelivery> parcel){
+        ArrayList<LatLng> destinations = new ArrayList();
+        for(int i =0;i<parcel.size();i++){
+            double lat = parcel.get(i).getData().get(0).getLocation().getGeoPoints().getLat();
+            double lng = parcel.get(i).getData().get(0).getLocation().getGeoPoints().getLng();
+
+            destinations.add(new LatLng(lat, lng));
+        }
+
+
+
+        GoogleDirection.withServerKey("AIzaSyDviYdVUT4llQkqJF-GSggMFviNm82F0gA")
+                .from(new LatLng(current_location.latitude, current_location.longitude))
+                .and(destinations).to(new LatLng(current_location.latitude,current_location.longitude))
+                .transportMode(TransportMode.DRIVING)
+                .execute(new DirectionCallback() {
+                    @Override
+                    public void onDirectionSuccess(Direction direction) {
+                        if(direction.isOK()) {
+                            for (int i=0;i<10;i++){
+
+                            }
+
+                        } else {
+
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onDirectionFailure(Throwable t) {
+
+                    }
+                });
+
+
+    }
+    public void CalculateLocationFromPickupParcels(List<PickupParcel> parcel){
+        List<LatLng> destinations =  new ArrayList<LatLng>();
+        if(parcel == null)
+            return;
+        for(int i =0;i<parcel.size();i++){
+            double lat = parcel.get(i).getLocation().getGeoPoints().getLat();
+            double lng = parcel.get(i ).getLocation().getGeoPoints().getLng();
+            destinations.add(new LatLng(lat, lng));
+        }
+
+        DirectionOriginRequest LocationCalculater = GoogleDirection.withServerKey("AIzaSyDviYdVUT4llQkqJF-GSggMFviNm82F0gA");
+        LocationCalculater.from(new LatLng(current_location.latitude, current_location.longitude))
+                .and(destinations).to(new LatLng(current_location.latitude,current_location.longitude))
+                .transportMode(TransportMode.DRIVING)
+                .execute(new DirectionCallback() {
+                    @Override
+                    public void onDirectionSuccess(Direction direction) {
+                              if(direction.isOK()) {
+                                   for (int i=0;i<10;i++){
+
+                                   }
+
+                                } else {
+                                    // Do something
+                                }
+
+
+                    }
+
+                    @Override
+                    public void onDirectionFailure(Throwable t) {
+
+                    }
+                });
+
+    }
+    public PickupParcel getParcels(String id){
+        for(int i=0;i<parcels.size();i++){
+            if(parcels.get(i).getTaskId().equals(id))
+                return parcels.get(i);
+            return null;
+        }
+        return null;
+    }
+
+    public RiderActivityDelivery getDeliveryTask(String id){
+        for(int i=0;i< parcelsdelivery.size();i++){
+            if(parcelsdelivery.get(i).getTaskId().equals(id))
+                return parcelsdelivery.get(i);
+            return null;
+        }
+        return null;
     }
 }

@@ -107,6 +107,7 @@ public class activity_delivery_status extends AppCompatActivity {
 
                     List<RiderActivityDelivery> parcels = response.body();
                     Databackbone.getinstance().parcelsdelivery = parcels;
+                    parcels = Databackbone.getinstance().resortDelivery(parcels);
                     Databackbone.getinstance().remove_location_complete();
 
                     DisableLoading();

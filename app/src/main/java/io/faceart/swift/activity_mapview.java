@@ -38,7 +38,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.faceart.swift.interface_retrofit.DeliveryParcel;
+import io.faceart.swift.interface_retrofit.PickupParcel;
 import io.faceart.swift.interface_retrofit.Parcel;
 import io.faceart.swift.interface_retrofit.RiderActivity;
 import io.faceart.swift.interface_retrofit.*;
@@ -308,6 +308,8 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
                     return ;
                 LatLng current_location = new LatLng(location.getLatitude(),location.getLongitude());
                 Databackbone.getinstance().current_location = current_location;
+                Databackbone.getinstance().CalculateLocationFromPickupParcels(Databackbone.getinstance().parcels );
+
                 //mMapServiceView.addMarker(new MarkerOptions().position(current_location).title("Current Location"));
                 //mMapServiceView.moveCamera(CameraUpdateFactory.newLatLngZoom(current_location, 15));
                 CameraUpdate location_animation = CameraUpdateFactory.newLatLngZoom(current_location, 15);
@@ -414,16 +416,19 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
         swift_api riderapi = retrofit.create(swift_api.class);
         EnableLoading();
-        Call<List<DeliveryParcel>>  call = riderapi.getParcelsByRiders(Databackbone.getinstance().rider.getId(),Databackbone.getinstance().rider.getUserId());
-        call.enqueue(new Callback<List<DeliveryParcel>>() {
+        Call<List<PickupParcel>>  call = riderapi.getParcelsByRiders(Databackbone.getinstance().rider.getId(),Databackbone.getinstance().rider.getUserId());
+        call.enqueue(new Callback<List<PickupParcel>>() {
             @Override
-            public void onResponse(Call<List<DeliveryParcel>> call, Response<List<DeliveryParcel>> response) {
+            public void onResponse(Call<List<PickupParcel>> call, Response<List<PickupParcel>> response) {
                 if(response.isSuccessful()){
 
-                    List<DeliveryParcel> parcels = response.body();
-                   // System.out.println(parcels.size());
+                    List<PickupParcel> parcels = response.body();
+                    parcels = Databackbone.getinstance().resortParcelsPickup(parcels);
+
+                    // System.out.println(parcels.size());
                     LoadLocation(parcels);
-                    Databackbone.getinstance().parcels = parcels;
+                    Databackbone.getinstance().parcels = Databackbone.getinstance().resortParcelsPickup(parcels);
+                    //Databackbone.getinstance().parcels = parcels;
                     tx_parcels_status_count.setText(Integer.toString(parcels.size())+" Task Pending");
                     DisableLoading();
 
@@ -435,7 +440,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
             }
 
             @Override
-            public void onFailure(Call<List<DeliveryParcel>> call, Throwable t) {
+            public void onFailure(Call<List<PickupParcel>> call, Throwable t) {
                 System.out.println(t.getCause());
                 tx_parcels_status_count.setText("0 Task Pending");
                 DisableLoading();
@@ -537,7 +542,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         img_rider_activity_button.setEnabled(false);
         progressBar.setVisibility(View.VISIBLE);
     }
-    public void LoadLocation(List<DeliveryParcel> parcels){
+    public void LoadLocation(List<PickupParcel> parcels){
         markers.clear();
         btn_navigation.setVisibility(View.GONE);
         for(int i =0;i<parcels.size();i++){
@@ -596,13 +601,16 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
                 if(response.isSuccessful()){
 
                     List<RiderActivityDelivery> parcels = response.body();
-                    LoadLocationForActiveParcels(parcels);
+
                     // System.out.println(parcels.size());
                     if(parcels == null)
                     {
                         tx_parcels_status_count.setText("0 Task Pending");
                     }
                     else{
+                        parcels = Databackbone.getinstance().resortDelivery(parcels);
+
+                        LoadLocationForActiveParcels(parcels);
                         Databackbone.getinstance().parcelsdelivery = parcels;
                         Databackbone.getinstance().remove_location_complete();
                         tx_parcels_status_count.setText(Integer.toString(parcels.size()) + " Task Pending");

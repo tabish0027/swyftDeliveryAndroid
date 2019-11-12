@@ -82,7 +82,9 @@ public class activity_delivery_status extends AppCompatActivity {
 
 
         String action = Databackbone.getinstance().not_delivered_reason;
-        String taskId = Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getTaskId();
+        //String taskId = Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getTaskId();
+        String taskId = Databackbone.getinstance().getDeliveryTask().getTaskId();
+
         if(parcelIds.size() == 0)
         {
             Databackbone.getinstance().showAlsertBox(activity_delivery_status.this, "Error", "Server code error 102");

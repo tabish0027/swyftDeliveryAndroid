@@ -59,15 +59,17 @@ public class activity_login extends AppCompatActivity {
 
 
 
-       // username.setText("923049494294"); // delivery
-       // password.setText("12345");
+        //username.setText("923049494294"); // delivery
+        //password.setText("12345");
 
 
         //username.setText("923004820761"); // delivery
         //username.setText("03044377462"); // delivery
         //password.setText("12345");
 
-
+        // staging server access for delivery
+       // username.setText("03060228864"); // delivery
+       // password.setText("12345");
 
         Sprite doubleBounce = new DoubleBounce();
         progressBar.setVisibility(View.GONE);

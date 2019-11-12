@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -44,7 +45,7 @@ public class activity_daily_task_status extends Activity {
     ProgressBar progressBar = null;
     ConstraintLayout pendingTask;
     private Call<List<PickupParcel>> call;
-
+    TextView tx_empty_view;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +56,7 @@ public class activity_daily_task_status extends Activity {
         progressBar.setVisibility(View.GONE);
         pendingTask = findViewById(R.id.pendingTask);
         pendingTask.setVisibility(View.GONE);
+        tx_empty_view= findViewById(R.id.tx_empty_view);
 
 
         btn_back.setOnClickListener(new View.OnClickListener() {
@@ -84,15 +86,23 @@ public class activity_daily_task_status extends Activity {
         ad_task.setOnItemClickListener(new adapter_status_daily_task.ClickListener() {
             @Override
             public void onItemClick(int position, View v,Boolean check) {
-                Databackbone.getinstance().task_to_show = position;
                 if(check) {
-                    if (Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery"))
+                    if (Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery")) {
+                        Databackbone.getinstance().task_to_show = Databackbone.getinstance().parcelsdelivery.get(position).getTaskId();
                         StartDeliveryTask(position);
-                    else
+                    }
+                    else {
+                        Databackbone.getinstance().task_to_show = Databackbone.getinstance().parcels.get(position).getTaskId();
+
+                        //Databackbone.getinstance().task_to_show = Databackbone.getinstance()position;
+
                         startPicupTask(position);
+                    }
                 }else{
                     if (Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery"))
                     {
+                        Databackbone.getinstance().task_to_show = Databackbone.getinstance().parcelsdelivery.get(position).getTaskId();
+
                         //Databackbone.getinstance().task_to_show = position;
                         Intent orders = new Intent(activity_daily_task_status.this,activity_daily_order_status.class);
                         orders.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -101,6 +111,8 @@ public class activity_daily_task_status extends Activity {
                     }
                     else
                     {
+                        Databackbone.getinstance().task_to_show = Databackbone.getinstance().parcels.get(position).getTaskId();
+
                         Intent orders = new Intent(activity_daily_task_status.this,activity_barcode_scanner.class);
                         orders.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         orders.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
@@ -151,6 +163,7 @@ public class activity_daily_task_status extends Activity {
         super.onResume();
         load_Data();
         update_view();
+
     }
 
     public void startPicupTask(int position){
@@ -210,7 +223,7 @@ public class activity_daily_task_status extends Activity {
     }
 
     public void load_Data() {
-
+        tx_empty_view.setVisibility(View.INVISIBLE);
         if(!Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery")) {
             Databackbone.getinstance().ar_task_daily_pickup.clear();
 
@@ -236,6 +249,8 @@ public class activity_daily_task_status extends Activity {
                 ar_task_daily_pickup.add(dataModelValue);
                 activated_task = false;
             }
+            if(ar_task_daily_pickup.size() == 0)
+                tx_empty_view.setVisibility(View.VISIBLE);
             Databackbone.getinstance().ar_task_daily_pickup.addAll(ar_task_daily_pickup);
         }else{
             Databackbone.getinstance().ar_task_daily_delivery.clear();
@@ -277,6 +292,9 @@ public class activity_daily_task_status extends Activity {
                 temp_ar_task_daily_delivery.add(dataModelValue);
                 activated_task = false;
             }
+
+            if(temp_ar_task_daily_delivery.size() == 0)
+                tx_empty_view.setVisibility(View.VISIBLE);
             Databackbone.getinstance().ar_task_daily_delivery.addAll(temp_ar_task_daily_delivery);
         }
         check_is_task_active_and_complete();

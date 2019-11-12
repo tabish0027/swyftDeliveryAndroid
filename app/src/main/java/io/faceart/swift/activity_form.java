@@ -91,7 +91,7 @@ public class activity_form extends AppCompatActivity {
         btn_navigation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GeoPoints points = Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().delivery_to_show).getData().get(0).getLocation().getGeoPoints();
+                GeoPoints points = Databackbone.getinstance().getDeliveryTask().getData().get(0).getLocation().getGeoPoints();
                 Offlice_Activity(new LatLng(points.getLat(),points.getLng()));
             }
         });
@@ -122,17 +122,21 @@ public class activity_form extends AppCompatActivity {
     }
 
     public void mark_park_parcel_to_complete(){
-         Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData().get(Databackbone.getinstance().delivery_to_show).markAllParcelToBeComplete();
+        Databackbone.getinstance().getDeliveryParcelsTask().markAllParcelToBeComplete();
 
     }
     public void checkIfAnyParcelLeft(){
         Boolean check_any_parcel_left = true;
+        Datum DeliveryLocation = Databackbone.getinstance().getDeliveryParcelsTask();
+        if(DeliveryLocation == null)
+            activity_form.this.finish();
+        Databackbone.getinstance().getDeliveryParcelsTask();
         try {
-            if (Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData().get(Databackbone.getinstance().delivery_to_show).getParcels().size() == 0) {
+            if (Databackbone.getinstance().getDeliveryParcelsTask().getParcels().size() == 0) {
                 activity_form.this.finish();
                 return;
             }
-            Datum data = Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData().get(Databackbone.getinstance().delivery_to_show);
+            Datum data = Databackbone.getinstance().getDeliveryParcelsTask();
             for (int i = 0; i < data.getParcels().size(); i++)
                 if (data.getParcels().get(i).getStatus().equals("started") || data.getParcels().get(i).getStatus().equals("pending")) {
                     check_any_parcel_left = false;
@@ -148,7 +152,9 @@ public class activity_form extends AppCompatActivity {
 
     }
     public Boolean checkIforderActive(){
-         Datum data = Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData().get(Databackbone.getinstance().delivery_to_show);
+         Datum data = Databackbone.getinstance().getDeliveryParcelsTask();
+         if(data == null)
+             activity_form.this.finish();
         for(int i=0;i<data.getParcels().size();i++)
             if(data.getParcels().get(i).getStatus().equals("pending"))
                 return true;
@@ -161,7 +167,9 @@ public class activity_form extends AppCompatActivity {
     public int totalamounttocollect(){
         int amount = 0;
         int parcel_count = 0;
-        Datum data = Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData().get(Databackbone.getinstance().delivery_to_show);
+        Datum data = Databackbone.getinstance().getDeliveryParcelsTask();
+        if(data == null)
+            activity_form.this.finish();
         for(int i=0;i<data.getParcels().size();i++)
             if(data.getParcels().get(i).getStatus().equals("started")||data.getParcels().get(i).getStatus().equals("pending")||data.getParcels().get(i).getStatus().equals("scanned")) {
                 amount += data.getParcels().get(i).getAmount();
@@ -188,7 +196,9 @@ public class activity_form extends AppCompatActivity {
 
     }
     public void mark_all_parcels_to_process(){
-        Datum data = Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData().get(Databackbone.getinstance().delivery_to_show);
+        Datum data = Databackbone.getinstance().getDeliveryParcelsTask();
+        if(data == null)
+            activity_form.this.finish();
         List<String> parcels_id = new ArrayList<String>();
 
         for (int j = 0; j < data.getParcels().size(); j++) {
@@ -200,8 +210,9 @@ public class activity_form extends AppCompatActivity {
     public void load_data(){
 
         try {
-            Datum data = Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData().get(Databackbone.getinstance().delivery_to_show);
-
+            Datum data = Databackbone.getinstance().getDeliveryParcelsTask();
+            if(data == null)
+                activity_form.this.finish();
 
             btn_back.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -15,6 +15,15 @@ import com.akexorcist.googledirection.constant.TransportMode;
 import com.akexorcist.googledirection.model.Direction;
 import com.akexorcist.googledirection.request.DirectionOriginRequest;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.maps.DirectionsApi;
+import com.google.maps.DistanceMatrixApi;
+import com.google.maps.DistanceMatrixApiRequest;
+import com.google.maps.GeoApiContext;
+import com.google.maps.errors.ApiException;
+import com.google.maps.model.DistanceMatrix;
+import com.google.maps.model.TravelMode;
+
+import org.joda.time.DateTime;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -28,6 +37,7 @@ import io.faceart.swift.interface_retrofit.Location;
 import io.faceart.swift.interface_retrofit.Rider;
 import io.faceart.swift.interface_retrofit.RiderActivity;
 import io.faceart.swift.interface_retrofit.RiderDetails;
+import io.faceart.swift.interface_retrofit_delivery.Datum;
 import io.faceart.swift.interface_retrofit_delivery.RiderActivityDelivery;
 
 public class Databackbone {
@@ -52,15 +62,16 @@ public class Databackbone {
     List<PickupParcel> parcels = null;
     List<RiderActivityDelivery> parcelsdelivery = null;
     Boolean check_parcel_scanning_complete = true;
-
+    private static final String API_KEY = "AIzaSyDviYdVUT4llQkqJF-GSggMFviNm82F0gA";
+    private static final GeoApiContext context = new GeoApiContext().setApiKey(API_KEY);
     LatLng current_location = null;
     public int pickup_to_process = -1 ;
 
-    public int task_to_show = -1 ;
-    public int delivery_to_show = -1 ;
+   // public int task_to_show = -1 ;
+    // public int delivery_to_show = -1 ;
 
-    //public String task_to_show = "" ;
-    //public String delivery_to_show = "" ;
+    public String task_to_show = "" ;
+    public String delivery_to_show = "" ;
 
 
     public List<String> parcel_to_process= new ArrayList<String>();
@@ -227,6 +238,7 @@ public class Databackbone {
             double Lng = parcel.get(i).getLocation().getGeoPoints().getLng();
             parcel.get(i).setDistance(CalculationByDistance(Lat,Lng));
         }
+        parcel = CalculateLocationFromPickupParcels(parcel);
         return parcel;
     }
     public List<RiderActivityDelivery> calculateDistanceDelivery(List<RiderActivityDelivery> parcel){
@@ -282,94 +294,79 @@ public class Databackbone {
         parcelProcessedStarted.addAll(parcelProcessedPending);
         return parcelProcessedStarted;
     }
-    public void CalculateLocationFromDeliveryParcels(List<RiderActivityDelivery> parcel){
-        ArrayList<LatLng> destinations = new ArrayList();
-        for(int i =0;i<parcel.size();i++){
-            double lat = parcel.get(i).getData().get(0).getLocation().getGeoPoints().getLat();
-            double lng = parcel.get(i).getData().get(0).getLocation().getGeoPoints().getLng();
 
-            destinations.add(new LatLng(lat, lng));
-        }
-
-
-
-        GoogleDirection.withServerKey("AIzaSyDviYdVUT4llQkqJF-GSggMFviNm82F0gA")
-                .from(new LatLng(current_location.latitude, current_location.longitude))
-                .and(destinations).to(new LatLng(current_location.latitude,current_location.longitude))
-                .transportMode(TransportMode.DRIVING)
-                .execute(new DirectionCallback() {
-                    @Override
-                    public void onDirectionSuccess(Direction direction) {
-                        if(direction.isOK()) {
-                            for (int i=0;i<10;i++){
-
-                            }
-
-                        } else {
-
-                        }
-
-
-                    }
-
-                    @Override
-                    public void onDirectionFailure(Throwable t) {
-
-                    }
-                });
-
-
-    }
-    public void CalculateLocationFromPickupParcels(List<PickupParcel> parcel){
-        List<LatLng> destinations =  new ArrayList<LatLng>();
-        if(parcel == null)
-            return;
+    public List<PickupParcel> CalculateLocationFromPickupParcels(List<PickupParcel> parcel){
+        //List<String> destinations =  new ArrayList<String>();
+        if(parcel == null || current_location == null)
+            return parcel;
+        String currentLocation = Double.toString(current_location.latitude)+","+Double.toString(current_location.longitude)   ;
+        String[] originAddress = {currentLocation};
+        String desaddress[] = new String[parcel.size()];
         for(int i =0;i<parcel.size();i++){
             double lat = parcel.get(i).getLocation().getGeoPoints().getLat();
             double lng = parcel.get(i ).getLocation().getGeoPoints().getLng();
-            destinations.add(new LatLng(lat, lng));
+            String DestinationLocation = Double.toString(lat)+","+Double.toString(lng)   ;
+            desaddress[i] = DestinationLocation;
+
         }
 
-        DirectionOriginRequest LocationCalculater = GoogleDirection.withServerKey("AIzaSyDviYdVUT4llQkqJF-GSggMFviNm82F0gA");
-        LocationCalculater.from(new LatLng(current_location.latitude, current_location.longitude))
-                .and(destinations).to(new LatLng(current_location.latitude,current_location.longitude))
-                .transportMode(TransportMode.DRIVING)
-                .execute(new DirectionCallback() {
-                    @Override
-                    public void onDirectionSuccess(Direction direction) {
-                              if(direction.isOK()) {
-                                   for (int i=0;i<10;i++){
+        DistanceMatrix matrix =  estimateRouteTime(originAddress,desaddress);
+        for(int i =0;i<parcel.size();i++){
+            double distance = matrix.rows[0].elements[i].distance.inMeters / 1000.0;
+            DecimalFormat df = new DecimalFormat("####0.00");
+            String result = df.format(distance);
 
-                                   }
+            parcel.get(i).setDistance(Double.parseDouble(result));
 
-                                } else {
-                                    // Do something
-                                }
+        }
+        return parcel;
 
-
-                    }
-
-                    @Override
-                    public void onDirectionFailure(Throwable t) {
-
-                    }
-                });
 
     }
-    public PickupParcel getParcels(String id){
+
+    public PickupParcel getParcelsForPickup( ){
         for(int i=0;i<parcels.size();i++){
-            if(parcels.get(i).getTaskId().equals(id))
+            if(parcels.get(i).getTaskId().equals(task_to_show))
                 return parcels.get(i);
-            return null;
+
         }
         return null;
     }
 
-    public RiderActivityDelivery getDeliveryTask(String id){
+    public RiderActivityDelivery getDeliveryTask(){
         for(int i=0;i< parcelsdelivery.size();i++){
-            if(parcelsdelivery.get(i).getTaskId().equals(id))
+            if(parcelsdelivery.get(i).getTaskId().equals(task_to_show))
                 return parcelsdelivery.get(i);
+
+        }
+        return null;
+    }
+    public Datum getDeliveryParcelsTask(){
+        RiderActivityDelivery delivery = getDeliveryTask();
+        if(delivery == null)
             return null;
+        for(int i=0;i< delivery.getData().size();i++){
+            if(delivery.getData().get(i).getParcels().get(0).getParcelId().equals(delivery_to_show))
+                return delivery.getData().get(i);
+
+        }
+        return null;
+    }
+
+    public DistanceMatrix estimateRouteTime( String[] originAddress,String[] destinationAddress ) {
+        try {
+            DistanceMatrixApiRequest req = DistanceMatrixApi.newRequest(context);
+            req.origins(originAddress);
+            req.destinations(destinationAddress);
+
+            DistanceMatrix trix = req.mode(TravelMode.DRIVING)
+                    .await();
+            return trix;
+
+        } catch (ApiException e) {
+            System.out.println(e.getMessage());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
         return null;
     }

@@ -67,12 +67,12 @@
                                 android:id="@+id/imageView30"
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
-                                android:padding="10dp"
+                                android:padding="0dp"
+                                android:src="@drawable/ic_parcel"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toStartOf="@+id/guideline21"
                                 app:layout_constraintStart_toStartOf="@+id/guideline21"
-                                app:layout_constraintTop_toTopOf="parent"
-                                android:src="@drawable/ic_parcel" />
+                                app:layout_constraintTop_toTopOf="parent" />
 
                             <TextView
                                 android:id="@+id/textView37"
@@ -111,7 +111,7 @@
                                 android:id="@+id/imageView302"
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
-                                android:padding="10dp"
+                                android:padding="0dp"
                                 android:src="@drawable/icon_drawer_help"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toStartOf="@+id/guideline212"
@@ -155,7 +155,7 @@
                                 android:id="@+id/imageView303"
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
-                                android:padding="10dp"
+                                android:padding="0dp"
                                 android:src="@drawable/icon_drawer_faq"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toStartOf="@+id/guideline213"
@@ -199,7 +199,7 @@
                                 android:id="@+id/imageView304"
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
-                                android:padding="10dp"
+                                android:padding="0dp"
                                 android:src="@drawable/icon_drawer_settings"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toStartOf="@+id/guideline214"
@@ -226,6 +226,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical"
+                                android:padding="0dp"
                                 app:layout_constraintGuide_percent="0.15" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -233,7 +234,7 @@
                             android:id="@+id/item5"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
+                            android:layout_marginTop="18dp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="1.0"
                             app:layout_constraintStart_toStartOf="parent"
@@ -243,7 +244,7 @@
                                 android:id="@+id/imageView305"
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
-                                android:padding="10dp"
+                                android:padding="0dp"
                                 android:src="@drawable/icon_drawer_signout"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toStartOf="@+id/guideline215"
@@ -328,14 +329,13 @@
 
                     <ImageView
                         android:id="@+id/imageView3"
-                        android:layout_width="40dp"
+                        android:layout_width="45dp"
                         android:layout_height="40dp"
-                        android:layout_marginStart="8dp"
                         android:padding="10dp"
+                        android:src="@drawable/icon_drawer_wallet"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:src="@drawable/icon_drawer_wallet" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/textView33"
@@ -354,7 +354,6 @@
                         android:id="@+id/textView32"
                         android:layout_width="0dp"
                         android:layout_height="18dp"
-                        android:layout_marginStart="8dp"
                         android:fontFamily="sans-serif-thin"
                         android:text="Wallet"
                         android:textColor="#ffffff"
@@ -379,14 +378,13 @@
 
                     <ImageView
                         android:id="@+id/imageView322"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_marginStart="8dp"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
                         android:padding="10dp"
+                        android:src="@drawable/icon_money"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:src="@drawable/icon_money" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/textView334"
@@ -405,7 +403,6 @@
                         android:id="@+id/textView325"
                         android:layout_width="0dp"
                         android:layout_height="18dp"
-                        android:layout_marginStart="8dp"
                         android:fontFamily="@font/avenirfile"
                         android:text="Earnings"
                         android:textColor="@color/color_app_theam"

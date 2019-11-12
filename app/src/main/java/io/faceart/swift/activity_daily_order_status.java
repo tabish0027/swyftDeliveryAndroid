@@ -52,7 +52,7 @@ public class activity_daily_order_status  extends Activity {
     public SwipeRefreshLayout swipeToRefresh;
     ProgressBar progressBar = null;
     ConstraintLayout pendingorder;
-    TextView tx_pending_title,tx_parcels_status_count;
+    TextView tx_pending_title,tx_parcels_status_count,tx_empty_view;
     int pending_parcels_to_scan = 0;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,7 +65,7 @@ public class activity_daily_order_status  extends Activity {
         pendingorder = findViewById(R.id.pendingTask);
         tx_pending_title = findViewById(R.id.tx_pending_title);
         tx_parcels_status_count = findViewById(R.id.tx_parcels_status_count);
-
+        tx_empty_view = findViewById(R.id.tx_empty_view);
         tx_pending_title.setText("Pending Parcels");
 
 
@@ -90,15 +90,26 @@ public class activity_daily_order_status  extends Activity {
         ad_orders_daily.setOnItemClickListener(new adapter_status_daily_packages.ClickListener() {
             @Override
             public void onItemClick(int position, View v,Boolean check) {
-                Databackbone.getinstance().delivery_to_show = position;
+                RiderActivityDelivery delivery= Databackbone.getinstance().getDeliveryTask();
+                if(delivery == null) {
+                    activity_daily_order_status.this.finish();
+                    return;
+                }
                 if(check) {
                     if (Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery"))
-                        StartDeliveryorder(position);
+                    {
+
+
+                        Databackbone.getinstance().delivery_to_show = delivery.getData().get(position).getParcels().get(0).getParcelId();
+
+                        StartDeliveryorder(position);}
                     else
-                        startPicuporder(position);
+                        {   //startPicuporder(position);
+                        }
                 }else{
                     if (Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery"))
                     {
+                        Databackbone.getinstance().delivery_to_show = delivery.getData().get(position).getParcels().get(0).getParcelId();
 
 
 
@@ -107,10 +118,7 @@ public class activity_daily_order_status  extends Activity {
                         orders.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                         activity_daily_order_status.this.startActivity(orders);
                     }
-                    else
-                    {
 
-                    }
                 }
 
 
@@ -141,7 +149,7 @@ public class activity_daily_order_status  extends Activity {
         pendingorder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getTaskStatus().equals("started"))
+                if(!Databackbone.getinstance().getDeliveryTask().getTaskStatus().equals("started"))
                 {
                     Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this,"Error","Please Start the task before you scan parcels");
 
@@ -161,11 +169,11 @@ public class activity_daily_order_status  extends Activity {
         super.onResume();
         load_Data();
         update_view();
+
     }
 
     public void startPicuporder(int position){
-//Toast.makeText(activity_daily_order_status.this,"onItemClick position: " + position,Toast.LENGTH_LONG).show();
-        if(Databackbone.getinstance().ar_orders_daily.get(position).m_remaining_parcels_to_scan ==0){
+         if(Databackbone.getinstance().ar_orders_daily.get(position).m_remaining_parcels_to_scan ==0){
             completeorderConfirmation(Databackbone.getinstance().parcels.get(position).getName(),Databackbone.getinstance().parcels.get(position).getTaskId());
 
         }
@@ -192,7 +200,7 @@ public class activity_daily_order_status  extends Activity {
         }
     }
     public void StartDeliveryorder(int position){
-        if(!Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getTaskStatus().equals("started"))
+        if(!Databackbone.getinstance().getDeliveryTask().getTaskStatus().equals("started"))
         {
             Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this,"Error","Please Start the task before you scan parcels");
 
@@ -225,7 +233,7 @@ public class activity_daily_order_status  extends Activity {
     }
 
     public void load_Data() {
-
+        tx_empty_view.setVisibility(View.INVISIBLE);
         if(!Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery")) {
             Databackbone.getinstance().ar_orders_daily.clear();
 
@@ -249,6 +257,8 @@ public class activity_daily_order_status  extends Activity {
                 temp_ar_orders_daily.add(dataModelValue);
                 activated_order = false;
             }
+            if(temp_ar_orders_daily.size() == 0)
+                tx_empty_view.setVisibility(View.VISIBLE);
             Databackbone.getinstance().ar_orders_daily.addAll(temp_ar_orders_daily);
         }else{
             Databackbone.getinstance().ar_orders_daily.clear();
@@ -257,11 +267,14 @@ public class activity_daily_order_status  extends Activity {
             if (Databackbone.getinstance().parcelsdelivery == null)
                 return;
             Boolean activated_order = false;
-
-            if(Databackbone.getinstance().task_to_show >= Databackbone.getinstance().parcelsdelivery.size()   )
+            if(Databackbone.getinstance().getDeliveryTask()== null) {
                 activity_daily_order_status.this.finish();
-            List<Datum> Locations= Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData();
-            String orderid = Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getTaskId();
+                return;
+            }
+            //if(Databackbone.getinstance().task_to_show >= Databackbone.getinstance().parcelsdelivery.size()   )
+            //    activity_daily_order_status.this.finish();
+            List<Datum> Locations= Databackbone.getinstance().getDeliveryTask().getData();
+            String orderid = Databackbone.getinstance().getDeliveryTask().getTaskId();
             pending_parcels_to_scan = 0 ;
             if(Locations.size() == 0)
                 this.finish();
@@ -285,6 +298,8 @@ public class activity_daily_order_status  extends Activity {
                 activated_order = false;
             }
             Databackbone.getinstance().ar_orders_daily.addAll(temp_ar_orders_daily);
+            if(temp_ar_orders_daily.size() == 0)
+                tx_empty_view.setVisibility(View.VISIBLE);
             if(pending_parcels_to_scan <= 1)
             tx_parcels_status_count.setText(Integer.toString(pending_parcels_to_scan)+" Parcel left to Scan");
             else tx_parcels_status_count.setText(Integer.toString(pending_parcels_to_scan)+" Parcel left to Scan");
@@ -616,7 +631,7 @@ public class activity_daily_order_status  extends Activity {
         final List<String> parcelIds = getParcelsToComplete(order_to_start);
         String reason = "";
         String action = "started";
-        String taskId = Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getTaskId();
+        String taskId = Databackbone.getinstance().getDeliveryTask().getTaskId();
         if(parcelIds.size() == 0)
         {
             Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this, "Error", "Server code error 102");
@@ -685,7 +700,7 @@ public class activity_daily_order_status  extends Activity {
 
     }
     public List<String> getParcelsToComplete(int order){
-        Datum data = Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData().get(order);
+        Datum data = Databackbone.getinstance().getDeliveryTask().getData().get(order);
         List<String> parcels_id = new ArrayList<String>();
 
         for (int j = 0; j < data.getParcels().size(); j++) {

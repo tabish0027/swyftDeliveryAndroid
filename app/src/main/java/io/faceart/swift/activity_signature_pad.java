@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.faceart.swift.interface_retrofit.RiderActivity;
 import io.faceart.swift.interface_retrofit.manage_task;
 import io.faceart.swift.interface_retrofit_delivery.Datum;
 import io.faceart.swift.interface_retrofit_delivery.RiderActivityDelivery;
@@ -59,7 +60,11 @@ public class activity_signature_pad extends AppCompatActivity {
         btn_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               String Parcelid =  Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().delivery_to_show).getData().get(0).getParcels().get(0).getParcelId();
+                Datum data = Databackbone.getinstance().getDeliveryParcelsTask();
+                if(data == null || data.getParcels().size()==0){
+                    activity_signature_pad.this.finish();
+                }
+                String Parcelid =  Databackbone.getinstance().getDeliveryParcelsTask().getParcels().get(0).getParcelId();
                 uploadSignature(Parcelid);
             }
         });
@@ -183,7 +188,10 @@ public class activity_signature_pad extends AppCompatActivity {
         final List<String> parcelIds = Databackbone.getinstance().parcel_to_process;
         String reason = "";
         String action = "delivered";
-        String taskId = Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getTaskId();
+        RiderActivityDelivery riderDelivery = Databackbone.getinstance().getDeliveryTask();
+        if(riderDelivery == null)
+            return;
+        String taskId = riderDelivery.getTaskId();
         if(parcelIds.size() == 0)
         {
             Databackbone.getinstance().showAlsertBox(activity_signature_pad.this, "Error", "Server code error 102");

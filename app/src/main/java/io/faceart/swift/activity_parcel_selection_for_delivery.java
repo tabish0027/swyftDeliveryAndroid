@@ -3,6 +3,7 @@ package io.faceart.swift;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -21,7 +22,9 @@ import java.util.List;
 import io.faceart.swift.adapters.*;
 import io.faceart.swift.data_models.model_parcel;
 import io.faceart.swift.interface_retrofit.GeoPoints;
+import io.faceart.swift.interface_retrofit.RiderActivity;
 import io.faceart.swift.interface_retrofit_delivery.Datum;
+import io.faceart.swift.interface_retrofit_delivery.RiderActivityDelivery;
 
 public class activity_parcel_selection_for_delivery extends AppCompatActivity {
     ImageView btn_back;
@@ -130,17 +133,27 @@ public class activity_parcel_selection_for_delivery extends AppCompatActivity {
         LoadData();
     }
     public void LoadData(){
-        if(Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData().size() ==0){
+        RiderActivityDelivery RiderDelivery = Databackbone.getinstance().getDeliveryTask();
+        if(RiderDelivery == null) {
+            activity_parcel_selection_for_delivery.this.finish();
+
+            return;
+        }
+        if(RiderDelivery.getData().size() ==0){
             activity_parcel_selection_for_delivery.this.finish();
             return;
         }
-        Datum data=   Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData().get(Databackbone.getinstance().delivery_to_show) ;
+        Datum data=   Databackbone.getinstance().getDeliveryParcelsTask() ;
+        if(data  == null){
+            activity_parcel_selection_for_delivery.this.finish();
+            return;
+        }
         Databackbone.getinstance().ar_orders_parcels_selections.clear();
         ArrayList<model_parcel> parcels= new ArrayList<>();
         int TotalAmount=0,Totalparcels=0;
         for(int i=0;i<data.getParcels().size();i++){
             if(data.getParcels().get(i).getStatus().equals("started")||data.getParcels().get(i).getStatus().equals("pending")){
-                String mb_task_id =Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getTaskId();
+                String mb_task_id =RiderDelivery.getTaskId();
                 String parcelid = data.getParcels().get(i).getParcelId();
                 String mb_name = data.getName();
                 String mb_address =  data.getLocation().getAddress();
@@ -215,11 +228,13 @@ public class activity_parcel_selection_for_delivery extends AppCompatActivity {
 
     }
     public void mark_park_parcel_to_complete(){
-         Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData().get(Databackbone.getinstance().delivery_to_show).markAllParcelToBeComplete();
+         Databackbone.getinstance().getDeliveryParcelsTask().markAllParcelToBeComplete();
 
     }
+    /*
     public void checkIfAnyParcelLeft(){
         Boolean check_any_parcel_left = true;
+
         if(Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().delivery_to_show).getData().size() == 0)
         {
             activity_parcel_selection_for_delivery.this.finish();
@@ -238,9 +253,13 @@ public class activity_parcel_selection_for_delivery extends AppCompatActivity {
         }
 
     }
+    */
+
     public Boolean checkIforderActive(){
         Boolean check_any_parcel_left = true;
-        Datum data = Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData().get(Databackbone.getinstance().delivery_to_show);
+        Datum data = Databackbone.getinstance().getDeliveryParcelsTask();
+        if(data == null)
+            activity_parcel_selection_for_delivery.this.finish();
         for(int i=0;i<data.getParcels().size();i++)
             if(data.getParcels().get(i).getStatus().equals("pending"))
                 return true;
@@ -250,6 +269,7 @@ public class activity_parcel_selection_for_delivery extends AppCompatActivity {
         return false;
 
     }
+    /*
     public int totalamounttocollect(){
         int amount = 0;
         Datum data = Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData().get(Databackbone.getinstance().delivery_to_show);
@@ -259,7 +279,7 @@ public class activity_parcel_selection_for_delivery extends AppCompatActivity {
 
         return amount;
 
-    }
+    }*/
     public void mark_parcels_to_process(){
          List<String> parcels_id = new ArrayList<String>();
 

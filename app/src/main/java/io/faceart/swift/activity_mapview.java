@@ -379,10 +379,12 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         }
         if(Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery")) {
             Databackbone.getinstance().RiderTypeDelivery=  true;
+            markers.clear();
             LoadParcelsForDelivery();
         }
         else {
             Databackbone.getinstance().RiderTypeDelivery=  false;
+            markers.clear();
             LoadParcels();
         }
 
@@ -427,7 +429,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
 
                     // System.out.println(parcels.size());
                     LoadLocation(parcels);
-                    Databackbone.getinstance().parcels = Databackbone.getinstance().resortParcelsPickup(parcels);
+                    Databackbone.getinstance().parcels = parcels;
                     //Databackbone.getinstance().parcels = parcels;
                     tx_parcels_status_count.setText(Integer.toString(parcels.size())+" Task Pending");
                     DisableLoading();

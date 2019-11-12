@@ -17,7 +17,10 @@ import java.util.List;
 import io.faceart.swift.adapters.adapter_status_packages_scanning;
 import io.faceart.swift.data_models.model_order_item;
 import io.faceart.swift.interface_retrofit.Parcel;
+import io.faceart.swift.interface_retrofit.PickupParcel;
+import io.faceart.swift.interface_retrofit.RiderActivity;
 import io.faceart.swift.interface_retrofit_delivery.Datum;
+import io.faceart.swift.interface_retrofit_delivery.RiderActivityDelivery;
 
 public class activity_order_status_scanning extends Activity {
 
@@ -108,7 +111,10 @@ public class activity_order_status_scanning extends Activity {
         ArrayList<model_order_item>  temp_ar_orders_remaining= new ArrayList<>();
 
        if(!Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery")) {
-           List<Parcel> parcels = Databackbone.getinstance().parcels.get(Databackbone.getinstance().task_to_show).getParcels();
+           PickupParcel parcelPickups = Databackbone.getinstance().getParcelsForPickup() ;
+           if(parcelPickups == null)
+               activity_order_status_scanning.this.finish();
+           List<Parcel> parcels = parcelPickups.getParcels() ;
            for (int i = 0; i < parcels.size(); i++) {
                if (!parcels.get(i).getScanned()) {
 
@@ -120,9 +126,10 @@ public class activity_order_status_scanning extends Activity {
                }
            }
        }else{
-           if(Databackbone.getinstance().task_to_show >= Databackbone.getinstance().parcelsdelivery.size()   )
+           RiderActivityDelivery BatchToDeliver = Databackbone.getinstance().getDeliveryTask();
+           if(BatchToDeliver == null   )
                activity_order_status_scanning.this.finish();
-           List<Datum> Locations= Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData();
+           List<Datum> Locations= BatchToDeliver.getData();
 
            for (int i = 0; i < Locations.size(); i++) {
                Datum data = Locations.get(i);

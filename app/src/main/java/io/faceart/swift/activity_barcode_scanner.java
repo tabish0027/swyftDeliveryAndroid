@@ -69,7 +69,6 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
         barcodescannerview =  findViewById(R.id.barcodescannerview);
         tx_barcode = findViewById(R.id.tx_barcode);
         mScannerView = new ZXingScannerView(this);
-        mScannerView.setAspectTolerance(0.5f);
         btn_refreash = findViewById(R.id.btn_refreash);
         tx_parcels_to_scan = findViewById(R.id.tx_parcels_to_scan);
         btn_add_parcel = findViewById(R.id.btn_add_parcel);
@@ -129,6 +128,7 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
         super.onResume();
         mScannerView.setResultHandler(this); // Register ourselves as a handler for scan results.
         mScannerView.startCamera();          // Start camera on resume
+
     }
 
     @Override
@@ -178,23 +178,15 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
     public void load_parcels_to_scan(){
 
 
-        if(!Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery")){
-          List<Parcel> parcels=   Databackbone.getinstance().parcels.get(Databackbone.getinstance().task_to_show).getParcels();
-            pending_parcels_to_scan = 0 ;
-            for(int i =0 ; i < parcels.size();i++){
-                if(!parcels.get(i).getScanned()){
-                    pending_parcels_to_scan++;
-                }
-            }
+        if(Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery")){
 
-            if(pending_parcels_to_scan <= 1)
-                tx_parcels_to_scan.setText(Integer.toString(pending_parcels_to_scan)+" Parcel left to Scan");
-            else tx_parcels_to_scan.setText(Integer.toString(pending_parcels_to_scan)+" Parcel left to Scan");
-
-        }else{
-            if(Databackbone.getinstance().task_to_show >= Databackbone.getinstance().parcelsdelivery.size()   )
+            //if(Databackbone.getinstance().task_to_show >= Databackbone.getinstance().parcelsdelivery.size()   )
+             //   activity_barcode_scanner.this.finish();
+            RiderActivityDelivery riderActivityDelivery = Databackbone.getinstance().getDeliveryTask();
+            if(riderActivityDelivery == null)
                 activity_barcode_scanner.this.finish();
-            List<Datum> Locations= Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData();
+            List<Datum> Locations = riderActivityDelivery.getData();
+            //List<Datum> Locations= Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData();
             pending_parcels_to_scan = 0 ;
             for (int i = 0; i < Locations.size(); i++) {
                 Datum data = Locations.get(i);
@@ -209,6 +201,23 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
                 tx_parcels_to_scan.setText(Integer.toString(pending_parcels_to_scan)+" Parcel left to Scan");
             else tx_parcels_to_scan.setText(Integer.toString(pending_parcels_to_scan)+" Parcel left to Scan");
 
+        }else{
+            PickupParcel pickupparcels=   Databackbone.getinstance().getParcelsForPickup();
+            if(pickupparcels == null)
+                activity_barcode_scanner.this.finish();
+            List<Parcel> parcels=   pickupparcels.getParcels();
+
+            pending_parcels_to_scan = 0 ;
+            for(int i =0 ; i < parcels.size();i++){
+                if(!parcels.get(i).getScanned()){
+                    pending_parcels_to_scan++;
+                }
+            }
+
+            if(pending_parcels_to_scan <= 1)
+                tx_parcels_to_scan.setText(Integer.toString(pending_parcels_to_scan)+" Parcel left to Scan");
+            else tx_parcels_to_scan.setText(Integer.toString(pending_parcels_to_scan)+" Parcel left to Scan");
+
         }
 
 
@@ -219,9 +228,14 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
        if(Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery"))
        {
            Boolean check = false;
-           if(Databackbone.getinstance().task_to_show >= Databackbone.getinstance().parcelsdelivery.size()   )
+           //if(Databackbone.getinstance().task_to_show >= Databackbone.getinstance().parcelsdelivery.size()   )
+           //    activity_barcode_scanner.this.finish();
+           RiderActivityDelivery riderActivityDelivery = Databackbone.getinstance().getDeliveryTask();
+           if(riderActivityDelivery == null)
                activity_barcode_scanner.this.finish();
-           List<Datum> Locations= Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getData();
+
+
+           List<Datum> Locations= riderActivityDelivery.getData();
 
            for (int i = 0; i < Locations.size(); i++) {
                Datum data = Locations.get(i);
@@ -244,7 +258,10 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
            }
        }
        else {
-           if(!Databackbone.getinstance().parcels.get(Databackbone.getinstance().task_to_show).getTaskStatus().equals("started")){
+           PickupParcel parcelspickup = Databackbone.getinstance().getParcelsForPickup();
+           if(parcelspickup == null)
+               activity_barcode_scanner.this.finish();
+           if(!parcelspickup.getTaskStatus().equals("started")){
                Databackbone.getinstance().showAlsertBox(this, "Error", "Task Not Active");
 
                DisableLoading();
@@ -253,7 +270,7 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
            }
 
            Boolean check = false;
-           List<Parcel> parcels = Databackbone.getinstance().parcels.get(Databackbone.getinstance().task_to_show).getParcels();
+           List<Parcel> parcels = parcelspickup.getParcels();
            for (int i = 0; i < parcels.size(); i++) {
                if (parcels.get(i).getParcelId().equals(id)) {
                    check = true;
@@ -276,7 +293,7 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
         swift_api riderapi = retrofit.create(swift_api.class);
 
-        Call<List<PickupParcel>> call = riderapi.scanParcels(Databackbone.getinstance().rider.getId(),(id),new parcel_scan(Databackbone.getinstance().parcels.get(Databackbone.getinstance().task_to_show).getTaskId(),Databackbone.getinstance().rider.getUserId()));
+        Call<List<PickupParcel>> call = riderapi.scanParcels(Databackbone.getinstance().rider.getId(),(id),new parcel_scan(Databackbone.getinstance().getParcelsForPickup().getTaskId(),Databackbone.getinstance().rider.getUserId()));
         call.enqueue(new Callback<List<PickupParcel>>() {
             @Override
             public void onResponse(Call<List<PickupParcel>> call, Response<List<PickupParcel>> response) {
@@ -330,7 +347,7 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
         swift_api_delivery riderapi = retrofit.create(swift_api_delivery.class);
 
-        Call<List<RiderActivityDelivery>> call = riderapi.scan_parcels_delivery(Databackbone.getinstance().rider.getId(),new parcel_scan_delivery(Databackbone.getinstance().parcelsdelivery.get(Databackbone.getinstance().task_to_show).getTaskId(),id));
+        Call<List<RiderActivityDelivery>> call = riderapi.scan_parcels_delivery(Databackbone.getinstance().rider.getId(),new parcel_scan_delivery(Databackbone.getinstance().getDeliveryTask().getTaskId(),id));
         call.enqueue(new Callback<List<RiderActivityDelivery>>() {
             @Override
             public void onResponse(Call<List<RiderActivityDelivery>> call, Response<List<RiderActivityDelivery>> response) {

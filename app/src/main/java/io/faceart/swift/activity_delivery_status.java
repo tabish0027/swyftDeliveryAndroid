@@ -15,6 +15,9 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.github.gcacace.signaturepad.views.SignaturePad;
 
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import io.faceart.swift.interface_retrofit_delivery.RiderActivityDelivery;
@@ -96,7 +99,11 @@ public class activity_delivery_status extends AppCompatActivity {
             lat = Databackbone.getinstance().current_location.latitude;
             lng = Databackbone.getinstance().current_location.longitude;
         }
-        mark_parcel_complete com_parcels = new mark_parcel_complete(parcelIds,action,taskId,lat,  lng, reason);
+        String date = "19-11-2019";
+        String phase = "Morning";
+        List<String> checkbox = new ArrayList<>();
+        checkbox.add("Not Enought Funds");
+        mark_parcel_complete com_parcels = new mark_parcel_complete(parcelIds,action,taskId,lat,  lng, reason,date,phase,checkbox);
 
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
         swift_api_delivery riderapi = retrofit.create(swift_api_delivery.class);
@@ -130,6 +137,11 @@ public class activity_delivery_status extends AppCompatActivity {
 
                 }
                 else{
+                    JSONObject jObjError = null;
+                    try {
+                         jObjError = new JSONObject(response.errorBody().string());
+                     } catch (Exception e) {
+                      }
                     Databackbone.getinstance().showAlsertBox(activity_delivery_status.this, "Error", "Server code error 98");
                     DisableLoading();
                 }

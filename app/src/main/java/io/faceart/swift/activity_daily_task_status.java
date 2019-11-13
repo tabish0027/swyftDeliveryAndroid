@@ -488,7 +488,7 @@ public class activity_daily_task_status extends Activity {
         swift_api_delivery riderapi = retrofit.create(swift_api_delivery.class);
         EnableLoading();
         double distance = Databackbone.getinstance().getfinalcouvereddistance (taskId,activity_daily_task_status.this);
-
+        if(distance == 0)distance = 1.0; // as the server dont accept distance that is 0
         Call<List<RiderActivityDelivery>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),taskId,new manage_task(action,(int)distance));
         call.enqueue(new Callback<List<RiderActivityDelivery>>() {
             @Override

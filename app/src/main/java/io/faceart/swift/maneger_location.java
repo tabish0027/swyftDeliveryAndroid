@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 
+import com.google.android.gms.common.internal.Constants;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Locale;
@@ -82,7 +83,7 @@ public class maneger_location extends Service implements LocationListener {
 
         @Override
         public void onLocationChanged(Location location) {
-            showToast("Location changes");
+            //showToast("Location changes");
             Databackbone.getinstance().current_location = new LatLng(location.getLatitude(),location.getLongitude()) ;
             OnLocationChangeCheckProximity(location);
        }
@@ -200,8 +201,16 @@ public class maneger_location extends Service implements LocationListener {
 
             if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 50, mLocationListeners[0]);
-                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 50, mLocationListeners[1]);
+                if (mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ) {
+                    mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 50, mLocationListeners[0]);
+
+                }
+                if (mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) ) {
+                    mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 50, mLocationListeners[0]);
+
+                }
+
+
             }
 
         }
@@ -212,7 +221,7 @@ public class maneger_location extends Service implements LocationListener {
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        showToast("service Started");
+        //showToast("service Started");
         try {
             thr = new Thread(new Runnable() {
                 @Override
@@ -240,7 +249,7 @@ public class maneger_location extends Service implements LocationListener {
             });
             thr.start();
         } catch (Exception i) {
-            showToast("Exception Generated");
+            //showToast("Exception Generated");
             return mStartMode;
         }
         return mStartMode;

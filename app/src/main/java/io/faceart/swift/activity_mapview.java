@@ -351,8 +351,9 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         });
         mMapServiceView.setMyLocationEnabled(true);
         mMapServiceView.getUiSettings().setMyLocationButtonEnabled(false);
-
         getCurrentLocation();
+        LoadResume();
+
         /*
         if(Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery"))
             LoadParcelsForDelivery();
@@ -369,7 +370,14 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
     public void onResume() {
 
        mMapView.onResume();
+        getCurrentLocation();
         super.onResume();
+        LoadResume();
+
+
+
+    }
+    public void LoadResume(){
         if(Databackbone.getinstance().rider != null && Databackbone.getinstance().rider.getUser().getIsOnline())
         {
             ActivateRider();
@@ -387,11 +395,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
             markers.clear();
             LoadParcels();
         }
-
-
-
     }
-
     @Override
     public void onPause() {
         super.onPause();

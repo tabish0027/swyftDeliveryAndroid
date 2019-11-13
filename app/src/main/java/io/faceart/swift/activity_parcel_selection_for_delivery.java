@@ -261,7 +261,7 @@ public class activity_parcel_selection_for_delivery extends AppCompatActivity {
         if(data == null)
             activity_parcel_selection_for_delivery.this.finish();
         for(int i=0;i<data.getParcels().size();i++)
-            if(data.getParcels().get(i).getStatus().equals("pending"))
+            if(data.getParcels().get(i).getStatus().equals("pending")||data.getParcels().get(i).getStatus().equals("scanned"))
                 return true;
             else
                 return false;

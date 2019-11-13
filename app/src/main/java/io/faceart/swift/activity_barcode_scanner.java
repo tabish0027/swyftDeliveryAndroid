@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.SoundEffectConstants;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -61,7 +62,8 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
     TextView tx_parcels_to_scan;
     ProgressBar progressBar = null;
     int pending_parcels_to_scan = 0;
-
+    EditText edt_parcel_id;
+    Button btn_add;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +77,9 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
         layout_add_parcel = findViewById(R.id.layout_add_parcel);
         progressBar = (ProgressBar)findViewById(R.id.url_loading_animation);
         progressBar.setVisibility(View.INVISIBLE);
+        edt_parcel_id = findViewById(R.id.edt_parcel_id);
+        btn_add = findViewById(R.id.btn_add);
+
         final ImageView btn_back = findViewById(R.id.btn_back);
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,6 +94,17 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
                 Intent showParcelList = new Intent(activity_barcode_scanner.this,activity_order_status_scanning.class);
                 activity_barcode_scanner.this.startActivity(showParcelList);
                 overridePendingTransition( R.anim.slide_in_up, R.anim.slide_out_up );
+            }
+        });
+        btn_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(edt_parcel_id.getText().length()!=0){
+                    String Scannedbarcode = edt_parcel_id.getText().toString();
+                    mScannerView.stopCameraPreview();
+                    EnableLoading();
+                    check_parcel_to_scan(Scannedbarcode);
+                }
             }
         });
         btn_refreash.setOnClickListener(new View.OnClickListener() {
@@ -241,7 +257,13 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
                Datum data = Locations.get(i);
 
                for (int j = 0; j < data.getParcels().size(); j++) {
-                   if(data.getParcels().get(j).getParcelId().equals(id)){
+                   if(data.getParcels().get(j).getParcelId().equals(id) ){
+                       if(!data.getParcels().get(j).getStatus().equals("pending")){
+                           Databackbone.getinstance().showAlsertBox(this, "Error", "Parcel Already Scanned");
+                           DisableLoading();
+                           refreahScanner();
+                           return;
+                       }
                        check = true;
                        break;
 

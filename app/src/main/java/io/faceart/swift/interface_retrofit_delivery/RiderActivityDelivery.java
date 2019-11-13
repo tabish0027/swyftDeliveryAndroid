@@ -10,7 +10,7 @@ public class RiderActivityDelivery {
 
     @SerializedName("data")
     @Expose
-    private List<Datum> data = null;
+    public List<Datum> data = null;
     @SerializedName("taskId")
     @Expose
     private String taskId;

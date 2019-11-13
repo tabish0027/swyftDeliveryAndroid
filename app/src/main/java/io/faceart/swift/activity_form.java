@@ -16,6 +16,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import org.joda.time.DateTime;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -138,7 +140,7 @@ public class activity_form extends AppCompatActivity {
             }
             Datum data = Databackbone.getinstance().getDeliveryParcelsTask();
             for (int i = 0; i < data.getParcels().size(); i++)
-                if (data.getParcels().get(i).getStatus().equals("started") || data.getParcels().get(i).getStatus().equals("pending")) {
+                if (data.getParcels().get(i).getStatus().equals("scanned") ||data.getParcels().get(i).getStatus().equals("started") || data.getParcels().get(i).getStatus().equals("pending")) {
                     check_any_parcel_left = false;
                     break;
                 }
@@ -156,7 +158,7 @@ public class activity_form extends AppCompatActivity {
          if(data == null)
              activity_form.this.finish();
         for(int i=0;i<data.getParcels().size();i++)
-            if(data.getParcels().get(i).getStatus().equals("pending"))
+            if(data.getParcels().get(i).getStatus().equals("pending")||data.getParcels().get(i).getStatus().equals("scanned"))
                 return true;
             else
                 return false;
@@ -247,10 +249,15 @@ public class activity_form extends AppCompatActivity {
     }
 
     public void OpenMessege(){
-        Intent smsIntent = new Intent(Intent.ACTION_VIEW);
-        smsIntent.setType("vnd.android-dir/mms-sms");
-        smsIntent.putExtra("address", "0"+Databackbone.getinstance().rider.getUser().getPhone());
-        smsIntent.putExtra("sms_body","");
-        startActivity(smsIntent);
+        try {
+            Intent smsIntent = new Intent(Intent.ACTION_VIEW);
+            smsIntent.setType("vnd.android-dir/mms-sms");
+            smsIntent.putExtra("address", "0" + Databackbone.getinstance().rider.getUser().getPhone());
+            smsIntent.putExtra("sms_body", "");
+            startActivity(smsIntent);
+        }catch (Exception i){
+            Databackbone.getinstance().showAlsertBox(this,"error","This phone dont support sms sync app Please Contact support for this ");
+        }
     }
+
 }

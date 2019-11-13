@@ -107,14 +107,20 @@ public class activity_profile  extends Activity {
 
     }
     public void LoadData(){
-        tx_pro_name.setText(Databackbone.getinstance().riderdetails.getFirstName()+" "+Databackbone.getinstance().riderdetails.getLastName());
-        tx_pro_rating.setText(Databackbone.getinstance().riderdetails.getType());
-        tx_pro_location.setText(Databackbone.getinstance().riderdetails.getAddress());
-        tx_pro_phone.setText(Databackbone.getinstance().riderdetails.getPhone());
-        String imageUri = Databackbone.getinstance().riderdetails.getProfilePicture();
-        Picasso.with(this).setLoggingEnabled(true);
-        Picasso.with(this).load(imageUri).into(profile_image);
-        SelectDay();
+        try {
+            if (Databackbone.getinstance().riderdetails == null)
+                activity_profile.this.finish();
+            tx_pro_name.setText(Databackbone.getinstance().riderdetails.getFirstName() + " " + Databackbone.getinstance().riderdetails.getLastName());
+            tx_pro_rating.setText(Databackbone.getinstance().riderdetails.getType());
+            tx_pro_location.setText(Databackbone.getinstance().riderdetails.getAddress());
+            tx_pro_phone.setText(Databackbone.getinstance().riderdetails.getPhone());
+            String imageUri = Databackbone.getinstance().riderdetails.getProfilePicture();
+            Picasso.with(this).setLoggingEnabled(true);
+            Picasso.with(this).load(imageUri).into(profile_image);
+            SelectDay();
+        }catch (Exception i){
+            activity_profile.this.finish();
+        }
     }
 
 }

@@ -279,20 +279,20 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <Button
-                android:id="@+id/btn_login4"
+                android:id="@+id/btn_add"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginEnd="24dp"
                 android:background="@drawable/round_barcode_bt"
                 android:text="Add"
                 android:textColor="#ffffff"
-                app:layout_constraintBottom_toBottomOf="@+id/username2"
+                app:layout_constraintBottom_toBottomOf="@+id/edt_parcel_id"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/username2"
-                app:layout_constraintTop_toTopOf="@+id/username2" />
+                app:layout_constraintStart_toEndOf="@+id/edt_parcel_id"
+                app:layout_constraintTop_toTopOf="@+id/edt_parcel_id" />
 
             <EditText
-                android:id="@+id/username2"
+                android:id="@+id/edt_parcel_id"
                 android:layout_width="0dp"
                 android:layout_height="30dp"
                 android:layout_marginStart="16dp"

@@ -56,9 +56,9 @@ public class Databackbone {
 
     public RiderDetails riderdetails = null;
     //testcase
-     public String Base_URL = "http://13.235.240.229:3000/api/";
+     //public String Base_URL = "http://13.235.240.229:3000/api/";
     // real
-    //public String Base_URL = "http://18.136.172.141:3000/api/";
+    public String Base_URL = "http://18.136.172.141:3000/api/";
     List<PickupParcel> parcels = null;
     List<RiderActivityDelivery> parcelsdelivery = null;
     Boolean check_parcel_scanning_complete = true;
@@ -275,22 +275,50 @@ public class Databackbone {
 
         return ProcessedStarted;
     }
-    public List<RiderActivityDelivery> resortDelivery(List<RiderActivityDelivery> parcel){
+    public List<RiderActivityDelivery> resortDelivery(List<RiderActivityDelivery> parcel) {
         List<RiderActivityDelivery> parcelProcessedPending = new ArrayList<RiderActivityDelivery>();
         List<RiderActivityDelivery> parcelProcessedStarted = new ArrayList<RiderActivityDelivery>();
+        RiderActivityDelivery parcelStarted = null;
 
         parcel = calculateDistanceDelivery(parcel);
 
-        for(int i =0;i<parcel.size();i++){
-            Collections.sort(parcel.get(i).getData());
-        }
-        for(int i =0;i<parcel.size();i++){
-            if(parcel.get(i).getTaskStatus().equals("started"))
+        for (int i = 0; i < parcel.size(); i++) {
+            if (parcel.get(i).getTaskStatus().equals("started"))
                 parcelProcessedStarted.add(parcel.get(i));
             else
                 parcelProcessedPending.add(parcel.get(i));
 
         }
+        // distance is calculated from math formulas as these task are not active
+        //parcelProcessedPending = calculateDistanceDelivery(parcelProcessedPending);
+
+        for (int i = 0; i < parcelProcessedPending.size(); i++) {
+            Collections.sort(parcelProcessedPending.get(i).getData());
+        }
+
+        int index = 0;
+        for(int i =0;i<parcelProcessedStarted.size();i++){
+            parcelProcessedStarted.get(i).data =  CalculateLocationFromDelivery(parcelProcessedStarted.get(i).data);
+            parcelStarted = parcelProcessedStarted.get(i);
+            index = i;
+        }
+        if (parcelStarted != null){
+            List<Datum> DatumProcessedPending = new ArrayList<Datum>();
+            List<Datum> DatumProcessedStarted = new ArrayList<Datum>();
+            for (int i = 0; i < parcelStarted.getData().size(); i++) {
+                String Status = parcelStarted.getData().get(i).getParcels().get(0).getStatus();
+                if (Status.equals("pending")||Status.equals("scanned"))
+                    DatumProcessedPending.add(parcelStarted.getData().get(i));
+                else
+                    DatumProcessedStarted.add(parcelStarted.getData().get(i));
+
+            }
+            Collections.sort(DatumProcessedPending);
+
+            DatumProcessedStarted.addAll(DatumProcessedPending);
+            parcelProcessedStarted.get(index).setData(DatumProcessedStarted);
+        }
+
         parcelProcessedStarted.addAll(parcelProcessedPending);
         return parcelProcessedStarted;
     }
@@ -323,7 +351,39 @@ public class Databackbone {
 
 
     }
+    public List<Datum> CalculateLocationFromDelivery(List<Datum> parcel){
+        //List<String> destinations =  new ArrayList<String>();
+        if(parcel == null || current_location == null)
+            return parcel;
+        try {
+            String currentLocation = Double.toString(current_location.latitude) + "," + Double.toString(current_location.longitude);
+            String[] originAddress = {currentLocation};
+            String desaddress[] = new String[parcel.size()];
+            for (int i = 0; i < parcel.size(); i++) {
+                double lat = parcel.get(i).getLocation().getGeoPoints().getLat();
+                double lng = parcel.get(i).getLocation().getGeoPoints().getLng();
+                String DestinationLocation = Double.toString(lat) + "," + Double.toString(lng);
+                desaddress[i] = DestinationLocation;
 
+            }
+
+            DistanceMatrix matrix = estimateRouteTime(originAddress, desaddress);
+            for (int i = 0; i < matrix.rows[0].elements.length; i++) {
+                double distance = matrix.rows[0].elements[i].distance.inMeters / 1000.0;
+                DecimalFormat df = new DecimalFormat("####0.00");
+                String result = df.format(distance);
+
+                parcel.get(i).setDistance(Double.parseDouble(result));
+
+            }
+        }catch (Exception i)
+        {
+            return parcel;
+        }
+        return parcel;
+
+
+    }
     public PickupParcel getParcelsForPickup( ){
         for(int i=0;i<parcels.size();i++){
             if(parcels.get(i).getTaskId().equals(task_to_show))
@@ -370,4 +430,5 @@ public class Databackbone {
         }
         return null;
     }
+
 }

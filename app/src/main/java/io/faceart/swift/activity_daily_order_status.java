@@ -155,7 +155,7 @@ public class activity_daily_order_status  extends Activity {
 
                     return ;
                 }
-                    Intent pendingorder = new Intent(activity_daily_order_status.this, activity_barcode_scanner.class);
+                Intent pendingorder = new Intent(activity_daily_order_status.this, activity_barcode_scanner.class);
                 pendingorder.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 pendingorder.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 activity_daily_order_status.this.startActivity(pendingorder);

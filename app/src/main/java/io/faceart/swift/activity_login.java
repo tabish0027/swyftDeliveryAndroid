@@ -54,22 +54,14 @@ public class activity_login extends AppCompatActivity {
         });
 
 
-        username.setText("923004820761");// pickup
-        password.setText("123456789");
+        //username.setText("923004820761");password.setText("123456789");// pickup dev
+        //username.setText("923049494294");password.setText("12345"); // delivery dev
 
 
 
-        //username.setText("923049494294"); // delivery
-        //password.setText("12345");
+        //username.setText("03228022136");password.setText("12345");// pickup stage
+        username.setText("03228022138");password.setText("12345"); // delivery stage
 
-
-        //username.setText("923004820761"); // delivery
-        //username.setText("03044377462"); // delivery
-        //password.setText("12345");
-
-        // staging server access for delivery
-       // username.setText("03060228864"); // delivery
-       // password.setText("12345");
 
         Sprite doubleBounce = new DoubleBounce();
         progressBar.setVisibility(View.GONE);
@@ -166,8 +158,11 @@ public class activity_login extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(requestCode == 1 && grantResults[0] == 0 ){
-            Intent i = new Intent(activity_login.this,activity_mapview.class);
-            activity_login.this.startActivity(i);
+
+
+                Intent i = new Intent(activity_login.this, activity_mapview.class);
+                activity_login.this.startActivity(i);
+
         }
         else{
             Databackbone.getinstance().showAlsertBox(activity_login.this,"Error","Please give permission for location");

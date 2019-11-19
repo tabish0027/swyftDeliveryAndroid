@@ -122,20 +122,22 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
             @Override
             public void onClick(View v) {
 
+                Intent activity_order_status = new Intent(activity_mapview.this,activity_order_status.class);
+                activity_mapview.this.startActivity(activity_order_status);
             }
         });
         Task2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent openaactivity = new Intent(activity_mapview.this,activity_help.class);
-                activity_mapview.this.startActivity(openaactivity);
+                //activity_mapview.this.startActivity(openaactivity);
             }
         });
         Task3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent openaactivity = new Intent(activity_mapview.this,activity_faq.class);
-                activity_mapview.this.startActivity(openaactivity);
+                //activity_mapview.this.startActivity(openaactivity);
             }
         });
         Task4.setOnClickListener(new View.OnClickListener() {

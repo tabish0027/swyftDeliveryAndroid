@@ -78,7 +78,7 @@
 
         </activity>
         <activity  android:screenOrientation="portrait" android:name=".activity_delivery_status">
-
+            activity_order_status
         </activity>
         <activity  android:screenOrientation="portrait" android:name=".activity_forget_password">
 

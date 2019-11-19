@@ -31,6 +31,7 @@ public class activity_form extends AppCompatActivity {
     ImageView btn_payment_method,btn_navigation,btn_parcel_selection,btn_sms,btn_phone;
     Button btn_diclined;
     TextView tx_description_title,tx_description_detail;
+    String PhoneNumber = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -227,6 +228,7 @@ public class activity_form extends AppCompatActivity {
             tx_parcel_id = findViewById(R.id.tx_parcel_id);
             tx_payment_method = findViewById(R.id.tx_payment_method);
             tx_name.setText(data.getName());
+            PhoneNumber = data.getPhone();
             tx_address.setText(data.getLocation().getAddress());
             tx_payment_method.setText("Cash");
             mark_park_parcel_to_complete();
@@ -244,7 +246,7 @@ public class activity_form extends AppCompatActivity {
     }
     public void OpenDiler(){
         Intent phoneintent = new Intent(Intent.ACTION_DIAL);
-        phoneintent.setData(Uri.parse("tel:0"+Databackbone.getinstance().rider.getUser().getPhone()));
+        phoneintent.setData(Uri.parse("tel:0"+PhoneNumber));
         startActivity(phoneintent);
     }
 
@@ -252,7 +254,7 @@ public class activity_form extends AppCompatActivity {
         try {
             Intent smsIntent = new Intent(Intent.ACTION_VIEW);
             smsIntent.setType("vnd.android-dir/mms-sms");
-            smsIntent.putExtra("address", "0" + Databackbone.getinstance().rider.getUser().getPhone());
+            smsIntent.putExtra("address", "0" + PhoneNumber);
             smsIntent.putExtra("sms_body", "");
             startActivity(smsIntent);
         }catch (Exception i){

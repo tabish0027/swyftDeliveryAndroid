@@ -3,8 +3,11 @@ package io.faceart.swift;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -53,6 +56,12 @@ public class activity_login extends AppCompatActivity {
             }
         });
 
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ){
+            Window window = this.getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+           // window.setStatusBarColor(ContextCompat.getColor(this, R.color.color_app_theam));
+        }
 
         //username.setText("923004820761");password.setText("123456789");// pickup dev
         //username.setText("923049494294");password.setText("12345"); // delivery dev
@@ -60,7 +69,8 @@ public class activity_login extends AppCompatActivity {
 
 
         //username.setText("03228022136");password.setText("12345");// pickup stage
-        username.setText("03228022138");password.setText("12345"); // delivery stage
+        //username.setText("03228022138");password.setText("12345"); // delivery stage
+        username.setText("03465175407");password.setText("12345"); // delivery stage
 
 
         Sprite doubleBounce = new DoubleBounce();
@@ -76,6 +86,11 @@ public class activity_login extends AppCompatActivity {
                     return;
                 }
                 Start_login();
+
+    }
+    public void changeStatusBarColor(){
+
+
 
     }
     public void Start_login(){
@@ -111,14 +126,7 @@ public class activity_login extends AppCompatActivity {
 
                     Rider rider = response.body();
                     Databackbone.getinstance().rider = rider;
-                    if (ContextCompat.checkSelfPermission(activity_login.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED)
-                        ActivityCompat.requestPermissions(activity_login.this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-                   else
-                    {
-                        Intent i = new Intent(activity_login.this,activity_mapview.class);
-                        activity_login.this.startActivity(i);
-
-                    }
+                    getRiderDetail();
                    // Toast.makeText(activity_login.this,rider.getId(),Toast.LENGTH_LONG).show();
 
 
@@ -140,7 +148,50 @@ public class activity_login extends AppCompatActivity {
         });
 
     }
+    public void getRiderDetail(){
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
+        swift_api riderapi = retrofit.create(swift_api.class);
 
+        Call<RiderDetails> call = riderapi.getRider(Databackbone.getinstance().rider.getId(),Databackbone.getinstance().rider.getUserId());
+        call.enqueue(new Callback<RiderDetails>() {
+            @Override
+            public void onResponse(Call<RiderDetails> call, Response<RiderDetails> response) {
+                if(response.isSuccessful()){
+
+                    RiderDetails riderActivity = response.body();
+                    Databackbone.getinstance().riderdetails = riderActivity;
+                    if (ContextCompat.checkSelfPermission(activity_login.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED)
+                        ActivityCompat.requestPermissions(activity_login.this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                    else
+                    {
+                        Intent i = new Intent(activity_login.this,activity_mapview.class);
+                        activity_login.this.startActivity(i);
+
+                    }
+
+                }
+                else{
+                    EnableLogin();
+                    //DeactivateRider();
+                    Databackbone.getinstance().showAlsertBox(activity_login.this,"Error","Error Connecting To Server Error Code 33");
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<RiderDetails> call, Throwable t) {
+                System.out.println(t.getCause());
+                EnableLogin();
+                Databackbone.getinstance().showAlsertBox(activity_login.this,"Error","Error Connecting To Server Error Code 34");
+
+                //DeactivateRider();
+            }
+        });
+
+
+
+
+    }
     @Override
     protected void onPause() {
         super.onPause();

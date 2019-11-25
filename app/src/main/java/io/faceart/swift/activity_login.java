@@ -64,13 +64,13 @@ public class activity_login extends AppCompatActivity {
         }
 
         //username.setText("923004820761");password.setText("123456789");// pickup dev
-        //username.setText("923049494294");password.setText("12345"); // delivery dev
+        username.setText("923049494294");password.setText("12345"); // delivery dev
 
 
 
         //username.setText("03228022136");password.setText("12345");// pickup stage
         //username.setText("03228022138");password.setText("12345"); // delivery stage
-        username.setText("03465175407");password.setText("12345"); // delivery stage
+       // username.setText("03465175407");password.setText("12345"); // delivery stage
 
 
         Sprite doubleBounce = new DoubleBounce();

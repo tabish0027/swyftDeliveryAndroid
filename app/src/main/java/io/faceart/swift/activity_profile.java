@@ -117,6 +117,7 @@ public class activity_profile  extends Activity {
             String imageUri = Databackbone.getinstance().riderdetails.getProfilePicture();
             Picasso.with(this).setLoggingEnabled(true);
             Picasso.with(this).load(imageUri).into(profile_image);
+
             SelectDay();
         }catch (Exception i){
             activity_profile.this.finish();

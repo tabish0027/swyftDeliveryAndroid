@@ -56,9 +56,9 @@ public class Databackbone {
 
     public RiderDetails riderdetails = null;
     //testcase
-     //public String Base_URL = "http://13.235.240.229:3000/api/";
+     public String Base_URL = "http://13.235.240.229:3000/api/";
     // real
-    public String Base_URL = "http://18.136.172.141:3000/api/";
+    //public String Base_URL = "http://18.136.172.141:3000/api/";
     List<PickupParcel> parcels = null;
     List<RiderActivityDelivery> parcelsdelivery = null;
     Boolean check_parcel_scanning_complete = true;

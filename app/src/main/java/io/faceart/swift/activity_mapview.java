@@ -530,7 +530,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
 
         MarkerOptions marker = new MarkerOptions().position(new LatLng(lat, lng)).title("Pickup : "+title);
         BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(marker_image);
-
+        mMapServiceView.clear();
         marker.icon(icon);
         markers.add(marker);
         mMapServiceView.addMarker(marker);

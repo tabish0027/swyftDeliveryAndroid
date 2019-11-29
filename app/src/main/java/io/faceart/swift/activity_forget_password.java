@@ -101,7 +101,7 @@ public class activity_forget_password extends AppCompatActivity {
     }
     public void request_Otp(String phonenumber){
 
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
+        Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
         swift_api riderapi = retrofit.create(swift_api.class);
 
         Call<PasswordResetRequest> call = riderapi.requestotp(new username(phonenumber));
@@ -134,7 +134,7 @@ public class activity_forget_password extends AppCompatActivity {
         });
     }
     public void reset_password(String otp , String password){
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
+        Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
         swift_api riderapi = retrofit.create(swift_api.class);
 
         Call<PasswordResetRequest> call = riderapi.reset_password_forget(new reset_password(password,otp));

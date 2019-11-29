@@ -5,7 +5,7 @@
     android:id="@+id/linearLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:background="@color/color_app_theam_color"
     android:orientation="vertical">
     <TextView
         android:id="@+id/tx_empty_view"

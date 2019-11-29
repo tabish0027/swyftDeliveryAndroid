@@ -312,7 +312,7 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
     }
     public void send_request_to_server(final String id){
 
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
+        Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
         swift_api riderapi = retrofit.create(swift_api.class);
 
         Call<List<PickupParcel>> call = riderapi.scanParcels(Databackbone.getinstance().rider.getId(),(id),new parcel_scan(Databackbone.getinstance().getParcelsForPickup().getTaskId(),Databackbone.getinstance().rider.getUserId()));
@@ -366,7 +366,7 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
     }
     public void send_request_to_server_for_delivery(final String id){
 
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
+        Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
         swift_api_delivery riderapi = retrofit.create(swift_api_delivery.class);
 
         Call<List<RiderActivityDelivery>> call = riderapi.scan_parcels_delivery(Databackbone.getinstance().rider.getId(),new parcel_scan_delivery(Databackbone.getinstance().getDeliveryTask().getTaskId(),id));
@@ -442,7 +442,7 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
         progressBar.setVisibility(View.VISIBLE);
     }
     public void LoadParcelsForDelivery(){
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
+        Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
         swift_api_delivery riderapidata = retrofit.create(swift_api_delivery.class);
         EnableLoading();
         Call<List<RiderActivityDelivery>> call = riderapidata.manageTaskfordelivery(Databackbone.getinstance().rider.getId(),(Databackbone.getinstance().rider.getUserId()));

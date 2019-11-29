@@ -8,12 +8,15 @@ import android.graphics.Path;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.text.TextUtils;
+import android.util.Log;
 
 import com.akexorcist.googledirection.DirectionCallback;
 import com.akexorcist.googledirection.GoogleDirection;
 import com.akexorcist.googledirection.constant.TransportMode;
 import com.akexorcist.googledirection.model.Direction;
 import com.akexorcist.googledirection.request.DirectionOriginRequest;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.DirectionsApi;
 import com.google.maps.DistanceMatrixApi;
@@ -25,11 +28,19 @@ import com.google.maps.model.TravelMode;
 
 import org.joda.time.DateTime;
 
+import java.io.IOException;
+import java.security.cert.CertificateException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import io.faceart.swift.data_models.*;
 import io.faceart.swift.interface_retrofit.PickupParcel;
@@ -39,6 +50,20 @@ import io.faceart.swift.interface_retrofit.RiderActivity;
 import io.faceart.swift.interface_retrofit.RiderDetails;
 import io.faceart.swift.interface_retrofit_delivery.Datum;
 import io.faceart.swift.interface_retrofit_delivery.RiderActivityDelivery;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+
+
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 
 public class Databackbone {
     public static Databackbone databackbone=null;
@@ -50,15 +75,19 @@ public class Databackbone {
     public ArrayList<model_daily_package_item> ar_task_daily_pickup = new ArrayList<>();
     public ArrayList<model_wallets_order> ar_orders_wallet = new ArrayList<>();
     public ArrayList<model_parcel> ar_orders_parcels_selections = new ArrayList<>();
+    private List<String> mCookies = new ArrayList<>();
 
     public Rider rider = null;
     public RiderActivity riderActivity = null;
 
     public RiderDetails riderdetails = null;
-    //testcase
-    // public String Base_URL = "http://13.235.240.229:3000/api/";
-    // real
-    public String Base_URL = "http://18.136.172.141:3000/api/";
+    //dev
+    // public String Base_URL = "https://devapi.swyftlogistics.com:3000/api/";
+    // staging
+    public String Base_URL = "https://stagingapi.swyftlogistics.com:3000/api/";
+    // production
+    //public String Base_URL = "https://api.swyftlogistics.com:3000/api/";
+
     List<PickupParcel> parcels = null;
     List<RiderActivityDelivery> parcelsdelivery = null;
     Boolean check_parcel_scanning_complete = true;
@@ -66,8 +95,9 @@ public class Databackbone {
     private static final GeoApiContext context = new GeoApiContext().setApiKey(API_KEY);
     LatLng current_location = null;
     public int pickup_to_process = -1 ;
+    Retrofit central_retrofit =null;
 
-   // public int task_to_show = -1 ;
+    // public int task_to_show = -1 ;
     // public int delivery_to_show = -1 ;
 
     public String task_to_show = "" ;
@@ -91,7 +121,61 @@ public class Databackbone {
             databackbone = new Databackbone();
         return databackbone;
     }
+    public Retrofit getRetrofitbuilder(){
+        if(central_retrofit == null) {
+            //central_retrofit = new Retrofit.Builder().client(getUnsafeOkHttpClient().build()).baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
+            central_retrofit = new Retrofit.Builder()
+                    .baseUrl(Base_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .client(getUnsafeOkHttpClient())
+                    .build();
 
+        }
+        return central_retrofit;
+    }
+
+    public static OkHttpClient getUnsafeOkHttpClient() {
+
+        try {
+            // Create a trust manager that does not validate certificate chains
+            final TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+                @Override
+                public void checkClientTrusted(
+                        java.security.cert.X509Certificate[] chain,
+                        String authType) throws CertificateException {
+                }
+
+                @Override
+                public void checkServerTrusted(
+                        java.security.cert.X509Certificate[] chain,
+                        String authType) throws CertificateException {
+                }
+
+                @Override
+                public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                    return new java.security.cert.X509Certificate[0];
+                }
+            } };
+
+            // Install the all-trusting trust manager
+            final SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, trustAllCerts,
+                    new java.security.SecureRandom());
+            // Create an ssl socket factory with our all-trusting manager
+            final SSLSocketFactory sslSocketFactory = sslContext
+                    .getSocketFactory();
+
+            OkHttpClient okHttpClient = new OkHttpClient();
+            okHttpClient = okHttpClient.newBuilder()
+                    .sslSocketFactory(sslSocketFactory)
+                    .hostnameVerifier(org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER).build();
+
+            return okHttpClient;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
     public void showAlsertBox(Context contect , String title , String message ){
         new AlertDialog.Builder(contect)
                 .setTitle(title)

@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.faceart.swift.interface_retrofit.swift_api;
 import io.faceart.swift.interface_retrofit_delivery.RiderActivityDelivery;
 import io.faceart.swift.interface_retrofit_delivery.mark_parcel_complete;
 import io.faceart.swift.interface_retrofit_delivery.swift_api_delivery;
@@ -105,7 +106,7 @@ public class activity_delivery_status extends AppCompatActivity {
         checkbox.add("Not Enought Funds");
         mark_parcel_complete com_parcels = new mark_parcel_complete(parcelIds,action,taskId,lat,  lng, reason,date,phase,checkbox);
 
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
+        Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
         swift_api_delivery riderapi = retrofit.create(swift_api_delivery.class);
         EnableLoading();
         Call<List<RiderActivityDelivery>> call = riderapi.markParcelComplete(Databackbone.getinstance().rider.getId(),com_parcels);

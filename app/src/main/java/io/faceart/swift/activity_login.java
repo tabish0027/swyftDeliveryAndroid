@@ -21,7 +21,10 @@ import androidx.core.content.ContextCompat;
 import com.github.ybq.android.spinkit.sprite.Sprite;
 import com.github.ybq.android.spinkit.style.DoubleBounce;
 
+import javax.net.ssl.SSLContext;
+
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -46,6 +49,7 @@ public class activity_login extends AppCompatActivity {
         username = findViewById(R.id.username);
         password = findViewById(R.id.password);
         btn_forget = findViewById(R.id.btn_forget);
+
         btn_forget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,13 +67,14 @@ public class activity_login extends AppCompatActivity {
            // window.setStatusBarColor(ContextCompat.getColor(this, R.color.color_app_theam));
         }
 
-        //username.setText("923004820761");password.setText("123456789");// pickup dev
-        username.setText("923049494294");password.setText("12345"); // delivery dev
+     // username.setText("923004820761");password.setText("123456789");// pickup dev
+      // username.setText("923049494294");password.setText("12345"); // delivery dev
 
-
+        username.setText("03465175407");password.setText("12345"); // delivery dev
 
         //username.setText("03228022136");password.setText("12345");// pickup stage
-        //username.setText("03228022138");password.setText("12345"); // delivery stage
+
+       // username.setText("03228022138");password.setText("12345"); // delivery stage
        // username.setText("03465175407");password.setText("12345"); // delivery stage
 
 
@@ -115,8 +120,7 @@ public class activity_login extends AppCompatActivity {
 
 
 
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
-        swift_api riderapi = retrofit.create(swift_api.class);
+        swift_api riderapi = Databackbone.getinstance().getRetrofitbuilder().create(swift_api.class);
 
         Call<Rider> call = riderapi.getRiderFromLogin(loginCredentials);
         call.enqueue(new Callback<Rider>() {
@@ -149,7 +153,7 @@ public class activity_login extends AppCompatActivity {
 
     }
     public void getRiderDetail(){
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
+        Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
         swift_api riderapi = retrofit.create(swift_api.class);
 
         Call<RiderDetails> call = riderapi.getRider(Databackbone.getinstance().rider.getId(),Databackbone.getinstance().rider.getUserId());

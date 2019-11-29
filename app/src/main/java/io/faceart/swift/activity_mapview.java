@@ -421,8 +421,8 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
 
     ////////////////////////////////////////////////////////////////////////////////////////////
         public void LoadParcels(){
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
-        swift_api riderapi = retrofit.create(swift_api.class);
+            Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
+            swift_api riderapi = retrofit.create(swift_api.class);
         EnableLoading();
         Call<List<PickupParcel>>  call = riderapi.getParcelsByRiders(Databackbone.getinstance().rider.getId(),Databackbone.getinstance().rider.getUserId());
         call.enqueue(new Callback<List<PickupParcel>>() {
@@ -475,7 +475,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         //change_Activity_status("",false);
     }
     public void change_Activity_status(String id,final Boolean check){
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
+        Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
         swift_api riderapi = retrofit.create(swift_api.class);
 
         Call<RiderDetails> call = riderapi.markattendance(Databackbone.getinstance().rider.getId(),new markattendance(Databackbone.getinstance().rider.getUserId(),id));
@@ -599,7 +599,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void LoadParcelsForDelivery(){
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
+        Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
         swift_api_delivery riderapidata = retrofit.create(swift_api_delivery.class);
         EnableLoading();
         Call<List<RiderActivityDelivery>> call = riderapidata.manageTaskfordelivery(Databackbone.getinstance().rider.getId(),(Databackbone.getinstance().rider.getUserId()));

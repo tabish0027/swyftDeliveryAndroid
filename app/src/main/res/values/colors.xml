@@ -6,5 +6,7 @@
     <color name="color_app_theam">#221e1f</color>
     <color name="color_app_theam_text">#ffffff</color>
 
+    <color name="color_app_theam_color">#ffffff</color>
+
 
 </resources>

@@ -321,7 +321,7 @@ public class activity_daily_task_status extends Activity {
     }
 
     public void LoadParcels(){
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
+        Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
         swift_api riderapi = retrofit.create(swift_api.class);
         EnableLoading();
         Call<List<PickupParcel>> call = riderapi.getParcelsByRiders(Databackbone.getinstance().rider.getId(),Databackbone.getinstance().rider.getUserId());
@@ -419,7 +419,7 @@ public class activity_daily_task_status extends Activity {
                 .show();
     }
     public void activate_Task_activater(final String taskId,final String action){
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
+        Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
         swift_api riderapi = retrofit.create(swift_api.class);
         EnableLoading();
         double distance = Databackbone.getinstance().getfinalcouvereddistance (taskId,activity_daily_task_status.this);
@@ -484,7 +484,7 @@ public class activity_daily_task_status extends Activity {
 
 
     public void activate_Task_delivery_activater(final String taskId, final String action){
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
+        Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
         swift_api_delivery riderapi = retrofit.create(swift_api_delivery.class);
         EnableLoading();
         double distance = Databackbone.getinstance().getfinalcouvereddistance (taskId,activity_daily_task_status.this);
@@ -546,7 +546,7 @@ public class activity_daily_task_status extends Activity {
 
     }
     public void LoadParcelsForDelivery(){
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
+        Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
         swift_api_delivery riderapidata = retrofit.create(swift_api_delivery.class);
         EnableLoading();
         Call<List<RiderActivityDelivery>> call = riderapidata.manageTaskfordelivery(Databackbone.getinstance().rider.getId(),(Databackbone.getinstance().rider.getUserId()));

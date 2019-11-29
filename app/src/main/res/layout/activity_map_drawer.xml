@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:fitsSystemWindows="true"
     tools:openDrawer="start"
+    android:background="@color/color_app_theam_color"
     android:id="@+id/slider_menu"
     android:layout_height="match_parent">
 

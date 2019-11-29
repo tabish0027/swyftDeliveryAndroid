@@ -141,7 +141,7 @@ public class activity_signature_pad extends AppCompatActivity {
         MultipartBody.Part filedata = MultipartBody.Part.createFormData("file", f.getName(), reqFile);
 
 
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
+        Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
         swift_api_delivery riderapidata = retrofit.create(swift_api_delivery.class);
 
         RequestBody patchModel = RequestBody.create(MediaType.parse("multipart/form-data"),  "Parcel");
@@ -175,7 +175,7 @@ public class activity_signature_pad extends AppCompatActivity {
             @Override
             public void onFailure(Call<parcel_signature_upload> call, Throwable t) {
                 System.out.println(t.getCause());
-                Databackbone.getinstance().showAlsertBox(activity_signature_pad.this, "Error", "Server code error 89");
+                Databackbone.getinstance().showAlsertBox(activity_signature_pad.this, "Error", "Server code error 89 "+t.getMessage());
                 DisableLoading();
 
             }
@@ -205,7 +205,7 @@ public class activity_signature_pad extends AppCompatActivity {
         }
         mark_parcel_complete com_parcels = new mark_parcel_complete(parcelIds,action,taskId,lat,  lng, reason);
 
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
+        Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
         swift_api_delivery riderapi = retrofit.create(swift_api_delivery.class);
         EnableLoading();
         Call<List<RiderActivityDelivery>> call = riderapi.markParcelComplete(Databackbone.getinstance().rider.getId(),com_parcels);

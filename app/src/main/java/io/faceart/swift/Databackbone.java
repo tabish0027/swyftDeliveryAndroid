@@ -50,6 +50,9 @@ import io.faceart.swift.interface_retrofit.RiderActivity;
 import io.faceart.swift.interface_retrofit.RiderDetails;
 import io.faceart.swift.interface_retrofit_delivery.Datum;
 import io.faceart.swift.interface_retrofit_delivery.RiderActivityDelivery;
+import io.faceart.swift.interface_retrofit_delivery.delivery_earnings;
+import io.faceart.swift.interface_retrofit_delivery.delivery_wallet;
+import io.faceart.swift.interface_retrofit_delivery.history;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -82,9 +85,9 @@ public class Databackbone {
 
     public RiderDetails riderdetails = null;
     //dev
-    // public String Base_URL = "https://devapi.swyftlogistics.com:3000/api/";
+     public String Base_URL = "https://devapi.swyftlogistics.com:3000/api/";
     // staging
-    public String Base_URL = "https://stagingapi.swyftlogistics.com:3000/api/";
+    //public String Base_URL = "https://stagingapi.swyftlogistics.com:3000/api/";
     // production
     //public String Base_URL = "https://api.swyftlogistics.com:3000/api/";
 
@@ -110,7 +113,9 @@ public class Databackbone {
     public String not_delivered_reason = "";
 
     public boolean RiderTypeDelivery = false;
-
+    public delivery_earnings delivery_driver_earning = null;
+    public delivery_wallet wallet;
+    public List<history> history= new ArrayList<>();
     private Databackbone(){
 
     }
@@ -318,9 +323,14 @@ public class Databackbone {
     public List<PickupParcel> calculateDistancePickup(List<PickupParcel> parcel){
          if(current_location != null)
         for(int i=0;i < parcel.size();i++){
-            double Lat = parcel.get(i).getLocation().getGeoPoints().getLat();
-            double Lng = parcel.get(i).getLocation().getGeoPoints().getLng();
-            parcel.get(i).setDistance(CalculationByDistance(Lat,Lng));
+            try {
+                double Lat = parcel.get(i).getLocation().getGeoPoints().getLat();
+                double Lng = parcel.get(i).getLocation().getGeoPoints().getLng();
+
+                parcel.get(i).setDistance(CalculationByDistance(Lat, Lng));
+            }catch (Exception error){
+                System.out.println(error.getMessage());
+            }
         }
         parcel = CalculateLocationFromPickupParcels(parcel);
         return parcel;

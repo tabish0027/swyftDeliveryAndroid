@@ -71,7 +71,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
     ConstraintLayout pendingTask;
     private AirLocation airLocation;
     ImageView btn_get_current_locationc,profile_image2;
-    TextView tx_parcels_status_count;
+    TextView tx_parcels_status_count,tx_earning_slider,tx_wallet_slider;
     Marker marker_destination_location = null;
 
     ArrayList<MarkerOptions> markers = new ArrayList<>();
@@ -104,7 +104,8 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         btn_slider_menu = findViewById(R.id.btn_slider_menu);
         tx_parcels_status_count = findViewById(R.id.tx_parcels_status_count);
         progressBar.setVisibility(View.GONE);
-
+        tx_earning_slider= findViewById(R.id.tx_earning_slider);
+        tx_wallet_slider= findViewById(R.id.tx_wallet_slider);
        // generate_test_Data_for_daily();
         startService(new Intent(this, maneger_location.class));
         if(Databackbone.getinstance().ar_orders_daily.size() > 0)
@@ -375,6 +376,8 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         getCurrentLocation();
         super.onResume();
         LoadResume();
+        getwallet();
+        getEarnings();
 
 
 
@@ -643,4 +646,84 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
 
     }
 
+    public void getwallet() {
+        Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
+        swift_api_delivery riderapidata = retrofit.create(swift_api_delivery.class);
+
+        Call<delivery_wallet> call = riderapidata.deliverywallet(Databackbone.getinstance().rider.getId(),(Databackbone.getinstance().rider.getUserId()));
+        call.enqueue(new Callback<delivery_wallet>() {
+            @Override
+            public void onResponse(Call<delivery_wallet> call, Response<delivery_wallet> response) {
+                if(response.isSuccessful()){
+
+                    delivery_wallet wallet = response.body();
+                    Databackbone.getinstance().wallet = wallet;
+
+
+                    runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            tx_wallet_slider.setText(Integer.toString(wallet.getamount())+" Pkr");
+                        }
+                    });
+                    //  DisableLoading();
+                    // load_Data();
+                    // update_view();
+                }
+                else{
+                    //DisableLoading();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<delivery_wallet> call, Throwable t) {
+                System.out.println(t.getCause());
+
+                //DisableLoading();
+                // load_Data();
+            }
+        });
+    }
+
+    public void getEarnings() {
+        Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
+        swift_api_delivery riderapidata = retrofit.create(swift_api_delivery.class);
+
+        Call<delivery_earnings> call = riderapidata.deliveryEarning(Databackbone.getinstance().rider.getId(),(Databackbone.getinstance().rider.getUserId()));
+        call.enqueue(new Callback<delivery_earnings>() {
+            @Override
+            public void onResponse(Call<delivery_earnings> call, Response<delivery_earnings> response) {
+                if(response.isSuccessful()){
+
+                    delivery_earnings dailyearning = response.body();
+                    Databackbone.getinstance().delivery_driver_earning = dailyearning;
+
+                    runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            tx_earning_slider.setText(Integer.toString(dailyearning.getDaily().getEarnings())+" Pkr");
+                        }
+                    });
+                    //  DisableLoading();
+                    // load_Data();
+                    // update_view();
+                }
+                else{
+                    //DisableLoading();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<delivery_earnings> call, Throwable t) {
+                System.out.println(t.getCause());
+
+                //DisableLoading();
+                // load_Data();
+            }
+        });
+    }
 }

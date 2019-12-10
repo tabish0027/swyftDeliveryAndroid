@@ -46,6 +46,15 @@ public interface swift_api_delivery {
     @POST("Parcels/scan-delivery-parcel")
     Call<List<RiderActivityDelivery>> scan_parcels_delivery(@Header("Authorization") String Authorization, @Body parcel_scan_delivery scan);
 
+    @GET("Riders/get-earnings")
+    Call<delivery_earnings> deliveryEarning(@Header("Authorization") String Authorization, @Query("riderId") String riderId);
+
+    @GET("Riders/get-wallet")
+    Call<delivery_wallet> deliverywallet(@Header("Authorization") String Authorization, @Query("riderId") String riderId);
+
+    @GET("Riders/get-history")
+    Call<List<history>> deliveryhistory(@Header("Authorization") String Authorization, @Query("riderId") String riderId);
+
     @Multipart
     @POST("patch-upload")
     Call<parcel_signature_upload> uploadSignature(   @Part MultipartBody.Part file,

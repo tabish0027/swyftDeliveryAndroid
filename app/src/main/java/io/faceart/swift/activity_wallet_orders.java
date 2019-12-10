@@ -8,6 +8,7 @@ import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.vivekkaushik.datepicker.DatePickerTimeline;
 import com.vivekkaushik.datepicker.OnDateSelectedListener;
@@ -15,9 +16,16 @@ import com.vivekkaushik.datepicker.OnDateSelectedListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import io.faceart.swift.adapters.adapter_status_daily_wallet;
 import io.faceart.swift.data_models.model_wallets_order;
+import io.faceart.swift.interface_retrofit_delivery.history;
+import io.faceart.swift.interface_retrofit_delivery.swift_api_delivery;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class activity_wallet_orders extends Activity {
 
@@ -25,11 +33,12 @@ public class activity_wallet_orders extends Activity {
     public RecyclerView order_list_wallet;
     public adapter_status_daily_wallet ad_orders_wallet;
     public DatePickerTimeline datePickerTimeline;
+    public SwipeRefreshLayout swipeToRefresh;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wallet);
-
+        swipeToRefresh = findViewById(R.id.swipeToRefresh);
         final ImageView btn_back = findViewById(R.id.btn_back);
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,7 +107,38 @@ public class activity_wallet_orders extends Activity {
 
 
     }
+    public void gethistory() {
+        Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
+        swift_api_delivery riderapidata = retrofit.create(swift_api_delivery.class);
 
+        Call<List<history>> call = riderapidata.deliveryhistory(Databackbone.getinstance().rider.getId(),(Databackbone.getinstance().rider.getUserId()));
+        call.enqueue(new Callback<List<history>>() {
+            @Override
+            public void onResponse(Call<List<history>> call, Response<List<history>> response) {
+                if(response.isSuccessful()){
+
+                    List<history> history = response.body();
+                    Databackbone.getinstance().history = history;
+
+                    //  DisableLoading();
+                    // load_Data();
+                    // update_view();
+                }
+                else{
+                    //DisableLoading();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<List<history>> call, Throwable t) {
+                System.out.println(t.getCause());
+
+                //DisableLoading();
+                // load_Data();
+            }
+        });
+    }
     public void update_view() {
 
         ad_orders_wallet.update_list();

@@ -23,6 +23,7 @@ import com.github.ybq.android.spinkit.style.DoubleBounce;
 
 import javax.net.ssl.SSLContext;
 
+import io.faceart.swift.network.ApiController;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -68,16 +69,17 @@ public class activity_login extends AppCompatActivity {
         }
 
      // username.setText("923004820761");password.setText("123456789");// pickup dev
-      // username.setText("923049494294");password.setText("12345"); // delivery dev
+       username.setText("923049494294");password.setText("12345"); // delivery dev
 
-        username.setText("03465175407");password.setText("12345"); // delivery dev
+      //  username.setText("03465175407");password.setText("12345"); // delivery dev
 
-        //username.setText("03228022136");password.setText("12345");// pickup stage
+      //  username.setText("03465175407");password.setText("12345");// pickup stage
 
        // username.setText("03228022138");password.setText("12345"); // delivery stage
        // username.setText("03465175407");password.setText("12345"); // delivery stage
 
-
+        // user with bugs
+        //username.setText("03000041013");password.setText("12345"); // delivery stage
         Sprite doubleBounce = new DoubleBounce();
         progressBar.setVisibility(View.GONE);
         progressBar.setIndeterminateDrawable(doubleBounce);
@@ -164,6 +166,9 @@ public class activity_login extends AppCompatActivity {
 
                     RiderDetails riderActivity = response.body();
                     Databackbone.getinstance().riderdetails = riderActivity;
+                    ApiController.getInstance().getEarnings();
+                    ApiController.getInstance().getwallet();
+                    ApiController.getInstance().gethistory();
                     if (ContextCompat.checkSelfPermission(activity_login.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED)
                         ActivityCompat.requestPermissions(activity_login.this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
                     else

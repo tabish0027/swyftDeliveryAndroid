@@ -62,6 +62,7 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
     TextView tx_parcels_to_scan;
     ProgressBar progressBar = null;
     int pending_parcels_to_scan = 0;
+
     EditText edt_parcel_id;
     Button btn_add;
     @Override

@@ -8,6 +8,7 @@
     android:background="@color/color_app_theam_color"
     android:orientation="vertical">
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
@@ -126,6 +127,14 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline5"
         app:layout_constraintStart_toStartOf="@+id/guideline4"
         app:layout_constraintTop_toBottomOf="@+id/btn_week">
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeToRefresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -147,7 +156,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/con_orders_reattempt">
 
                     <ImageView
-                        android:id="@+id/imageView23"
+                        android:id="@+id/iv_down_button_diclined"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginStart="16dp"
@@ -166,9 +175,9 @@
                         android:textColor="#231f20"
                         android:textSize="@dimen/app_text_size"
                         android:textStyle="bold"
-                        app:layout_constraintBottom_toBottomOf="@+id/imageView23"
-                        app:layout_constraintStart_toEndOf="@+id/imageView23"
-                        app:layout_constraintTop_toTopOf="@+id/imageView23" />
+                        app:layout_constraintBottom_toBottomOf="@+id/iv_down_button_diclined"
+                        app:layout_constraintStart_toEndOf="@+id/iv_down_button_diclined"
+                        app:layout_constraintTop_toTopOf="@+id/iv_down_button_diclined" />
 
 
                     <TextView
@@ -212,7 +221,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/con_orders_delivered">
 
                     <ImageView
-                        android:id="@+id/imageView2312"
+                        android:id="@+id/iv_down_button_reattempt"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginStart="16dp"
@@ -232,9 +241,9 @@
                         android:textColor="#231f20"
                         android:textSize="@dimen/app_text_size"
                         android:textStyle="bold"
-                        app:layout_constraintBottom_toBottomOf="@+id/imageView2312"
-                        app:layout_constraintStart_toEndOf="@+id/imageView2312"
-                        app:layout_constraintTop_toTopOf="@+id/imageView2312" />
+                        app:layout_constraintBottom_toBottomOf="@+id/iv_down_button_reattempt"
+                        app:layout_constraintStart_toEndOf="@+id/iv_down_button_reattempt"
+                        app:layout_constraintTop_toTopOf="@+id/iv_down_button_reattempt" />
 
                     <TextView
                         android:id="@+id/tx_count_reattempt"
@@ -274,7 +283,7 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <ImageView
-                        android:id="@+id/imageView231"
+                        android:id="@+id/iv_down_button_delivered"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginStart="16dp"
@@ -293,9 +302,9 @@
                         android:textColor="#231f20"
                         android:textSize="@dimen/app_text_size"
                         android:textStyle="bold"
-                        app:layout_constraintBottom_toBottomOf="@+id/imageView231"
-                        app:layout_constraintStart_toEndOf="@+id/imageView231"
-                        app:layout_constraintTop_toTopOf="@+id/imageView231" />
+                        app:layout_constraintBottom_toBottomOf="@+id/iv_down_button_delivered"
+                        app:layout_constraintStart_toEndOf="@+id/iv_down_button_delivered"
+                        app:layout_constraintTop_toTopOf="@+id/iv_down_button_delivered" />
 
 
                     <TextView
@@ -343,6 +352,7 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

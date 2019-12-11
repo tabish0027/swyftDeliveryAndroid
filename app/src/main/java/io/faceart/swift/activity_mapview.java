@@ -59,7 +59,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
 
     ConstraintLayout offlineTag = null;
     ConstraintLayout Task1,Task2,Task3,Task4,Task5 = null;
-    ConstraintLayout btn_walled,btn_earning = null;
+    ConstraintLayout btn_wallet,btn_earning = null;
     TextView tx_username,tx_rating = null;
     ProgressBar progressBar = null;
 
@@ -97,7 +97,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         btn_navigation = findViewById(R.id.btn_navigation);
         tx_username = findViewById(R.id.tx_username_slider);
         progressBar = (ProgressBar)findViewById(R.id.url_loading_animation);
-        btn_walled= findViewById(R.id.btn_wallet);
+        btn_wallet= findViewById(R.id.btn_wallet);
         btn_earning= findViewById(R.id.btn_earning);
         tx_rating = findViewById(R.id.tx_rating);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.slider_menu);
@@ -122,7 +122,6 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         Task1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent activity_order_status = new Intent(activity_mapview.this,activity_order_status.class);
                 activity_mapview.this.startActivity(activity_order_status);
             }
@@ -160,11 +159,11 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
                 getCurrentLocation();
             }
         });
-        btn_walled.setOnClickListener(new View.OnClickListener() {
+        btn_wallet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent openaactivity = new Intent(activity_mapview.this,activity_wallet_orders.class);
-                activity_mapview.this.startActivity(openaactivity);
+              //  Intent openaactivity = new Intent(activity_mapview.this,activity_wallet_orders.class);
+              //  activity_mapview.this.startActivity(openaactivity);
             }
         });
 

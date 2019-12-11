@@ -85,11 +85,11 @@ public class Databackbone {
 
     public RiderDetails riderdetails = null;
     //dev
-     public String Base_URL = "https://devapi.swyftlogistics.com:3000/api/";
+    // public String Base_URL = "https://devapi.swyftlogistics.com:3000/api/";
     // staging
     //public String Base_URL = "https://stagingapi.swyftlogistics.com:3000/api/";
     // production
-    //public String Base_URL = "https://api.swyftlogistics.com:3000/api/";
+    public String Base_URL = "https://api.swyftlogistics.com:3000/api/";
 
     List<PickupParcel> parcels = null;
     List<RiderActivityDelivery> parcelsdelivery = null;

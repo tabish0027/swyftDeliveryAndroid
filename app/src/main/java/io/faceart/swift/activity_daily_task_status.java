@@ -424,10 +424,15 @@ public class activity_daily_task_status extends Activity {
         EnableLoading();
         double distance = Databackbone.getinstance().getfinalcouvereddistance (taskId,activity_daily_task_status.this);
 
-        Call<List<PickupParcel>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),taskId,new manage_task(action,(int)distance));
+        Call<List<PickupParcel>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),taskId,new manage_task(action,(int)distance,BuildConfig.VERSION_NAME));
         call.enqueue(new Callback<List<PickupParcel>>() {
             @Override
             public void onResponse(Call<List<PickupParcel>> call, Response<List<PickupParcel>> response) {
+                if (response.code() != 200) {
+                    Databackbone.getinstance().showAlsertBox(activity_daily_task_status.this,"Error","This app version is obsolete, Please Download the newer version");
+                    DisableLoading();
+                    return;
+                }
                 if(response.isSuccessful()){
 
                     List<PickupParcel> parcels = response.body();
@@ -489,10 +494,15 @@ public class activity_daily_task_status extends Activity {
         EnableLoading();
         double distance = Databackbone.getinstance().getfinalcouvereddistance (taskId,activity_daily_task_status.this);
         if(distance == 0)distance = 1.0; // as the server dont accept distance that is 0
-        Call<List<RiderActivityDelivery>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),taskId,new manage_task(action,(int)distance));
+        Call<List<RiderActivityDelivery>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),taskId,new manage_task(action,(int)distance,BuildConfig.VERSION_NAME));
         call.enqueue(new Callback<List<RiderActivityDelivery>>() {
             @Override
             public void onResponse(Call<List<RiderActivityDelivery>> call, Response<List<RiderActivityDelivery>> response) {
+                if (response.code() != 200) {
+                    Databackbone.getinstance().showAlsertBox(activity_daily_task_status.this,"Error","This app version is obsolete, Please Download the newer version");
+                    DisableLoading();
+                    return;
+                }
                 if(response.isSuccessful()){
 
                     List<RiderActivityDelivery> parcels = response.body();

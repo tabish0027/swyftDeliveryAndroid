@@ -43,7 +43,7 @@
 
         </activity>
 
-        <activity  android:screenOrientation="portrait" android:name="io.ibtidah.swyft.Splash">
+        <activity  android:screenOrientation="portrait" android:name="io.devbeans.swyft.Splash">
 
         </activity>
         <activity  android:screenOrientation="portrait" android:name=".activity_mapview">

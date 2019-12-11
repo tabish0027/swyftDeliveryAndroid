@@ -22,6 +22,8 @@ import com.github.ybq.android.spinkit.sprite.Sprite;
 import com.github.ybq.android.spinkit.style.DoubleBounce;
 
 import javax.net.ssl.SSLContext;
+import io.faceart.swift.BuildConfig;
+
 
 import io.faceart.swift.network.ApiController;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
@@ -69,7 +71,7 @@ public class activity_login extends AppCompatActivity {
         }
 
      // username.setText("923004820761");password.setText("123456789");// pickup dev
-       username.setText("923049494294");password.setText("12345"); // delivery dev
+      // username.setText("923049494294");password.setText("12345"); // delivery dev
 
       //  username.setText("03465175407");password.setText("12345"); // delivery dev
 
@@ -132,7 +134,7 @@ public class activity_login extends AppCompatActivity {
 
                     Rider rider = response.body();
                     Databackbone.getinstance().rider = rider;
-                    getRiderDetail();
+                   checkVersionControl();
                    // Toast.makeText(activity_login.this,rider.getId(),Toast.LENGTH_LONG).show();
 
 
@@ -153,6 +155,31 @@ public class activity_login extends AppCompatActivity {
     }
         });
 
+    }
+    public void checkVersionControl(){
+        swift_api riderapi = Databackbone.getinstance().getRetrofitbuilder().create(swift_api.class);
+
+        Call<Void> call = riderapi.getversioncontrol(Databackbone.getinstance().rider.getId(),BuildConfig.VERSION_NAME);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.code() != 200) {
+                    Databackbone.getinstance().showAlsertBox(activity_login.this,"Error","This app version is obsolete, Please Download the newer version");
+                    EnableLogin();
+                    return;
+                }
+                    getRiderDetail();
+
+
+
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                System.out.println(t.getCause());
+                EnableLogin();
+            }
+        });
     }
     public void getRiderDetail(){
         Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
@@ -196,11 +223,8 @@ public class activity_login extends AppCompatActivity {
                 //DeactivateRider();
             }
         });
-
-
-
-
     }
+
     @Override
     protected void onPause() {
         super.onPause();

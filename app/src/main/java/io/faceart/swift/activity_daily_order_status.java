@@ -463,10 +463,15 @@ public class activity_daily_order_status  extends Activity {
         Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
         swift_api riderapi = retrofit.create(swift_api.class);
         EnableLoading();
-        Call<List<PickupParcel>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),orderId,new manage_task(action,0));
+        Call<List<PickupParcel>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),orderId,new manage_task(action,0,BuildConfig.VERSION_NAME));
         call.enqueue(new Callback<List<PickupParcel>>() {
             @Override
             public void onResponse(Call<List<PickupParcel>> call, Response<List<PickupParcel>> response) {
+                if (response.code() != 200) {
+                    Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this,"Error","This app version is obsolete, Please Download the newer version");
+                    DisableLoading();
+                    return;
+                }
                 if(response.isSuccessful()){
 
                     List<PickupParcel> parcels = response.body();
@@ -536,10 +541,15 @@ public class activity_daily_order_status  extends Activity {
         Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
         swift_api_delivery riderapi = retrofit.create(swift_api_delivery.class);
         EnableLoading();
-        Call<List<RiderActivityDelivery>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),orderId,new manage_task(action,0));
+        Call<List<RiderActivityDelivery>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),orderId,new manage_task(action,0,BuildConfig.VERSION_NAME));
         call.enqueue(new Callback<List<RiderActivityDelivery>>() {
             @Override
             public void onResponse(Call<List<RiderActivityDelivery>> call, Response<List<RiderActivityDelivery>> response) {
+                if (response.code() != 200) {
+                    Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this,"Error","This app version is obsolete, Please Download the newer version");
+                    DisableLoading();
+                    return;
+                }
                 if(response.isSuccessful()){
 
                     List<RiderActivityDelivery> parcels = response.body();

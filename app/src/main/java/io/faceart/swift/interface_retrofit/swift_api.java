@@ -2,6 +2,7 @@ package io.faceart.swift.interface_retrofit;
 
 import java.util.List;
 
+import io.faceart.swift.interface_retrofit_delivery.history;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -23,6 +24,8 @@ public interface swift_api {
     @GET("Riders/{riderId}")
     Call<RiderDetails> getRider(@Header("Authorization") String Authorization,@Path("riderId") String riderId);
 
+    @GET("app-version-check")
+    Call<Void> getversioncontrol(@Header("Authorization") String Authorization, @Query("version") String version);
 
     @POST("Riders/mark-attendance")
     Call<RiderDetails> markattendance(@Header("Authorization") String Authorization,@Body markattendance status);

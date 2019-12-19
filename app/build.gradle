@@ -4,7 +4,7 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
     defaultConfig {
-        applicationId "io.devbeans.swift"
+        applicationId "io.swyft.swyft"
         minSdkVersion 19
         targetSdkVersion 29
         versionCode 1
@@ -22,6 +22,18 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField("String", "API_BASE_URL", "\"https://api.swyftlogistics.com:3000/api/\"")
+        }
+
+
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField("String", "API_BASE_IMAGE_URL", "\"https://www.cheetay.pk/static/media/\"")
+
+            //buildConfigField("String", "API_BASE_URL", "\"https://devapi.swyftlogistics.com:3000/api/\"")
+            buildConfigField("String", "API_BASE_URL", "\"https://stagingapi.swyftlogistics.com:3000/api/\"")
+
         }
     }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="io.faceart.swift">
+    package="io.devbeans.swyft">
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
@@ -29,70 +29,70 @@
 
         <uses-library android:name="org.apache.http.legacy" android:required="false" />
 
-        <activity  android:screenOrientation="portrait" android:name=".activity_login">
+        <activity  android:screenOrientation="portrait" android:name="io.devbeans.swyft.activity_login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity  android:screenOrientation="portrait" android:name=".activity_barcode_scanner">
+        <activity  android:screenOrientation="portrait" android:name="io.devbeans.swyft.activity_barcode_scanner">
 
         </activity>
-        <activity  android:screenOrientation="portrait" android:name=".activity_form">
+        <activity  android:screenOrientation="portrait" android:name="io.devbeans.swyft.activity_form">
 
         </activity>
 
-        <activity  android:screenOrientation="portrait" android:name="io.devbeans.swyft.Splash">
+        <activity  android:screenOrientation="portrait" android:name="io.swyft.swyft.Splash">
 
         </activity>
-        <activity  android:screenOrientation="portrait" android:name=".activity_mapview">
+        <activity  android:screenOrientation="portrait" android:name="io.devbeans.swyft.activity_mapview">
 
         </activity>
-        <activity  android:screenOrientation="portrait" android:name=".activity_earning">
+        <activity  android:screenOrientation="portrait" android:name="io.devbeans.swyft.activity_earning">
 
         </activity>
-        <activity  android:screenOrientation="portrait" android:name=".activity_profile">
+        <activity  android:screenOrientation="portrait" android:name="io.devbeans.swyft.activity_profile">
 
         </activity>
-        <activity  android:screenOrientation="portrait" android:name=".activity_order_status">
+        <activity  android:screenOrientation="portrait" android:name="io.devbeans.swyft.activity_order_status">
 
         </activity>
-        <activity  android:screenOrientation="portrait" android:name=".activity_order_status_scanning">
+        <activity  android:screenOrientation="portrait" android:name="io.devbeans.swyft.activity_order_status_scanning">
 
         </activity>
-        <activity  android:screenOrientation="portrait" android:name=".activity_daily_order_status">
+        <activity  android:screenOrientation="portrait" android:name="io.devbeans.swyft.activity_daily_order_status">
 
         </activity>
-        <activity  android:screenOrientation="portrait" android:name=".activity_signature_pad">
+        <activity  android:screenOrientation="portrait" android:name="io.devbeans.swyft.activity_signature_pad">
 
         </activity>
-        <activity  android:screenOrientation="portrait" android:name=".activity_faq">
+        <activity  android:screenOrientation="portrait" android:name="io.devbeans.swyft.activity_faq">
 
         </activity>
-        <activity  android:screenOrientation="portrait" android:name=".activity_settings">
+        <activity  android:screenOrientation="portrait" android:name="io.devbeans.swyft.activity_settings">
 
         </activity>
-        <activity  android:screenOrientation="portrait" android:name=".activity_help">
+        <activity  android:screenOrientation="portrait" android:name="io.devbeans.swyft.activity_help">
 
         </activity>
-        <activity  android:screenOrientation="portrait" android:name=".activity_wallet_orders">
+        <activity  android:screenOrientation="portrait" android:name="io.devbeans.swyft.activity_wallet_orders">
 
         </activity>
-        <activity  android:screenOrientation="portrait" android:name=".activity_delivery_status">
+        <activity  android:screenOrientation="portrait" android:name="io.devbeans.swyft.activity_delivery_status">
 
         </activity>
-        <activity  android:screenOrientation="portrait" android:name=".activity_forget_password">
+        <activity  android:screenOrientation="portrait" android:name="io.devbeans.swyft.activity_forget_password">
 
         </activity>
-        <activity  android:screenOrientation="portrait" android:name=".activity_daily_task_status">
+        <activity  android:screenOrientation="portrait" android:name="io.devbeans.swyft.activity_daily_task_status">
 
         </activity>
-        <activity  android:screenOrientation="portrait" android:name=".activity_parcel_selection_for_delivery">
+        <activity  android:screenOrientation="portrait" android:name="io.devbeans.swyft.activity_parcel_selection_for_delivery">
 
         </activity>
         <service
-            android:name=".maneger_location" ></service>
+            android:name="io.devbeans.swyft.maneger_location" ></service>
 
 
     </application>

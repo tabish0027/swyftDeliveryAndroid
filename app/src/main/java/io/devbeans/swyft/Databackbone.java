@@ -7,7 +7,10 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import com.google.android.gms.common.internal.Constants;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.maps.DistanceMatrixApi;
 import com.google.maps.DistanceMatrixApiRequest;
 import com.google.maps.GeoApiContext;
@@ -15,15 +18,24 @@ import com.google.maps.errors.ApiException;
 import com.google.maps.model.DistanceMatrix;
 import com.google.maps.model.TravelMode;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.security.KeyStore;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
 import io.devbeans.swyft.data_models.*;
@@ -92,7 +104,7 @@ public class Databackbone {
 
 
     public String not_delivered_reason = "";
-
+    public static Context contextapp;
     public boolean RiderTypeDelivery = false;
     public delivery_earnings delivery_driver_earning = null;
     public delivery_wallet wallet;
@@ -113,13 +125,49 @@ public class Databackbone {
     }
     public Retrofit getRetrofitbuilder(){
         if(central_retrofit == null) {
-            //central_retrofit = new Retrofit.Builder().client(getUnsafeOkHttpClient().build()).baseUrl(Databackbone.getinstance().Base_URL).addConverterFactory(GsonConverterFactory.create()).build();
-            central_retrofit = new Retrofit.Builder()
-                    .baseUrl(Base_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .client(getUnsafeOkHttpClient())
-                    .build();
 
+
+
+            try {
+                CertificateFactory cf = CertificateFactory.getInstance("X.509");
+                InputStream cert = contextapp.getResources().openRawResource(R.raw.certificate);
+                Certificate ca;
+                try {
+                    ca = cf.generateCertificate(cert);
+                } finally {
+                    cert.close();
+                }
+
+
+                String keyStoreType = KeyStore.getDefaultType();
+                KeyStore keyStore = KeyStore.getInstance(keyStoreType);
+                keyStore.load(null, null);
+                keyStore.setCertificateEntry("ca", ca);
+
+
+                String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
+                TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
+                tmf.init(keyStore);
+
+                SSLContext sslContext = SSLContext.getInstance("TLS");
+                sslContext.init(null, tmf.getTrustManagers(), null);
+                final OkHttpClient okHttpClient4 = new OkHttpClient.Builder()
+                        .connectTimeout(20, TimeUnit.SECONDS)
+                        .writeTimeout(20, TimeUnit.SECONDS)
+                        .readTimeout(30, TimeUnit.SECONDS)
+                        .sslSocketFactory(sslContext.getSocketFactory())
+                        .build();
+                central_retrofit =  new Retrofit.Builder()
+                        .baseUrl(Base_URL)
+                        .client(okHttpClient4)
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+
+
+            }catch (Exception i ){
+                System.out.print(i.getMessage());
+
+            }
         }
         return central_retrofit;
     }

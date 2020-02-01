@@ -28,8 +28,6 @@ public interface swift_api {
     @POST("Riders/mark-attendance")
     Call<RiderDetails> markattendance(@Header("Authorization") String Authorization,@Body markattendance status);
 
-
-
     @GET("Riders/get-tasks")
     Call<List<PickupParcel>> getParcelsByRiders(@Header("Authorization") String Authorization, @Query("riderId") String riderId);
 

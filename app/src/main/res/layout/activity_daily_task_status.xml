@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/avenirfile"
-        android:text="Slide Down To Load Yout Task "
+        android:text="Slide Down To Load Your Task "
         android:textColor="#231f20"
         android:textSize="@dimen/app_text_size"
         android:textStyle="bold"

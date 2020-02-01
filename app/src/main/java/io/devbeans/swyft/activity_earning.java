@@ -127,9 +127,9 @@ public class activity_earning extends Activity {
         btn_month.setTextColor(Color.parseColor("#ffffff"));
         tx_earning_salary.setText("PKR. "+Integer.toString(0));
         tx_earning_commission.setText("PKR. "+Integer.toString(0));
-        tx_earning_fule.setText("PKR. "+Integer.toString(Databackbone.getinstance().delivery_driver_earning.getDaily().getFuel()));
-        tx_earning_maintance.setText("PKR. "+Integer.toString(Databackbone.getinstance().delivery_driver_earning.getDaily().getMaintenance()));
-        tx_earning_total.setText("PKR. "+Integer.toString(Databackbone.getinstance().delivery_driver_earning.getDaily().getEarnings()));
+        tx_earning_fule.setText("PKR. "+Float.toString(Databackbone.getinstance().delivery_driver_earning.getDaily().getFuel()));
+        tx_earning_maintance.setText("PKR. "+Float.toString(Databackbone.getinstance().delivery_driver_earning.getDaily().getMaintenance()));
+        tx_earning_total.setText("PKR. "+Float.toString(Databackbone.getinstance().delivery_driver_earning.getDaily().getEarnings()));
 
     }
     public void SelectMonth(){
@@ -141,9 +141,9 @@ public class activity_earning extends Activity {
         btn_today.setTextColor(Color.parseColor("#ffffff"));
         tx_earning_salary.setText("PKR. "+Integer.toString(0));
         tx_earning_commission.setText("PKR. "+Integer.toString(0));
-        tx_earning_fule.setText("PKR. "+Integer.toString(Databackbone.getinstance().delivery_driver_earning.getMonthly().getFuel()));
-        tx_earning_maintance.setText("PKR. "+Integer.toString(Databackbone.getinstance().delivery_driver_earning.getMonthly().getMaintenance()));
-        tx_earning_total.setText("PKR. "+Integer.toString(Databackbone.getinstance().delivery_driver_earning.getMonthly().getEarnings()));
+        tx_earning_fule.setText("PKR. "+Float.toString(Databackbone.getinstance().delivery_driver_earning.getMonthly().getFuel()));
+        tx_earning_maintance.setText("PKR. "+Float.toString(Databackbone.getinstance().delivery_driver_earning.getMonthly().getMaintenance()));
+        tx_earning_total.setText("PKR. "+Float.toString(Databackbone.getinstance().delivery_driver_earning.getMonthly().getEarnings()));
 
     }
     public void SelectWeek(){
@@ -155,9 +155,9 @@ public class activity_earning extends Activity {
         btn_month.setTextColor(Color.parseColor("#ffffff"));
         tx_earning_salary.setText("PKR. "+Integer.toString(0));
         tx_earning_commission.setText("PKR. "+Integer.toString(0));
-        tx_earning_fule.setText("PKR. "+Integer.toString(Databackbone.getinstance().delivery_driver_earning.getWeekly().getFuel()));
-        tx_earning_maintance.setText("PKR. "+Integer.toString(Databackbone.getinstance().delivery_driver_earning.getWeekly().getMaintenance()));
-        tx_earning_total.setText("PKR. "+Integer.toString(Databackbone.getinstance().delivery_driver_earning.getWeekly().getEarnings()));
+        tx_earning_fule.setText("PKR. "+Float.toString(Databackbone.getinstance().delivery_driver_earning.getWeekly().getFuel()));
+        tx_earning_maintance.setText("PKR. "+Float.toString(Databackbone.getinstance().delivery_driver_earning.getWeekly().getMaintenance()));
+        tx_earning_total.setText("PKR. "+Float.toString(Databackbone.getinstance().delivery_driver_earning.getWeekly().getEarnings()));
     }
 
 

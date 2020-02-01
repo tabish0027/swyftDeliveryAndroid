@@ -29,6 +29,7 @@ public class bottomsheet_orderdeclined extends BottomSheetDialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(BottomSheetDialogFragment.STYLE_NORMAL, R.style.CustomBottomSheetDialogTheme);
+
     }
 
     @Nullable
@@ -39,7 +40,8 @@ public class bottomsheet_orderdeclined extends BottomSheetDialogFragment {
         btn_order_diclined = v.findViewById(R.id.btn_order_declined);
         btn_close = v.findViewById(R.id.btn_close);
         btn_submit = v.findViewById(R.id.btn_submit);
-
+        btn_submit.setEnabled(false);
+        btn_submit.setBackgroundResource(R.drawable.drawer_round_disable);
         btn_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,6 +55,8 @@ public class bottomsheet_orderdeclined extends BottomSheetDialogFragment {
                 btn_order_diclined.setBackgroundResource(R.drawable.round_bottom_sheet_button_back_unselected);
                 check_btn_order_canceled = true;
                 check_btn_order_diclined = false;
+                btn_submit.setEnabled(true);
+                btn_submit.setBackgroundResource(R.drawable.drawer_round);
             }
         });
         btn_order_diclined.setOnClickListener(new View.OnClickListener() {
@@ -62,6 +66,8 @@ public class bottomsheet_orderdeclined extends BottomSheetDialogFragment {
                 btn_order_diclined.setBackgroundResource(R.drawable.round_bottom_sheet_button_back);
                 check_btn_order_canceled = false;
                 check_btn_order_diclined = true;
+                btn_submit.setEnabled(true);
+                btn_submit.setBackgroundResource(R.drawable.drawer_round);
             }
         });
         btn_submit.setOnClickListener(new View.OnClickListener() {

@@ -11,7 +11,7 @@ public class Rider {
     private String id;
     @SerializedName("ttl")
     @Expose
-    private Integer ttl;
+    private Float ttl;
     @SerializedName("created")
     @Expose
     private String created;
@@ -30,11 +30,11 @@ public class Rider {
         this.id = id;
     }
 
-    public Integer getTtl() {
+    public Float getTtl() {
         return ttl;
     }
 
-    public void setTtl(Integer ttl) {
+    public void setTtl(Float ttl) {
         this.ttl = ttl;
     }
 

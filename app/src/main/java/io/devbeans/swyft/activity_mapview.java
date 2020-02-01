@@ -460,18 +460,14 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
     public void check_status_of_rider_activity(){
         if(Databackbone.getinstance().rider != null){
             if(Databackbone.getinstance().rider.getUser().getIsOnline()){
-
                 ActivateRider();
                 change_Activity_status("",false);
-
             }
             else{
 
                 DeactivateRider();
-
             }
         }
-
         //change_Activity_status("",false);
     }
     public void change_Activity_status(String id,final Boolean check){
@@ -661,7 +657,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
 
                         @Override
                         public void run() {
-                            tx_wallet_slider.setText(Integer.toString(wallet.getamount())+" Pkr");
+                            tx_wallet_slider.setText(Float.toString(wallet.getamount())+" Pkr");
                         }
                     });
                     //  DisableLoading();
@@ -701,7 +697,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
 
                         @Override
                         public void run() {
-                            tx_earning_slider.setText(Integer.toString(dailyearning.getDaily().getEarnings())+" Pkr");
+                            tx_earning_slider.setText(Float.toString(dailyearning.getDaily().getEarnings())+" Pkr");
                         }
                     });
                     //  DisableLoading();

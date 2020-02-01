@@ -32,7 +32,7 @@ public class activity_login extends AppCompatActivity {
 
     Button btn_login;
     ProgressBar progressBar = null;
-    EditText username , password;
+    EditText username , password,ip_con;
     Button btn_forget;
 
 
@@ -40,12 +40,19 @@ public class activity_login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        Databackbone.getinstance().contextapp = getApplicationContext();
         btn_login = findViewById(R.id.btn_login);
         progressBar = (ProgressBar)findViewById(R.id.url_loading_animation);
         username = findViewById(R.id.username);
         password = findViewById(R.id.password);
         btn_forget = findViewById(R.id.btn_forget);
-
+        ip_con = findViewById(R.id.ip_con);
+        if (!BuildConfig.BUILD_TYPE.equals("debug")) {
+            ip_con.setVisibility(View.INVISIBLE);
+        }
+        else{
+            ip_con.setText(BuildConfig.API_BASE_URL);
+        }
         btn_forget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,24 +70,12 @@ public class activity_login extends AppCompatActivity {
            // window.setStatusBarColor(ContextCompat.getColor(this, R.color.color_app_theam));
         }
 
-     // username.setText("923004820761");password.setText("123456789");// pickup dev
-      // username.setText("923049494294");password.setText("12345"); // delivery dev
-
-      //  username.setText("03465175407");password.setText("12345"); // delivery dev
-
-      //  username.setText("03465175407");password.setText("12345");// pickup stage
-
-       // username.setText("03228022138");password.setText("12345"); // delivery stage
-        //username.setText("03465175407");password.setText("12345"); // delivery stage
-        //username.setText("03415154321");password.setText("12345678"); // delivery stage
-
-
-        //username.setText("03044377462");password.setText("12345"); // live delivery
-        //username.setText("03044377462");password.setText("12345"); // live delivery
-
-
         // user with bugs
-        //username.setText("03000041013");password.setText("12345"); // delivery stage
+        //username.setText("03465175407");password.setText("12345"); // delivery stage
+
+        username.setText("03454772074");password.setText("12345"); // delivery stage
+
+
         Sprite doubleBounce = new DoubleBounce();
         progressBar.setVisibility(View.GONE);
         progressBar.setIndeterminateDrawable(doubleBounce);
@@ -105,6 +100,12 @@ public class activity_login extends AppCompatActivity {
         username.setEnabled(false);
         password.setEnabled(false);
         btn_login.setEnabled(false);
+        if (BuildConfig.BUILD_TYPE.equals("debug")) {
+            String ip = ip_con.getText().toString();
+            Databackbone.getinstance().Base_URL = ip;
+            Databackbone.getinstance().central_retrofit = null;
+            Databackbone.getinstance().getRetrofitbuilder();
+        }
         progressBar.setVisibility(View.VISIBLE);
 
 

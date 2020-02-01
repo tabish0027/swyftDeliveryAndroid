@@ -7,35 +7,35 @@ public class delivery_earnings_interval {
 
     @SerializedName("fuel")
     @Expose
-    private Integer fuel;
+    private Float fuel;
     @SerializedName("maintenance")
     @Expose
-    private Integer maintenance;
+    private Float maintenance;
     @SerializedName("earnings")
     @Expose
-    private Integer earnings;
+    private Float earnings;
 
-    public Integer getFuel() {
+    public Float getFuel() {
         return fuel;
     }
 
-    public void setFuel(Integer fuel) {
+    public void setFuel(Float fuel) {
         this.fuel = fuel;
     }
 
-    public Integer getMaintenance() {
+    public Float getMaintenance() {
         return maintenance;
     }
 
-    public void setMaintenance(Integer maintenance) {
+    public void setMaintenance(Float maintenance) {
         this.maintenance = maintenance;
     }
 
-    public Integer getEarnings() {
+    public Float getEarnings() {
         return earnings;
     }
 
-    public void setEarnings(Integer earnings) {
+    public void setEarnings(Float earnings) {
         this.earnings = earnings;
     }
 

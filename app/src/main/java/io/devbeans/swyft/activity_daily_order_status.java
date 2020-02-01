@@ -457,7 +457,7 @@ public class activity_daily_order_status  extends Activity {
         Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
         swift_api riderapi = retrofit.create(swift_api.class);
         EnableLoading();
-        Call<List<PickupParcel>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),orderId,new manage_task(action,0,BuildConfig.VERSION_NAME));
+        Call<List<PickupParcel>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),orderId,new manage_task(action,(float)0.0,BuildConfig.VERSION_NAME));
         call.enqueue(new Callback<List<PickupParcel>>() {
             @Override
             public void onResponse(Call<List<PickupParcel>> call, Response<List<PickupParcel>> response) {
@@ -535,7 +535,7 @@ public class activity_daily_order_status  extends Activity {
         Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
         swift_api_delivery riderapi = retrofit.create(swift_api_delivery.class);
         EnableLoading();
-        Call<List<RiderActivityDelivery>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),orderId,new manage_task(action,0,BuildConfig.VERSION_NAME));
+        Call<List<RiderActivityDelivery>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),orderId,new manage_task(action,(float)0.0,BuildConfig.VERSION_NAME));
         call.enqueue(new Callback<List<RiderActivityDelivery>>() {
             @Override
             public void onResponse(Call<List<RiderActivityDelivery>> call, Response<List<RiderActivityDelivery>> response) {

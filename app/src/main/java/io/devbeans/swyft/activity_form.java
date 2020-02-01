@@ -29,6 +29,7 @@ public class activity_form extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Databackbone.getinstance().contextapp = getApplicationContext();
         setContentView(R.layout.activity_form);
         btn_back = findViewById(R.id.btn_back);
         btn_delivered = findViewById(R.id.btn_delivered);
@@ -161,8 +162,8 @@ public class activity_form extends AppCompatActivity {
         return false;
 
     }
-    public int totalamounttocollect(){
-        int amount = 0;
+    public float totalamounttocollect(){
+        float amount = 0;
         int parcel_count = 0;
         Datum data = Databackbone.getinstance().getDeliveryParcelsTask();
         if(data == null)
@@ -233,7 +234,7 @@ public class activity_form extends AppCompatActivity {
                 btn_delivered.setVisibility(View.INVISIBLE);
                 btn_diclined.setVisibility(View.INVISIBLE);
             }
-            tx_amount_to_collect.setText(Integer.toString(totalamounttocollect()));
+            tx_amount_to_collect.setText(Float.toString(totalamounttocollect()));
         }catch (Exception i){
             activity_form.this.finish();
         }

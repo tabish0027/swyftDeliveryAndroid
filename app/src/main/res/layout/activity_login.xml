@@ -86,6 +86,23 @@
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <EditText
+        android:id="@+id/ip_con"
+        android:layout_width="0dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/round"
+        android:ems="10"
+        android:hint="ip"
+        android:inputType="textPersonName"
+        android:padding="15dp"
+        android:textColor="#ffffff"
+        android:textSize="15dp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/btn_forget" />
+
+    <EditText
         android:id="@+id/password"
         android:layout_width="0dp"
         android:layout_height="57dp"

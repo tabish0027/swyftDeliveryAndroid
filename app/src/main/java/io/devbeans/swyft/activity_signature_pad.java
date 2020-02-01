@@ -194,6 +194,7 @@ public class activity_signature_pad extends AppCompatActivity {
             lat = Databackbone.getinstance().current_location.latitude;
             lng = Databackbone.getinstance().current_location.longitude;
         }
+
         mark_parcel_complete com_parcels = new mark_parcel_complete(parcelIds,action,taskId,lat,  lng, reason);
 
         Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
@@ -246,10 +247,11 @@ public class activity_signature_pad extends AppCompatActivity {
 
 
     public void DisableLoading(){
-
+        btn_submit.setEnabled(true);
         progressBar.setVisibility(View.GONE);
     }
     public void EnableLoading(){
+        btn_submit.setEnabled(false);
 
         progressBar.setVisibility(View.VISIBLE);
     }

@@ -7,14 +7,14 @@ public class delivery_wallet {
 
     @SerializedName("amount")
     @Expose
-    private int amount;
+    private Float amount;
 
 
-    public int getamount() {
+    public Float getamount() {
         return amount;
     }
 
-    public void setDaily(int amount) {
+    public void setDaily(Float amount) {
         this.amount = amount;
     }
 

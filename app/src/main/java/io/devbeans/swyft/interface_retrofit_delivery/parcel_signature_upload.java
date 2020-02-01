@@ -25,16 +25,16 @@ public class parcel_signature_upload {
     private String updatedAt;
     @SerializedName("weight")
     @Expose
-    private Integer weight;
+    private Float weight;
     @SerializedName("qty")
     @Expose
-    private Integer qty;
+    private Float qty;
     @SerializedName("vendorParcelId")
     @Expose
     private String vendorParcelId;
     @SerializedName("amount")
     @Expose
-    private Integer amount;
+    private Float amount;
     @SerializedName("orderType")
     @Expose
     private String orderType;
@@ -105,19 +105,19 @@ public class parcel_signature_upload {
         this.updatedAt = updatedAt;
     }
 
-    public Integer getWeight() {
+    public Float getWeight() {
         return weight;
     }
 
-    public void setWeight(Integer weight) {
+    public void setWeight(Float weight) {
         this.weight = weight;
     }
 
-    public Integer getQty() {
+    public Float getQty() {
         return qty;
     }
 
-    public void setQty(Integer qty) {
+    public void setQty(Float qty) {
         this.qty = qty;
     }
 
@@ -129,11 +129,11 @@ public class parcel_signature_upload {
         this.vendorParcelId = vendorParcelId;
     }
 
-    public Integer getAmount() {
+    public Float getAmount() {
         return amount;
     }
 
-    public void setAmount(Integer amount) {
+    public void setAmount(Float amount) {
         this.amount = amount;
     }
 

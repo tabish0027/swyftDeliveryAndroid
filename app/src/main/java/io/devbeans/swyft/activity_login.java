@@ -28,11 +28,12 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import io.devbeans.swyft.interface_retrofit.*;
+
 public class activity_login extends AppCompatActivity {
 
     Button btn_login;
     ProgressBar progressBar = null;
-    EditText username , password,ip_con;
+    EditText username, password, ip_con;
     Button btn_forget;
 
 
@@ -42,38 +43,38 @@ public class activity_login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         Databackbone.getinstance().contextapp = getApplicationContext();
         btn_login = findViewById(R.id.btn_login);
-        progressBar = (ProgressBar)findViewById(R.id.url_loading_animation);
+        progressBar = (ProgressBar) findViewById(R.id.url_loading_animation);
         username = findViewById(R.id.username);
         password = findViewById(R.id.password);
         btn_forget = findViewById(R.id.btn_forget);
         ip_con = findViewById(R.id.ip_con);
         if (!BuildConfig.BUILD_TYPE.equals("debug")) {
             ip_con.setVisibility(View.INVISIBLE);
-        }
-        else{
+        } else {
             ip_con.setText(BuildConfig.API_BASE_URL);
         }
         btn_forget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               Intent forget = new Intent(activity_login.this, activity_forget_password.class);
+                Intent forget = new Intent(activity_login.this, activity_forget_password.class);
                 forget.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 forget.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 activity_login.this.startActivity(forget);
             }
         });
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ){
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = this.getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-           // window.setStatusBarColor(ContextCompat.getColor(this, R.color.color_app_theam));
+            // window.setStatusBarColor(ContextCompat.getColor(this, R.color.color_app_theam));
         }
 
         // user with bugs
         //username.setText("03465175407");password.setText("12345"); // delivery stage
 
-        username.setText("03454772074");password.setText("12345"); // delivery stage
+        username.setText("03465175407");
+        password.setText("12345"); // delivery stage
 
 
         Sprite doubleBounce = new DoubleBounce();
@@ -85,18 +86,17 @@ public class activity_login extends AppCompatActivity {
                 //Intent i = new Intent(activity_login.this,activity_mapview.class);
                 //activity_login.this.startActivity(i);
 
-                if(Databackbone.getinstance().checkInternet(activity_login.this)){
+                if (Databackbone.getinstance().checkInternet(activity_login.this)) {
                     return;
                 }
                 Start_login();
 
-    }
-    public void changeStatusBarColor(){
-
-
+            }
+        });
 
     }
-    public void Start_login(){
+
+    public void Start_login() {
         username.setEnabled(false);
         password.setEnabled(false);
         btn_login.setEnabled(false);
@@ -112,9 +112,8 @@ public class activity_login extends AppCompatActivity {
         String username_data = username.getText().toString();
         String password_data = password.getText().toString();
 
-        if(username_data.length() < 4 || password_data.length() < 4)
-        {
-            Databackbone.getinstance().showAlsertBox(activity_login.this,"Error","user or password too short");
+        if (username_data.length() < 4 || password_data.length() < 4) {
+            Databackbone.getinstance().showAlsertBox(activity_login.this, "Error", "user or password too short");
             EnableLogin();
             return;
         }
@@ -123,24 +122,23 @@ public class activity_login extends AppCompatActivity {
         loginCredentials.password = password.getText().toString();
 
 
-
         swift_api riderapi = Databackbone.getinstance().getRetrofitbuilder().create(swift_api.class);
 
         Call<Rider> call = riderapi.getRiderFromLogin(loginCredentials);
         call.enqueue(new Callback<Rider>() {
             @Override
             public void onResponse(Call<Rider> call, Response<Rider> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
 
                     Rider rider = response.body();
                     Databackbone.getinstance().rider = rider;
-                   checkVersionControl();
-                   // Toast.makeText(activity_login.this,rider.getId(),Toast.LENGTH_LONG).show();
+                    checkVersionControl();
+                    // Toast.makeText(activity_login.this,rider.getId(),Toast.LENGTH_LONG).show();
 
 
-                }else{
-                    Databackbone.getinstance().showAlsertBox(activity_login.this,"error","wrong username or password");
-                            EnableLogin();
+                } else {
+                    Databackbone.getinstance().showAlsertBox(activity_login.this, "error", "wrong username or password");
+                    EnableLogin();
                 }
 
             }
@@ -153,23 +151,20 @@ public class activity_login extends AppCompatActivity {
         });
 
     }
-        });
 
-    }
-    public void checkVersionControl(){
+    public void checkVersionControl() {
         swift_api riderapi = Databackbone.getinstance().getRetrofitbuilder().create(swift_api.class);
 
-        Call<Void> call = riderapi.getversioncontrol(Databackbone.getinstance().rider.getId(),BuildConfig.VERSION_NAME);
+        Call<Void> call = riderapi.getversioncontrol(Databackbone.getinstance().rider.getId(), BuildConfig.VERSION_NAME);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.code() != 200) {
-                    Databackbone.getinstance().showAlsertBox(activity_login.this,"Error","This app version is obsolete, Please Download the newer version");
+                    Databackbone.getinstance().showAlsertBox(activity_login.this, "Error", "This app version is obsolete, Please Download the newer version");
                     EnableLogin();
                     return;
                 }
-                    getRiderDetail();
-
+                getRiderDetail();
 
 
             }
@@ -181,15 +176,16 @@ public class activity_login extends AppCompatActivity {
             }
         });
     }
-    public void getRiderDetail(){
+
+    public void getRiderDetail() {
         Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
         swift_api riderapi = retrofit.create(swift_api.class);
 
-        Call<RiderDetails> call = riderapi.getRider(Databackbone.getinstance().rider.getId(),Databackbone.getinstance().rider.getUserId());
+        Call<RiderDetails> call = riderapi.getRider(Databackbone.getinstance().rider.getId(), Databackbone.getinstance().rider.getUserId());
         call.enqueue(new Callback<RiderDetails>() {
             @Override
             public void onResponse(Call<RiderDetails> call, Response<RiderDetails> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
 
                     RiderDetails riderActivity = response.body();
                     Databackbone.getinstance().riderdetails = riderActivity;
@@ -197,19 +193,18 @@ public class activity_login extends AppCompatActivity {
                     ApiController.getInstance().getwallet();
                     ApiController.getInstance().gethistory();
                     if (ContextCompat.checkSelfPermission(activity_login.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED)
-                        ActivityCompat.requestPermissions(activity_login.this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-                    else
-                    {
-                        Intent i = new Intent(activity_login.this,activity_mapview.class);
+                        ActivityCompat.requestPermissions(activity_login.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                    else {
+                        Intent i = new Intent(activity_login.this, activity_mapview.class);
                         activity_login.this.startActivity(i);
+                        finish();
 
                     }
 
-                }
-                else{
+                } else {
                     EnableLogin();
                     //DeactivateRider();
-                    Databackbone.getinstance().showAlsertBox(activity_login.this,"Error","Error Connecting To Server Error Code 33");
+                    Databackbone.getinstance().showAlsertBox(activity_login.this, "Error", "Error Connecting To Server Error Code 33");
                 }
 
             }
@@ -218,7 +213,7 @@ public class activity_login extends AppCompatActivity {
             public void onFailure(Call<RiderDetails> call, Throwable t) {
                 System.out.println(t.getCause());
                 EnableLogin();
-                Databackbone.getinstance().showAlsertBox(activity_login.this,"Error","Error Connecting To Server Error Code 34");
+                Databackbone.getinstance().showAlsertBox(activity_login.this, "Error", "Error Connecting To Server Error Code 34");
 
                 //DeactivateRider();
             }
@@ -242,19 +237,18 @@ public class activity_login extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == 1 && grantResults[0] == 0 ){
+        if (requestCode == 1 && grantResults[0] == 0) {
 
 
-                Intent i = new Intent(activity_login.this, activity_mapview.class);
-                activity_login.this.startActivity(i);
+            Intent i = new Intent(activity_login.this, activity_mapview.class);
+            activity_login.this.startActivity(i);
 
-        }
-        else{
-            Databackbone.getinstance().showAlsertBox(activity_login.this,"Error","Please give permission for location");
+        } else {
+            Databackbone.getinstance().showAlsertBox(activity_login.this, "Error", "Please give permission for location");
         }
     }
 
-    public void EnableLogin(){
+    public void EnableLogin() {
         progressBar.setVisibility(View.GONE);
         username.setEnabled(true);
         password.setEnabled(true);

@@ -43,6 +43,14 @@ public class activity_daily_task_status extends Activity {
     ConstraintLayout pendingTask;
     private Call<List<PickupParcel>> call;
     TextView tx_empty_view;
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_down);
+        activity_daily_task_status.this.finish();
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +67,7 @@ public class activity_daily_task_status extends Activity {
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_down);
                 activity_daily_task_status.this.finish();
             }
         });

@@ -316,7 +316,8 @@
                 android:background="@drawable/drawer_round"
                 app:layout_constraintEnd_toStartOf="@+id/guideline17"
                 app:layout_constraintStart_toStartOf="@+id/profile_image2"
-                app:layout_constraintTop_toBottomOf="@+id/profile_image2">
+                app:layout_constraintTop_toBottomOf="@+id/profile_image2"
+                >
 
                 <ImageView
                     android:id="@+id/imageView3"

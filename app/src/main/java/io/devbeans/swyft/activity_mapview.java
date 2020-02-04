@@ -60,7 +60,6 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
     TextView tx_username,tx_rating = null;
     ProgressBar progressBar = null;
 
-
     ImageView btn_slider_menu;
     private AppBarConfiguration mAppBarConfiguration;
     NavigationView navigationView;
@@ -72,8 +71,6 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
     Marker marker_destination_location = null;
 
     ArrayList<MarkerOptions> markers = new ArrayList<>();
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -243,8 +240,6 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
                 }else{
                     Databackbone.getinstance().showAlsertBox(activity_mapview.this,"Error","Your Are Not Online");
                 }
-
-
             }
         });
 

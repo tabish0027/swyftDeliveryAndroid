@@ -8,5 +8,4 @@
         android:bottomLeftRadius="15dp"
         android:topLeftRadius="15dp"
         android:topRightRadius="15dp"/>
-    <stroke android:width="3px" android:color="@color/color_app_theam" />
 </shape>

@@ -35,9 +35,9 @@ android {
            // buildConfigField("String", "API_BASE_IMAGE_URL", "\"https://www.cheetay.pk/static/media/\"")
 
             //buildConfigField("String", "API_BASE_URL", "\"https://devapi.swyftlogistics.com:3000/api/\"")
-           // buildConfigField("String", "API_BASE_URL", "\"https://stagingapi.swyftlogistics.com:3000/api/\"")
+            buildConfigField("String", "API_BASE_URL", "\"https://stagingapi.swyftlogistics.com:3000/api/\"")
             // buildConfigField("String", "API_BASE_URL", "\"https://api.swyftlogistics.com:3000/api/\"")
-            buildConfigField("String", "API_BASE_URL", "\"http://192.168.0.100:3000/api/\"")
+           // buildConfigField("String", "API_BASE_URL", "\"http://192.168.0.100:3000/api/\"")
 
            //  buildConfigField("String", "API_BASE_URL", "\"http://192.168.100.39:3000/api/\"")
 

@@ -55,6 +55,14 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
 
     EditText edt_parcel_id;
     Button btn_add;
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_down);
+        activity_barcode_scanner.this.finish();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +83,7 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_down);
                 activity_barcode_scanner.this.finish();
             }
         });

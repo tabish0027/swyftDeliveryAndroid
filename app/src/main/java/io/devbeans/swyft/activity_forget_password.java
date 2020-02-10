@@ -42,7 +42,7 @@ public class activity_forget_password extends AppCompatActivity {
         tx_password = findViewById(R.id.tx_password);
         tx_confirm_password = findViewById(R.id.tx_confirm_password);
         tx_username = findViewById(R.id.tx_username);
-        tx_username.setText("923004820761");
+        tx_username.setHint("92300xxxxxxx");
         btn_reset_password = findViewById(R.id.btn_reset_password);
         btn_requestotp= findViewById(R.id.btn_requestotp);
         btn_back.setOnClickListener(new View.OnClickListener() {
@@ -59,7 +59,7 @@ public class activity_forget_password extends AppCompatActivity {
                     request_Otp(tx_username.getText().toString());
                 }
                 else {
-                    Databackbone.getinstance().showAlsertBox(activity_forget_password.this,"error","Please enter a valid Phone Number");
+                    Databackbone.getinstance().showAlsertBox(activity_forget_password.this, getResources().getString(R.string.error), getResources().getString(R.string.please_enter_avalid_phone_number));
                 }
             }
         });
@@ -73,16 +73,16 @@ public class activity_forget_password extends AppCompatActivity {
                         {reset_password(tx_otp.getText().toString(),tx_password.getText().toString());
                         }
                         else{
-                            Databackbone.getinstance().showAlsertBox(activity_forget_password.this,"error","Please enter a valid opt");
+                            Databackbone.getinstance().showAlsertBox(activity_forget_password.this,getResources().getString(R.string.error), getResources().getString(R.string.please_enter_avalid_otp));
 
                         }
                     }
                     else{
-                        Databackbone.getinstance().showAlsertBox(activity_forget_password.this,"error","Password length Should Be greater then 6");
+                        Databackbone.getinstance().showAlsertBox(activity_forget_password.this,getResources().getString(R.string.error), getResources().getString(R.string.password_length_shouldbe_greater_than_6_words));
 
                     }
                 }else{
-                    Databackbone.getinstance().showAlsertBox(activity_forget_password.this,"error","Password and confirmpassword not shame");
+                    Databackbone.getinstance().showAlsertBox(activity_forget_password.this,getResources().getString(R.string.error), getResources().getString(R.string.password_and_confirm_password_not_same));
 
                 }
             }
@@ -141,8 +141,8 @@ public class activity_forget_password extends AppCompatActivity {
                     if(!rider.getMessage().equalsIgnoreCase("")){
 
                         new AlertDialog.Builder(activity_forget_password.this)
-                                .setTitle("Password reset")
-                                .setMessage("Done")
+                                .setTitle(getResources().getString(R.string.password_reset))
+                                .setMessage(getResources().getString(R.string.done))
 
                                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
@@ -158,7 +158,7 @@ public class activity_forget_password extends AppCompatActivity {
                     else{
                         panel_reset_password.setVisibility(View.GONE);
                         panel_request_otp.setVisibility(View.VISIBLE);
-                        Databackbone.getinstance().showAlsertBox(activity_forget_password.this,"Password reset","Error");
+                        Databackbone.getinstance().showAlsertBox(activity_forget_password.this, getResources().getString(R.string.password_reset), getResources().getString(R.string.error));
 
                     }
 
@@ -171,7 +171,7 @@ public class activity_forget_password extends AppCompatActivity {
                 System.out.println(t.getCause());DisableLoading();
                 panel_reset_password.setVisibility(View.GONE);
                 panel_request_otp.setVisibility(View.VISIBLE);
-                Databackbone.getinstance().showAlsertBox(activity_forget_password.this,"Password reset","Error");
+                Databackbone.getinstance().showAlsertBox(activity_forget_password.this, getResources().getString(R.string.password_reset), getResources().getString(R.string.error));
             }
         });
     }

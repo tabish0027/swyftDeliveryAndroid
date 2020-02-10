@@ -73,9 +73,12 @@ public class activity_login extends AppCompatActivity {
         // user with bugs
         //username.setText("03465175407");password.setText("12345"); // delivery stage
 
-        username.setText("03465175407");
+        // For debuging and stage server only
+
+        username.setText("+923047216339");
         password.setText("12345"); // delivery stage
 
+        // For debuging and stage server only
 
         Sprite doubleBounce = new DoubleBounce();
         progressBar.setVisibility(View.GONE);
@@ -113,7 +116,7 @@ public class activity_login extends AppCompatActivity {
         String password_data = password.getText().toString();
 
         if (username_data.length() < 4 || password_data.length() < 4) {
-            Databackbone.getinstance().showAlsertBox(activity_login.this, "Error", "user or password too short");
+            Databackbone.getinstance().showAlsertBox(activity_login.this, getResources().getString(R.string.error), getResources().getString(R.string.user_or_password_too_short));
             EnableLogin();
             return;
         }
@@ -137,7 +140,7 @@ public class activity_login extends AppCompatActivity {
 
 
                 } else {
-                    Databackbone.getinstance().showAlsertBox(activity_login.this, "error", "wrong username or password");
+                    Databackbone.getinstance().showAlsertBox(activity_login.this, getResources().getString(R.string.error), getResources().getString(R.string.wrong_username_or_password));
                     EnableLogin();
                 }
 
@@ -160,7 +163,7 @@ public class activity_login extends AppCompatActivity {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.code() != 200) {
-                    Databackbone.getinstance().showAlsertBox(activity_login.this, "Error", "This app version is obsolete, Please Download the newer version");
+                    Databackbone.getinstance().showAlsertBox(activity_login.this, getResources().getString(R.string.error), getResources().getString(R.string.this_app_version_is_obsolete));
                     EnableLogin();
                     return;
                 }
@@ -204,7 +207,7 @@ public class activity_login extends AppCompatActivity {
                 } else {
                     EnableLogin();
                     //DeactivateRider();
-                    Databackbone.getinstance().showAlsertBox(activity_login.this, "Error", "Error Connecting To Server Error Code 33");
+                    Databackbone.getinstance().showAlsertBox(activity_login.this, getResources().getString(R.string.error), "Error Connecting To Server Error Code 33");
                 }
 
             }
@@ -213,7 +216,7 @@ public class activity_login extends AppCompatActivity {
             public void onFailure(Call<RiderDetails> call, Throwable t) {
                 System.out.println(t.getCause());
                 EnableLogin();
-                Databackbone.getinstance().showAlsertBox(activity_login.this, "Error", "Error Connecting To Server Error Code 34");
+                Databackbone.getinstance().showAlsertBox(activity_login.this, getResources().getString(R.string.error), "Error Connecting To Server Error Code 34");
 
                 //DeactivateRider();
             }
@@ -244,7 +247,7 @@ public class activity_login extends AppCompatActivity {
             activity_login.this.startActivity(i);
 
         } else {
-            Databackbone.getinstance().showAlsertBox(activity_login.this, "Error", "Please give permission for location");
+            Databackbone.getinstance().showAlsertBox(activity_login.this, getResources().getString(R.string.error), getResources().getString(R.string.please_give_permission_for_location));
         }
     }
 

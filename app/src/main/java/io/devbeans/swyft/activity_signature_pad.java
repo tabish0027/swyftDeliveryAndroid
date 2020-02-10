@@ -98,7 +98,7 @@ public class activity_signature_pad extends AppCompatActivity {
     public void uploadSignature(final String parcel_id){
         EnableLoading();
         if(!has_signature_image){
-            Databackbone.getinstance().showAlsertBox(activity_signature_pad.this,"error","Please put Signature");
+            Databackbone.getinstance().showAlsertBox(activity_signature_pad.this,getResources().getString(R.string.error), getResources().getString(R.string.please_put_signature));
 
             return;
         }
@@ -156,7 +156,7 @@ public class activity_signature_pad extends AppCompatActivity {
 
                 }
                 else{
-                    Databackbone.getinstance().showAlsertBox(activity_signature_pad.this, "Error", "Server code error 88");
+                    Databackbone.getinstance().showAlsertBox(activity_signature_pad.this, getResources().getString(R.string.error), "Server code error 88");
 
                     DisableLoading();
                 }
@@ -166,7 +166,7 @@ public class activity_signature_pad extends AppCompatActivity {
             @Override
             public void onFailure(Call<parcel_signature_upload> call, Throwable t) {
                 System.out.println(t.getCause());
-                Databackbone.getinstance().showAlsertBox(activity_signature_pad.this, "Error", "Server code error 89 "+t.getMessage());
+                Databackbone.getinstance().showAlsertBox(activity_signature_pad.this, getResources().getString(R.string.error), "Server code error 89 "+t.getMessage());
                 DisableLoading();
 
             }
@@ -185,7 +185,7 @@ public class activity_signature_pad extends AppCompatActivity {
         String taskId = riderDelivery.getTaskId();
         if(parcelIds.size() == 0)
         {
-            Databackbone.getinstance().showAlsertBox(activity_signature_pad.this, "Error", "Server code error 102");
+            Databackbone.getinstance().showAlsertBox(activity_signature_pad.this, getResources().getString(R.string.error), "Server code error 102");
             DisableLoading();
             return;
         }
@@ -213,8 +213,8 @@ public class activity_signature_pad extends AppCompatActivity {
 
                         DisableLoading();
                         new AlertDialog.Builder(activity_signature_pad.this)
-                                .setTitle("Signature")
-                                .setMessage("Confirmed")
+                                .setTitle(getResources().getString(R.string.signature))
+                                .setMessage(getResources().getString(R.string.confirmed))
 
                                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
@@ -229,7 +229,7 @@ public class activity_signature_pad extends AppCompatActivity {
 
                 }
                 else{
-                    Databackbone.getinstance().showAlsertBox(activity_signature_pad.this, "Error", "Server code error 98");
+                    Databackbone.getinstance().showAlsertBox(activity_signature_pad.this, getResources().getString(R.string.error), "Server code error 98");
                     DisableLoading();
                 }
 
@@ -238,7 +238,7 @@ public class activity_signature_pad extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<RiderActivityDelivery>> call, Throwable t) {
                 System.out.println(t.getCause());
-                Databackbone.getinstance().showAlsertBox(activity_signature_pad.this, "Error", "Server code error 99");
+                Databackbone.getinstance().showAlsertBox(activity_signature_pad.this, getResources().getString(R.string.error), "Server code error 99");
                 DisableLoading();
             }
         });

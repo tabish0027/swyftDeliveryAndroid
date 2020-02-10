@@ -60,7 +60,7 @@ public class activity_daily_order_status  extends Activity {
         tx_pending_title = findViewById(R.id.tx_pending_title);
         tx_parcels_status_count = findViewById(R.id.tx_parcels_status_count);
         tx_empty_view = findViewById(R.id.tx_empty_view);
-        tx_pending_title.setText("Pending Parcels");
+        tx_pending_title.setText(getResources().getString(R.string.pending_parcels));
 
 
         btn_back.setOnClickListener(new View.OnClickListener() {
@@ -145,7 +145,7 @@ public class activity_daily_order_status  extends Activity {
             public void onClick(View v) {
                 if(!Databackbone.getinstance().getDeliveryTask().getTaskStatus().equals("started"))
                 {
-                    Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this,"Error","Please Start the task before you scan parcels");
+                    Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this,getResources().getString(R.string.error),getResources().getString(R.string.please_start_task_before_scan));
 
                     return ;
                 }
@@ -183,7 +183,7 @@ public class activity_daily_order_status  extends Activity {
 
         else{
             if(check_is_any_pickup_order_active()){
-                Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this,"Error","The is already an active order");
+                Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this,getResources().getString(R.string.error),getResources().getString(R.string.this_is_already_an_active_order));
                 return ;
 
             }
@@ -196,18 +196,18 @@ public class activity_daily_order_status  extends Activity {
     public void StartDeliveryorder(int position){
         if(!Databackbone.getinstance().getDeliveryTask().getTaskStatus().equals("started"))
         {
-            Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this,"Error","Please Start the task before you scan parcels");
+            Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this,getResources().getString(R.string.error),getResources().getString(R.string.please_start_task_before_scan));
 
             return ;
         }
         if(pending_parcels_to_scan != 0){
-            Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this,"Error","Please Scan all parcels before you start");
+            Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this,getResources().getString(R.string.error),getResources().getString(R.string.please_scan_all_parcels_before_start));
 
             return;
         }
         //if(Databackbone.getinstance().ar_orders_daily.get(position).status)
         if(check_is_any_delivery_order_active()){
-            Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this,"Error","Their is already an active order");
+            Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this,getResources().getString(R.string.error),getResources().getString(R.string.their_is_already_an_active_order));
             return ;
 
         }
@@ -295,8 +295,8 @@ public class activity_daily_order_status  extends Activity {
             if(temp_ar_orders_daily.size() == 0)
                 tx_empty_view.setVisibility(View.VISIBLE);
             if(pending_parcels_to_scan <= 1)
-            tx_parcels_status_count.setText(Integer.toString(pending_parcels_to_scan)+" Parcel left to Scan");
-            else tx_parcels_status_count.setText(Integer.toString(pending_parcels_to_scan)+" Parcel left to Scan");
+            tx_parcels_status_count.setText(Integer.toString(pending_parcels_to_scan)+" " + getResources().getString(R.string.parcel_left_to_scan));
+            else tx_parcels_status_count.setText(Integer.toString(pending_parcels_to_scan)+" " + getResources().getString(R.string.parcel_left_to_scan));
 
 
         }
@@ -407,8 +407,8 @@ public class activity_daily_order_status  extends Activity {
     }
     public void startorderConfirmation(final String name , final String orderid){
         new AlertDialog.Builder(activity_daily_order_status.this)
-                .setTitle("Notice")
-                .setMessage("You are about to start order for " + name )
+                .setTitle(getResources().getString(R.string.notice))
+                .setMessage(getResources().getString(R.string.you_are_about_to_start_order_for) + " " + name )
 
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
@@ -432,10 +432,10 @@ public class activity_daily_order_status  extends Activity {
     }
     public void completeorderConfirmation(final String name , final String orderid){
         new AlertDialog.Builder(activity_daily_order_status.this)
-                .setTitle("Notice")
-                .setMessage("You have already scanned all the parcels" )
+                .setTitle(getResources().getString(R.string.notice))
+                .setMessage(getResources().getString(R.string.you_have_already_scanned_all_the_parcels))
 
-                .setPositiveButton("Completed", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getResources().getString(R.string.completed), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         if(Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery"))
                             activate_order_delivery_activater(orderid,"completed");
@@ -444,7 +444,7 @@ public class activity_daily_order_status  extends Activity {
 
                     }
                 })
-                .setNegativeButton("Issue", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getResources().getString(R.string.issue), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
                     }
@@ -462,7 +462,7 @@ public class activity_daily_order_status  extends Activity {
             @Override
             public void onResponse(Call<List<PickupParcel>> call, Response<List<PickupParcel>> response) {
                 if (response.code() != 200) {
-                    Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this,"Error","This app version is obsolete, Please Download the newer version");
+                    Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this,getResources().getString(R.string.error), getResources().getString(R.string.this_app_version_is_obsolete));
                     DisableLoading();
                     return;
                 }
@@ -475,7 +475,7 @@ public class activity_daily_order_status  extends Activity {
                     //Databackbone.getinstance().parcels = parcels;
                     load_Data();
                     update_view();
-                    Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this,"confirmation","order "+action);
+                    Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this,getResources().getString(R.string.confirmation),getResources().getString(R.string.order) + " " + action);
                     DisableLoading();
 
                 }
@@ -540,7 +540,7 @@ public class activity_daily_order_status  extends Activity {
             @Override
             public void onResponse(Call<List<RiderActivityDelivery>> call, Response<List<RiderActivityDelivery>> response) {
                 if (response.code() != 200) {
-                    Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this,"Error","This app version is obsolete, Please Download the newer version");
+                    Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this,getResources().getString(R.string.error),getResources().getString(R.string.this_app_version_is_obsolete));
                     DisableLoading();
                     return;
                 }
@@ -554,7 +554,7 @@ public class activity_daily_order_status  extends Activity {
                     load_Data();
                     update_view();
                     DisableLoading();
-                    Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this,"confirmation","order "+action);
+                    Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this,getResources().getString(R.string.confirmation),getResources().getString(R.string.order) + " " + action);
 
 
                 }
@@ -638,7 +638,7 @@ public class activity_daily_order_status  extends Activity {
         String taskId = Databackbone.getinstance().getDeliveryTask().getTaskId();
         if(parcelIds.size() == 0)
         {
-            Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this, "Error", "Server code error 102");
+            Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this, getResources().getString(R.string.error), "Server code error 102");
             DisableLoading();
             return;
         }
@@ -667,10 +667,10 @@ public class activity_daily_order_status  extends Activity {
 
                     //Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this, "Confirmation", "Order Started");
                     new AlertDialog.Builder(activity_daily_order_status.this)
-                            .setTitle("confirmation")
-                            .setMessage("Order Start")
+                            .setTitle(getResources().getString(R.string.confirmation))
+                            .setMessage(getResources().getString(R.string.order_start))
 
-                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     Intent orders = new Intent(activity_daily_order_status.this,activity_form.class);
                                     orders.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -688,7 +688,7 @@ public class activity_daily_order_status  extends Activity {
 
                 }
                 else{
-                    Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this, "Error", "Server code error 98");
+                    Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this, getResources().getString(R.string.error), "Server code error 98");
                     DisableLoading();
                 }
 
@@ -697,7 +697,7 @@ public class activity_daily_order_status  extends Activity {
             @Override
             public void onFailure(Call<List<RiderActivityDelivery>> call, Throwable t) {
                 System.out.println(t.getCause());
-                Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this, "Error", "Server code error 99");
+                Databackbone.getinstance().showAlsertBox(activity_daily_order_status.this, getResources().getString(R.string.error), "Server code error 99");
                 DisableLoading();
             }
         });

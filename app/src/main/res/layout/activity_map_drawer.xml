@@ -82,7 +82,7 @@
                                 android:layout_marginStart="16dp"
                                 android:layout_marginEnd="8dp"
                                 android:fontFamily="@font/avenirfile"
-                                android:text="Delivery"
+                                android:text="@string/delivery"
                                 android:textColor="#231f20"
                                 android:textSize="15dp"
                                 app:layout_constraintBottom_toBottomOf="@+id/imageView30"
@@ -126,7 +126,7 @@
                                 android:layout_marginStart="16dp"
                                 android:layout_marginEnd="8dp"
                                 android:fontFamily="@font/avenirfile"
-                                android:text="Help"
+                                android:text="@string/help"
                                 android:textColor="#231f20"
                                 android:textSize="15dp"
                                 app:layout_constraintBottom_toBottomOf="@+id/imageView302"
@@ -170,7 +170,7 @@
                                 android:layout_marginStart="16dp"
                                 android:layout_marginEnd="8dp"
                                 android:fontFamily="@font/avenirfile"
-                                android:text="FAQ"
+                                android:text="@string/faq"
                                 android:textColor="#231f20"
                                 android:textSize="15dp"
                                 app:layout_constraintBottom_toBottomOf="@+id/imageView303"
@@ -214,7 +214,7 @@
                                 android:layout_marginStart="16dp"
                                 android:layout_marginEnd="8dp"
                                 android:fontFamily="@font/avenirfile"
-                                android:text="Setting"
+                                android:text="@string/setting"
                                 android:textColor="#231f20"
                                 android:textSize="15dp"
                                 app:layout_constraintBottom_toBottomOf="@+id/imageView304"
@@ -259,7 +259,7 @@
                                 android:layout_marginStart="16dp"
                                 android:layout_marginEnd="8dp"
                                 android:fontFamily="@font/avenirfile"
-                                android:text="Sign Out"
+                                android:text="@string/sign_out"
                                 android:textColor="#231f20"
                                 android:textSize="15dp"
                                 app:layout_constraintBottom_toBottomOf="@+id/imageView305"
@@ -360,7 +360,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-thin"
                         android:gravity="center"
-                        android:text="Wallet"
+                        android:text="@string/wallet"
                         android:textColor="#ffffff"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="@+id/imageView3"
@@ -413,7 +413,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/avenirfile"
                         android:gravity="center"
-                        android:text="Earnings"
+                        android:text="@string/earnings"
                         android:textColor="@color/color_app_theam"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="@+id/imageView322"
@@ -426,7 +426,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0.79" />
+                    app:layout_constraintGuide_percent="0.7892857" />
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/profile_image2"
@@ -448,9 +448,7 @@
                 android:background="@color/color_app_theam"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline20"

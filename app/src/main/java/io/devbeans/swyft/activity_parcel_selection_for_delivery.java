@@ -18,6 +18,7 @@ import io.devbeans.swyft.adapters.*;
 import io.devbeans.swyft.data_models.model_parcel;
 import io.devbeans.swyft.interface_retrofit_delivery.Datum;
 import io.devbeans.swyft.interface_retrofit_delivery.RiderActivityDelivery;
+import io.swyft.swyft.R;
 
 public class activity_parcel_selection_for_delivery extends AppCompatActivity {
     ImageView btn_back;

@@ -28,6 +28,8 @@ import io.devbeans.swyft.interface_retrofit.manage_task;
 import io.devbeans.swyft.interface_retrofit.swift_api;
 import io.devbeans.swyft.interface_retrofit_delivery.RiderActivityDelivery;
 import io.devbeans.swyft.interface_retrofit_delivery.swift_api_delivery;
+import io.swyft.swyft.BuildConfig;
+import io.swyft.swyft.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -430,7 +432,7 @@ public class activity_daily_task_status extends Activity {
         EnableLoading();
         double distance = Databackbone.getinstance().getfinalcouvereddistance (taskId,activity_daily_task_status.this);
 
-        Call<List<PickupParcel>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),taskId,new manage_task(action,(int)distance,BuildConfig.VERSION_NAME));
+        Call<List<PickupParcel>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),taskId,new manage_task(action,(int)distance, BuildConfig.VERSION_NAME));
         call.enqueue(new Callback<List<PickupParcel>>() {
             @Override
             public void onResponse(Call<List<PickupParcel>> call, Response<List<PickupParcel>> response) {

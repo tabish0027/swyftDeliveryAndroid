@@ -36,6 +36,7 @@ import io.devbeans.swyft.interface_retrofit_delivery.Datum;
 import io.devbeans.swyft.interface_retrofit_delivery.RiderActivityDelivery;
 import io.devbeans.swyft.interface_retrofit_delivery.parcel_scan_delivery;
 import io.devbeans.swyft.interface_retrofit_delivery.swift_api_delivery;
+import io.swyft.swyft.R;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 import retrofit2.Call;
 import retrofit2.Callback;

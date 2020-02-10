@@ -14,6 +14,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import io.swyft.swyft.R;
+
 public class bottomsheet_orderdeclined extends BottomSheetDialogFragment {
 
     ConstraintLayout btn_order_canceled,btn_order_diclined;

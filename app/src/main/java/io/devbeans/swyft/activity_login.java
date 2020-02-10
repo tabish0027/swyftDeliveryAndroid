@@ -2,9 +2,12 @@ package io.devbeans.swyft;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -19,9 +22,16 @@ import androidx.core.content.ContextCompat;
 
 import com.github.ybq.android.spinkit.sprite.Sprite;
 import com.github.ybq.android.spinkit.style.DoubleBounce;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 
 import io.devbeans.swyft.network.ApiController;
+import io.swyft.swyft.BuildConfig;
+import io.swyft.swyft.R;
+import io.swyft.swyft.Splash;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -36,14 +46,42 @@ public class activity_login extends AppCompatActivity {
     EditText username, password, ip_con;
     Button btn_forget;
 
+    SharedPreferences sharedpreferences;
+    SharedPreferences.Editor mEditor;
+    public static final String MyPREFERENCES = "MyPrefs";
+    FirebaseApp firebaseApp;
+
+    String deviceToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        FirebaseApp.initializeApp(activity_login.this);
+
+        sharedpreferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
+        mEditor = sharedpreferences.edit();
+
+        deviceToken = sharedpreferences.getString("DeviceToken", "");
+
+
+        if (TextUtils.isEmpty(deviceToken)) {
+            FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(activity_login.this, new OnSuccessListener<InstanceIdResult>() {
+                @Override
+                public void onSuccess(InstanceIdResult instanceIdResult) {
+                    String newToken = instanceIdResult.getToken();
+                    Log.e("newToken", newToken);
+                    mEditor.putString("DeviceToken", newToken);
+                    mEditor.apply();
+                }
+            });
+        }
+
+
         Databackbone.getinstance().contextapp = getApplicationContext();
         btn_login = findViewById(R.id.btn_login);
-        progressBar = (ProgressBar) findViewById(R.id.url_loading_animation);
+        progressBar = findViewById(R.id.url_loading_animation);
         username = findViewById(R.id.username);
         password = findViewById(R.id.password);
         btn_forget = findViewById(R.id.btn_forget);

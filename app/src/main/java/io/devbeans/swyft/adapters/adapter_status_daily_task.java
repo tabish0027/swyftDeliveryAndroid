@@ -22,7 +22,7 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.ArrayList;
 
 import io.devbeans.swyft.Databackbone;
-import io.devbeans.swyft.R;
+import io.swyft.swyft.R;
 import io.devbeans.swyft.data_models.model_daily_package_item;
 
 public class adapter_status_daily_task extends RecyclerView.Adapter<adapter_status_daily_task.model_order_daily_item_holder> {

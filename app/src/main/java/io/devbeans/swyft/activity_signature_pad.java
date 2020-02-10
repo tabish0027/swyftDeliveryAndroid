@@ -24,6 +24,7 @@ import io.devbeans.swyft.interface_retrofit_delivery.RiderActivityDelivery;
 import io.devbeans.swyft.interface_retrofit_delivery.mark_parcel_complete;
 import io.devbeans.swyft.interface_retrofit_delivery.parcel_signature_upload;
 import io.devbeans.swyft.interface_retrofit_delivery.swift_api_delivery;
+import io.swyft.swyft.R;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;

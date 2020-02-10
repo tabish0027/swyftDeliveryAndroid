@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:886728776092:android:0c115aa39de212894e9059",
+        "mobilesdk_app_id": "1:886728776092:android:00ffb90f5e1824594e9059",
         "android_client_info": {
-          "package_name": "io.devbeans.swyft"
+          "package_name": "io.swyft.swyft"
         }
       },
       "oauth_client": [

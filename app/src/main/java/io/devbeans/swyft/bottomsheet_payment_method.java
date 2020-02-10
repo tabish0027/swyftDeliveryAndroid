@@ -13,6 +13,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import io.swyft.swyft.R;
+
 public class bottomsheet_payment_method extends BottomSheetDialogFragment {
 
     Button btn_submit;

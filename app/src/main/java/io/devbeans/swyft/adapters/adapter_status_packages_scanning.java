@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import io.devbeans.swyft.R;
+import io.swyft.swyft.R;
 import io.devbeans.swyft.data_models.model_order_item;
 
 public class adapter_status_packages_scanning extends RecyclerView.Adapter<adapter_status_packages_scanning.model_order_item_holder> {

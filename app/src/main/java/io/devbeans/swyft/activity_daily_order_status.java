@@ -31,7 +31,8 @@ import io.devbeans.swyft.interface_retrofit_delivery.Datum;
 import io.devbeans.swyft.interface_retrofit_delivery.RiderActivityDelivery;
 import io.devbeans.swyft.interface_retrofit_delivery.mark_parcel_complete;
 import io.devbeans.swyft.interface_retrofit_delivery.swift_api_delivery;
-
+import io.swyft.swyft.BuildConfig;
+import io.swyft.swyft.R;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -457,7 +458,7 @@ public class activity_daily_order_status  extends Activity {
         Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
         swift_api riderapi = retrofit.create(swift_api.class);
         EnableLoading();
-        Call<List<PickupParcel>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),orderId,new manage_task(action,(float)0.0,BuildConfig.VERSION_NAME));
+        Call<List<PickupParcel>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),orderId,new manage_task(action,(float)0.0, BuildConfig.VERSION_NAME));
         call.enqueue(new Callback<List<PickupParcel>>() {
             @Override
             public void onResponse(Call<List<PickupParcel>> call, Response<List<PickupParcel>> response) {

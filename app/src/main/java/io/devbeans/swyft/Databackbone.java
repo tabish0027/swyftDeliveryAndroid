@@ -48,6 +48,8 @@ import io.devbeans.swyft.interface_retrofit_delivery.RiderActivityDelivery;
 import io.devbeans.swyft.interface_retrofit_delivery.delivery_earnings;
 import io.devbeans.swyft.interface_retrofit_delivery.delivery_wallet;
 import io.devbeans.swyft.interface_retrofit_delivery.history;
+import io.swyft.swyft.BuildConfig;
+import io.swyft.swyft.R;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

@@ -18,6 +18,7 @@ import io.devbeans.swyft.interface_retrofit.Parcel;
 import io.devbeans.swyft.interface_retrofit.PickupParcel;
 import io.devbeans.swyft.interface_retrofit_delivery.Datum;
 import io.devbeans.swyft.interface_retrofit_delivery.RiderActivityDelivery;
+import io.swyft.swyft.R;
 
 public class activity_order_status_scanning extends Activity {
 

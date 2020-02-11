@@ -64,7 +64,7 @@ public class activity_login extends AppCompatActivity {
         mEditor = sharedpreferences.edit();
 
         deviceToken = sharedpreferences.getString("DeviceToken", "");
-
+        Log.e("deviceToken", deviceToken);
 
         if (TextUtils.isEmpty(deviceToken)) {
             FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(activity_login.this, new OnSuccessListener<InstanceIdResult>() {
@@ -173,7 +173,14 @@ public class activity_login extends AppCompatActivity {
 
                     Rider rider = response.body();
                     Databackbone.getinstance().rider = rider;
-                    checkVersionControl();
+//                    checkVersionControl();
+                    if (ContextCompat.checkSelfPermission(activity_login.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED)
+                        ActivityCompat.requestPermissions(activity_login.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                    else {
+                        Intent i = new Intent(activity_login.this, activity_mapview.class);
+                        activity_login.this.startActivity(i);
+                        finish();
+                    }
                     // Toast.makeText(activity_login.this,rider.getId(),Toast.LENGTH_LONG).show();
 
 
@@ -239,7 +246,6 @@ public class activity_login extends AppCompatActivity {
                         Intent i = new Intent(activity_login.this, activity_mapview.class);
                         activity_login.this.startActivity(i);
                         finish();
-
                     }
 
                 } else {

@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,6 +27,7 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -56,7 +58,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
     ImageView img_rider_activity_button, btn_navigation;
 
     ConstraintLayout offlineTag = null;
-    ConstraintLayout Task1, Task2, Task3, Task4, Task5 = null;
+    ConstraintLayout Task1, Task2, Task3, Task4, Task5, Task6 = null;
     ConstraintLayout btn_wallet, btn_earning = null;
     TextView tx_username, tx_rating = null;
     ProgressBar progressBar = null;
@@ -89,6 +91,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         Task3 = findViewById(R.id.item3);
         Task4 = findViewById(R.id.item4);
         Task5 = findViewById(R.id.item5);
+        Task6 = findViewById(R.id.item6);
         btn_navigation = findViewById(R.id.btn_navigation);
         tx_username = findViewById(R.id.tx_username_slider);
         progressBar = (ProgressBar) findViewById(R.id.url_loading_animation);
@@ -111,6 +114,10 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
             // tx_parcels_status_count.setText(Integer.toString(0) + " Scanning Parcels");
 
         }
+
+//        mDrawerLayout.closeDrawer(Gravity.LEFT);
+        navigationView.bringToFront();
+
         Task1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -144,6 +151,13 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
             public void onClick(View v) {
                 Databackbone.resetStaticPoint();
                 activity_mapview.this.finish();
+            }
+        });
+
+        Task6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(activity_mapview.this, "Sync it", Toast.LENGTH_SHORT).show();
             }
         });
         btn_get_current_locationc.setOnClickListener(new View.OnClickListener() {
@@ -306,7 +320,15 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
                 //mMapServiceView.addMarker(new MarkerOptions().position(current_location).title("Current Location"));
                 //mMapServiceView.moveCamera(CameraUpdateFactory.newLatLngZoom(current_location, 15));
                 CameraUpdate location_animation = CameraUpdateFactory.newLatLngZoom(current_location, 15);
-                mMapServiceView.animateCamera(location_animation);
+                CameraPosition cameraPosition = new CameraPosition.Builder()
+                        .target(current_location)        // Sets the center of the map to Mountain View
+                        .zoom(17)              // Sets the zoom
+                        .bearing(90)           // Sets the orientation of the camera to east
+                        .tilt(0)               // Sets the tilt of the camera to 30 degrees
+                        .build();
+//                mMapServiceView.animateCamera(location_animation);
+                mMapServiceView.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+//                mMapServiceView.moveCamera(CameraUpdateFactory.newLatLngZoom(current_location, 18));
                 //mMapServiceView.moveCamera(CameraUpdateFactory.newLatLng(current_location));
             }
 

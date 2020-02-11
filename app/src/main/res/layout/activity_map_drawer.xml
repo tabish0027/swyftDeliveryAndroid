@@ -15,7 +15,8 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:fitsSystemWindows="true" >
+        android:fitsSystemWindows="true"
+        >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -99,6 +100,51 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/item6"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.0"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/item1"
+                            >
+
+                            <ImageView
+                                android:id="@+id/sync_image"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:padding="8dp"
+                                android:src="@drawable/ic_sync"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toStartOf="@+id/sync_guideline"
+                                app:layout_constraintStart_toStartOf="@+id/sync_guideline"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/sync_textfield"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="16dp"
+                                android:layout_marginEnd="8dp"
+                                android:fontFamily="@font/avenirfile"
+                                android:text="@string/sync"
+                                android:textColor="#231f20"
+                                android:textSize="15dp"
+                                app:layout_constraintBottom_toBottomOf="@+id/sync_image"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/sync_image"
+                                app:layout_constraintTop_toTopOf="@+id/sync_image" />
+
+                            <androidx.constraintlayout.widget.Guideline
+                                android:id="@+id/sync_guideline"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                app:layout_constraintGuide_percent="0.15" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/item2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -106,7 +152,8 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.0"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/item1">
+                            app:layout_constraintTop_toBottomOf="@+id/item6"
+                            >
 
                             <ImageView
                                 android:id="@+id/imageView302"
@@ -327,6 +374,8 @@
                     app:layout_constraintEnd_toStartOf="@+id/guideline17"
                     app:layout_constraintStart_toStartOf="@+id/profile_image2"
                     app:layout_constraintTop_toBottomOf="@+id/profile_image2"
+                    android:paddingRight="10dp"
+                    android:paddingLeft="10dp"
                     >
 
                     <ImageView
@@ -379,7 +428,9 @@
                     app:layout_constraintEnd_toStartOf="@+id/guideline17"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="@+id/profile_image2"
-                    app:layout_constraintTop_toBottomOf="@+id/btn_wallet">
+                    app:layout_constraintTop_toBottomOf="@+id/btn_wallet"
+                    android:paddingRight="10dp"
+                    android:paddingLeft="10dp">
 
                     <ImageView
                         android:id="@+id/imageView322"

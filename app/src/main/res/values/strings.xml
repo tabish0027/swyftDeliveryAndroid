@@ -79,5 +79,6 @@
     <string name="delivered_parcels">Delivered Parcels</string>
     <string name="please_put_signature">Please put Signature</string>
     <string name="signature">Signature</string>
+    <string name="sync">Sync</string>
 
 </resources>

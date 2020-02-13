@@ -161,7 +161,7 @@ public class activity_login extends AppCompatActivity {
         login loginCredentials = new login();
         loginCredentials.username = username.getText().toString();
         loginCredentials.password = password.getText().toString();
-
+        loginCredentials.ttl = 2592000;
 
         swift_api riderapi = Databackbone.getinstance().getRetrofitbuilder().create(swift_api.class);
 
@@ -173,6 +173,10 @@ public class activity_login extends AppCompatActivity {
 
                     Rider rider = response.body();
                     Databackbone.getinstance().rider = rider;
+
+                    mEditor.putString("TOKEN", rider.getId()).commit();
+                    mEditor.putString("RiderID", rider.getUserId()).commit();
+                    mEditor.putString("AccessToken", rider.getId()).commit();
 //                    checkVersionControl();
                     if (ContextCompat.checkSelfPermission(activity_login.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED)
                         ActivityCompat.requestPermissions(activity_login.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);

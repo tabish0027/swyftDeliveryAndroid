@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -36,6 +37,9 @@ import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
 import androidx.navigation.ui.AppBarConfiguration;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,12 +77,20 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
     TextView tx_parcels_status_count, tx_earning_slider, tx_wallet_slider;
     Marker marker_destination_location = null;
 
+    SharedPreferences sharedpreferences;
+    SharedPreferences.Editor mEditor;
+    public static final String MyPREFERENCES = "MyPrefs";
+
     ArrayList<MarkerOptions> markers = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_drawer);
+
+        sharedpreferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
+        mEditor = sharedpreferences.edit();
+
         mMapView = findViewById(R.id.ridermapView);
         offlineTag = findViewById(R.id.img_rider_activity_button_State);
         img_rider_activity_button = findViewById(R.id.img_rider_activity_button);
@@ -317,8 +329,6 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
                 Databackbone.getinstance().current_location = current_location;
                 Databackbone.getinstance().CalculateLocationFromPickupParcels(Databackbone.getinstance().parcels);
 
-                //mMapServiceView.addMarker(new MarkerOptions().position(current_location).title("Current Location"));
-                //mMapServiceView.moveCamera(CameraUpdateFactory.newLatLngZoom(current_location, 15));
                 CameraUpdate location_animation = CameraUpdateFactory.newLatLngZoom(current_location, 15);
                 CameraPosition cameraPosition = new CameraPosition.Builder()
                         .target(current_location)        // Sets the center of the map to Mountain View
@@ -326,10 +336,8 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
                         .bearing(90)           // Sets the orientation of the camera to east
                         .tilt(0)               // Sets the tilt of the camera to 30 degrees
                         .build();
-//                mMapServiceView.animateCamera(location_animation);
                 mMapServiceView.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-//                mMapServiceView.moveCamera(CameraUpdateFactory.newLatLngZoom(current_location, 18));
-                //mMapServiceView.moveCamera(CameraUpdateFactory.newLatLng(current_location));
+
             }
 
             @Override
@@ -512,9 +520,19 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
                     DisableLoading();
 
                 } else {
-                    DisableLoading();
-                    //DeactivateRider();
-                    Databackbone.getinstance().showAlsertBox(activity_mapview.this, getResources().getString(R.string.error), "Error Connecting To Server Error Code 33");
+                    if (response.code() == 401) {
+                        DisableLoading();
+                        //sharedpreferences must be removed
+                        mEditor.clear().commit();
+                        Intent intent = new Intent(activity_mapview.this, activity_login.class);
+                        startActivity(intent);
+                        finishAffinity();
+                    }else {
+                        DisableLoading();
+                        //DeactivateRider();
+                        Databackbone.getinstance().showAlsertBox(activity_mapview.this, getResources().getString(R.string.error), "Error Connecting To Server Error Code 33");
+                    }
+
                 }
 
             }
@@ -635,7 +653,17 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
                     DisableLoading();
 
                 } else {
-                    DisableLoading();
+                    if (response.code() == 401) {
+                        DisableLoading();
+                        //sharedpreferences must be removed
+                        mEditor.clear().commit();
+                        Intent intent = new Intent(activity_mapview.this, activity_login.class);
+                        startActivity(intent);
+                        finishAffinity();
+                    }else {
+                        DisableLoading();
+                    }
+
                 }
 
             }

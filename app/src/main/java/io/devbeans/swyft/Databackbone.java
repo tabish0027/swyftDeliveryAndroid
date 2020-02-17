@@ -43,6 +43,8 @@ import io.devbeans.swyft.interface_retrofit.PickupParcel;
 import io.devbeans.swyft.interface_retrofit.Rider;
 import io.devbeans.swyft.interface_retrofit.RiderActivity;
 import io.devbeans.swyft.interface_retrofit.RiderDetails;
+import io.devbeans.swyft.interface_retrofit.TodayAssignmentData;
+import io.devbeans.swyft.interface_retrofit.TodayAssignments;
 import io.devbeans.swyft.interface_retrofit_delivery.Datum;
 import io.devbeans.swyft.interface_retrofit_delivery.RiderActivityDelivery;
 import io.devbeans.swyft.interface_retrofit_delivery.delivery_earnings;
@@ -75,6 +77,7 @@ public class Databackbone {
     public RiderActivity riderActivity = null;
 
     public RiderDetails riderdetails = null;
+    public TodayAssignments todayassignments = null;
     //dev
     // public String Base_URL = "https://devapi.swyftlogistics.com:3000/api/";
 
@@ -85,6 +88,7 @@ public class Databackbone {
     //public String Base_URL = "https://api.swyftlogistics.com:3000/api/";
 
     List<PickupParcel> parcels = null;
+    List<TodayAssignmentData> todayassignmentdata = null;
     List<RiderActivityDelivery> parcelsdelivery = null;
     Boolean check_parcel_scanning_complete = true;
     private static final String Back = "AIzaSyDviYdVUT4llQkqJF";

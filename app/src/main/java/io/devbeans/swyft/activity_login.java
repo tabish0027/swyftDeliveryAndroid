@@ -113,7 +113,7 @@ public class activity_login extends AppCompatActivity {
 
         // For debuging and stage server only
 
-        username.setText("+923047216339");
+        username.setText("03465175407");
         password.setText("12345"); // delivery stage
 
         // For debuging and stage server only
@@ -177,14 +177,8 @@ public class activity_login extends AppCompatActivity {
                     mEditor.putString("TOKEN", rider.getId()).commit();
                     mEditor.putString("RiderID", rider.getUserId()).commit();
                     mEditor.putString("AccessToken", rider.getId()).commit();
-//                    checkVersionControl();
-                    if (ContextCompat.checkSelfPermission(activity_login.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED)
-                        ActivityCompat.requestPermissions(activity_login.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-                    else {
-                        Intent i = new Intent(activity_login.this, activity_mapview.class);
-                        activity_login.this.startActivity(i);
-                        finish();
-                    }
+                    getRiderDetail();
+
                     // Toast.makeText(activity_login.this,rider.getId(),Toast.LENGTH_LONG).show();
 
 
@@ -241,9 +235,9 @@ public class activity_login extends AppCompatActivity {
 
                     RiderDetails riderActivity = response.body();
                     Databackbone.getinstance().riderdetails = riderActivity;
-                    ApiController.getInstance().getEarnings();
-                    ApiController.getInstance().getwallet();
-                    ApiController.getInstance().gethistory();
+//                    ApiController.getInstance().getEarnings();
+//                    ApiController.getInstance().getwallet();
+//                    ApiController.getInstance().gethistory();
                     if (ContextCompat.checkSelfPermission(activity_login.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED)
                         ActivityCompat.requestPermissions(activity_login.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
                     else {

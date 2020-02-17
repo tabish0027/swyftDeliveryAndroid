@@ -1,10 +1,12 @@
 package io.devbeans.swyft;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,6 +20,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -47,6 +51,7 @@ import java.util.List;
 import io.devbeans.swyft.interface_retrofit.PickupParcel;
 import io.devbeans.swyft.interface_retrofit.*;
 import io.swyft.swyft.R;
+import io.swyft.swyft.Splash;
 import mumayank.com.airlocationlibrary.AirLocation;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -209,10 +214,12 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
                 String attandanceID = "";
                 if (Databackbone.getinstance().riderdetails != null)
                     attandanceID = Databackbone.getinstance().riderdetails.getAttendanceId();
-                if (Databackbone.getinstance().rider.getUser().getIsOnline())
-                    change_Activity_status(attandanceID, true);
-                else
-                    change_Activity_status(attandanceID, true);
+                if (Databackbone.getinstance().riderdetails.getIsOnline()) {
+//                    change_Activity_status(attandanceID, true);
+                }
+                else {
+//                    change_Activity_status(attandanceID, true);
+                }
 
 
             }
@@ -245,10 +252,10 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         pendingTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Databackbone.getinstance().rider.getUser().getIsOnline()) {
+                if (Databackbone.getinstance().riderdetails.getIsOnline()) {
                     Intent pendingtask = null;
                     if (Databackbone.getinstance().check_parcel_scanning_complete) {
-                        pendingtask = new Intent(activity_mapview.this, activity_daily_task_status.class);
+                        pendingtask = new Intent(activity_mapview.this, DailyTasksActivity.class);
                         pendingtask.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         pendingtask.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                         activity_mapview.this.startActivity(pendingtask);
@@ -269,9 +276,9 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         btn_navigation.setVisibility(View.GONE);
 
         // data attributes set from server
-        tx_username.setText("Hi " + Databackbone.getinstance().rider.getUser().getFirstName());
-        Picasso.with(this).load(Databackbone.getinstance().rider.getUser().getProfilePicture()).into(profile_image2);
-        tx_rating.setText(Databackbone.getinstance().rider.getUser().getType());
+        tx_username.setText("Hi " + Databackbone.getinstance().riderdetails.getFirstName());
+        Picasso.with(this).load(Databackbone.getinstance().riderdetails.getProfilePicture()).into(profile_image2);
+        tx_rating.setText(Databackbone.getinstance().riderdetails.getType());
         btn_navigation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -379,7 +386,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         LoadResume();
 
         /*
-        if(Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery"))
+        if(Databackbone.getinstance().riderdetails.getType().equalsIgnoreCase("delivery"))
             LoadParcelsForDelivery();
         else
             LoadParcels();
@@ -403,20 +410,20 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
     }
 
     public void LoadResume() {
-        if (Databackbone.getinstance().rider != null && Databackbone.getinstance().rider.getUser().getIsOnline()) {
+        if (Databackbone.getinstance().riderdetails != null && Databackbone.getinstance().riderdetails.getIsOnline()) {
             ActivateRider();
 
         } else {
             DeactivateRider();
         }
-        if (Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery")) {
+        if (Databackbone.getinstance().riderdetails.getType().equalsIgnoreCase("delivery")) {
             Databackbone.getinstance().RiderTypeDelivery = true;
             markers.clear();
             LoadParcelsForDelivery();
         } else {
             Databackbone.getinstance().RiderTypeDelivery = false;
             markers.clear();
-            LoadParcels();
+            getTodayAssignments();
         }
     }
 
@@ -441,11 +448,57 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////
-    public void LoadParcels() {
+    public void getTodayAssignments() {
+        Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
+        swift_api todayAssignment = retrofit.create(swift_api.class);
+
+        Call<TodayAssignments> call = todayAssignment.getTodayAssignment(sharedpreferences.getString("AccessToken", ""), sharedpreferences.getString("RiderID", ""));
+        call.enqueue(new Callback<TodayAssignments>() {
+            @Override
+            public void onResponse(Call<TodayAssignments> call, Response<TodayAssignments> response) {
+                if (response.isSuccessful()) {
+
+                    TodayAssignments todayAssignments = response.body();
+                    Databackbone.getinstance().todayassignments = todayAssignments;
+
+                    Databackbone.getinstance().todayassignmentdata = todayAssignments.getData();
+                    LoadLocation(Databackbone.getinstance().todayassignmentdata);
+                    //Databackbone.getinstance().parcels = parcels;
+                    tx_parcels_status_count.setText(String.valueOf(todayAssignments.getData().size() + todayAssignments.getActiveAssignments().size()) + " " + getResources().getString(R.string.task_pending));
+                    DisableLoading();
+
+
+                } else {
+                    DisableLoading();
+                    if (response.code() == 401) {
+                        //sharedpreferences must be removed
+                        mEditor.clear().commit();
+                        Intent intent = new Intent(activity_mapview.this, activity_login.class);
+                        startActivity(intent);
+                        finishAffinity();
+                    }else {
+                        Databackbone.getinstance().showAlsertBox(activity_mapview.this, getResources().getString(R.string.error), "Error Connecting To Server Error Code 33");
+                    }
+                    //DeactivateRider();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<TodayAssignments> call, Throwable t) {
+                System.out.println(t.getCause());
+                Databackbone.getinstance().showAlsertBox(activity_mapview.this, getResources().getString(R.string.error), "Error Connecting To Server Error Code 34");
+
+                //DeactivateRider();
+            }
+        });
+    }
+
+    /*public void LoadParcels() {
         Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
         swift_api riderapi = retrofit.create(swift_api.class);
         EnableLoading();
-        Call<List<PickupParcel>> call = riderapi.getParcelsByRiders(Databackbone.getinstance().rider.getId(), Databackbone.getinstance().rider.getUserId());
+        Call<List<PickupParcel>> call = riderapi.getParcelsByRiders(sharedpreferences.getString("AccessToken", ""), sharedpreferences.getString("RiderID", ""));
         call.enqueue(new Callback<List<PickupParcel>>() {
             @Override
             public void onResponse(Call<List<PickupParcel>> call, Response<List<PickupParcel>> response) {
@@ -476,13 +529,13 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         });
 
 
-    }
+    }*/
 
     public void check_status_of_rider_activity() {
-        if (Databackbone.getinstance().rider != null) {
-            if (Databackbone.getinstance().rider.getUser().getIsOnline()) {
+        if (Databackbone.getinstance().riderdetails != null) {
+            if (Databackbone.getinstance().riderdetails.getIsOnline()) {
                 ActivateRider();
-                change_Activity_status("", false);
+//                change_Activity_status("", false);
             } else {
 
                 DeactivateRider();
@@ -495,7 +548,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
         swift_api riderapi = retrofit.create(swift_api.class);
 
-        Call<RiderDetails> call = riderapi.markattendance(Databackbone.getinstance().rider.getId(), new markattendance(Databackbone.getinstance().rider.getUserId(), id));
+        Call<RiderDetails> call = riderapi.markattendance(sharedpreferences.getString("AccessToken", ""), new markattendance(sharedpreferences.getString("RiderID", ""), id));
         call.enqueue(new Callback<RiderDetails>() {
             @Override
             public void onResponse(Call<RiderDetails> call, Response<RiderDetails> response) {
@@ -505,13 +558,13 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
                     Databackbone.getinstance().riderdetails = riderActivity;
                     if (Databackbone.getinstance().riderdetails.getIsOnline()) {
                         ActivateRider();
-                        Databackbone.getinstance().rider.getUser().setIsOnline(true);
+                        Databackbone.getinstance().riderdetails.setIsOnline(true);
                         if (check)
                             Databackbone.getinstance().showAlsertBox(activity_mapview.this, getResources().getString(R.string.rider_app), getResources().getString(R.string.online));
 
                     } else {
 
-                        Databackbone.getinstance().rider.getUser().setIsOnline(Databackbone.getinstance().riderdetails.getIsOnline());
+                        Databackbone.getinstance().riderdetails.setIsOnline(Databackbone.getinstance().riderdetails.getIsOnline());
                         DeactivateRider();
                         if (check)
                             Databackbone.getinstance().showAlsertBox(activity_mapview.this, getResources().getString(R.string.rider_app), getResources().getString(R.string.offline));
@@ -577,11 +630,13 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         progressBar.setVisibility(View.VISIBLE);
     }
 
-    public void LoadLocation(List<PickupParcel> parcels) {
+    public void LoadLocation(List<TodayAssignmentData> parcels) {
         markers.clear();
         btn_navigation.setVisibility(View.GONE);
         for (int i = 0; i < parcels.size(); i++) {
-            AddMarkers(parcels.get(i).getLocation().getGeoPoints().getLat(), parcels.get(i).getLocation().getGeoPoints().getLng(), parcels.get(i).getName(), R.drawable.icon_pickup);
+            for (int j = 0; j < parcels.get(i).getPickupLocations().size(); j++){
+                AddMarkers(parcels.get(i).getPickupLocations().get(j).getGeoPoints().getLat(), parcels.get(i).getPickupLocations().get(j).getGeoPoints().getLng(), parcels.get(i).getVendorName(), R.drawable.icon_pickup);
+            }
         }
 
         LoadAllMarkers();
@@ -598,10 +653,11 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
                 for (int i = 0; i < parcels.get(k).getData().size(); i++) {
                     Datum data = parcels.get(k).getData().get(i);
                     AddMarkers(data.getLocation().getGeoPoints().getLat(), data.getLocation().getGeoPoints().getLng(), data.getName(), R.drawable.icon_delivery);
+                    LoadAllMarkers();
                 }
         }
 
-        LoadAllMarkers();
+
 
 
     }
@@ -631,7 +687,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
         swift_api_delivery riderapidata = retrofit.create(swift_api_delivery.class);
         EnableLoading();
-        Call<List<RiderActivityDelivery>> call = riderapidata.manageTaskfordelivery(Databackbone.getinstance().rider.getId(), (Databackbone.getinstance().rider.getUserId()));
+        Call<List<RiderActivityDelivery>> call = riderapidata.manageTaskfordelivery(sharedpreferences.getString("AccessToken", ""), sharedpreferences.getString("RiderID", ""));
         call.enqueue(new Callback<List<RiderActivityDelivery>>() {
             @Override
             public void onResponse(Call<List<RiderActivityDelivery>> call, Response<List<RiderActivityDelivery>> response) {
@@ -683,7 +739,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
         swift_api_delivery riderapidata = retrofit.create(swift_api_delivery.class);
 
-        Call<delivery_wallet> call = riderapidata.deliverywallet(Databackbone.getinstance().rider.getId(), (Databackbone.getinstance().rider.getUserId()));
+        Call<delivery_wallet> call = riderapidata.deliverywallet(sharedpreferences.getString("AccessToken", ""), sharedpreferences.getString("RiderID", ""));
         call.enqueue(new Callback<delivery_wallet>() {
             @Override
             public void onResponse(Call<delivery_wallet> call, Response<delivery_wallet> response) {
@@ -723,7 +779,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
         swift_api_delivery riderapidata = retrofit.create(swift_api_delivery.class);
 
-        Call<delivery_earnings> call = riderapidata.deliveryEarning(Databackbone.getinstance().rider.getId(), (Databackbone.getinstance().rider.getUserId()));
+        Call<delivery_earnings> call = riderapidata.deliveryEarning(sharedpreferences.getString("AccessToken", ""), sharedpreferences.getString("RiderID", ""));
         call.enqueue(new Callback<delivery_earnings>() {
             @Override
             public void onResponse(Call<delivery_earnings> call, Response<delivery_earnings> response) {

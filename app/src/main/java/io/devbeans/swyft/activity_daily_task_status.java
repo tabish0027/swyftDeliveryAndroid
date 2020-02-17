@@ -79,7 +79,7 @@ public class activity_daily_task_status extends Activity {
 
 
         //generate_test_Data();
-        if(Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery"))
+        if(Databackbone.getinstance().riderdetails.getType().equalsIgnoreCase("delivery"))
         {
             ad_task = new adapter_status_daily_task(Databackbone.getinstance().ar_task_daily_delivery, this);
         }
@@ -95,7 +95,7 @@ public class activity_daily_task_status extends Activity {
             @Override
             public void onItemClick(int position, View v,Boolean check) {
                 if(check) {
-                    if (Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery")) {
+                    if (Databackbone.getinstance().riderdetails.getType().equalsIgnoreCase("delivery")) {
                         Databackbone.getinstance().task_to_show = Databackbone.getinstance().parcelsdelivery.get(position).getTaskId();
                         StartDeliveryTask(position);
                     }
@@ -107,7 +107,7 @@ public class activity_daily_task_status extends Activity {
                         startPicupTask(position);
                     }
                 }else{
-                    if (Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery"))
+                    if (Databackbone.getinstance().riderdetails.getType().equalsIgnoreCase("delivery"))
                     {
                         Databackbone.getinstance().task_to_show = Databackbone.getinstance().parcelsdelivery.get(position).getTaskId();
 
@@ -140,7 +140,7 @@ public class activity_daily_task_status extends Activity {
         swipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if(Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery"))
+                if(Databackbone.getinstance().riderdetails.getType().equalsIgnoreCase("delivery"))
                     LoadParcelsForDelivery();
                 else
 
@@ -232,7 +232,7 @@ public class activity_daily_task_status extends Activity {
 
     public void load_Data() {
         tx_empty_view.setVisibility(View.INVISIBLE);
-        if(!Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery")) {
+        if(!Databackbone.getinstance().riderdetails.getType().equalsIgnoreCase("delivery")) {
             Databackbone.getinstance().ar_task_daily_pickup.clear();
 
             ArrayList<model_daily_package_item> ar_task_daily_pickup = new ArrayList<>();
@@ -309,7 +309,7 @@ public class activity_daily_task_status extends Activity {
 
     }
     public void check_is_task_active_and_complete(){
-        if(!Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery")) {
+        if(!Databackbone.getinstance().riderdetails.getType().equalsIgnoreCase("delivery")) {
             for (int i = 0; i < Databackbone.getinstance().ar_task_daily_pickup.size(); i++) {
                 if(Databackbone.getinstance().ar_task_daily_pickup.get(i).m_remaining_parcels_to_scan  == 0 && Databackbone.getinstance().ar_task_daily_pickup.get(i).status){
                     activate_Task_activater(Databackbone.getinstance().ar_task_daily_pickup.get(i).mb_task_id,"completed");
@@ -385,7 +385,7 @@ public class activity_daily_task_status extends Activity {
 
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        if(Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery"))
+                        if(Databackbone.getinstance().riderdetails.getType().equalsIgnoreCase("delivery"))
                             activate_Task_delivery_activater(taskid,"started");
                         else
                             activate_Task_activater(taskid,"started");
@@ -410,7 +410,7 @@ public class activity_daily_task_status extends Activity {
 
                 .setPositiveButton(getResources().getString(R.string.completed), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        if(Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery"))
+                        if(Databackbone.getinstance().riderdetails.getType().equalsIgnoreCase("delivery"))
                             activate_Task_delivery_activater(taskid,"completed");
                         else
                             activate_Task_activater(taskid,"completed");

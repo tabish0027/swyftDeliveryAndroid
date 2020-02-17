@@ -66,8 +66,8 @@ public class adapter_status_daily_task extends RecyclerView.Adapter<adapter_stat
 
         holder.mb_name.setText(order.mb_name);
         holder.mb_address.setText(order.mb_address);
-        holder.mb_distance.setText(order.mb_distance);
-        holder.mb_zone.setText(order.mb_zone);
+//        holder.mb_distance.setText(order.mb_distance);
+//        holder.mb_zone.setText(order.mb_zone);
         if(order.status)
         {
             holder.mb_parcel_type.setImageResource(R.drawable.icon_circle_deliverd);

@@ -2,6 +2,7 @@ package io.devbeans.swyft.interface_retrofit;
 
 import java.util.List;
 
+import io.devbeans.swyft.data_models.LoadSheetModel;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -24,6 +25,9 @@ public interface swift_api {
 
     @GET("Riders/{riderId}/get-today-assignments")
     Call<TodayAssignments> getTodayAssignment(@Header("Authorization") String Authorization,@Path("riderId") String riderId);
+
+    @POST("Riders/{riderId}/generate-loadsheet")
+    Call<PasswordResetRequest> generateLoadsheet(@Header("Authorization") String Authorization, @Path("riderId") String riderId, @Body LoadSheetModel loadSheetModel);
 
     @GET("app-version-check")
     Call<Void> getversioncontrol(@Header("Authorization") String Authorization, @Query("version") String version);

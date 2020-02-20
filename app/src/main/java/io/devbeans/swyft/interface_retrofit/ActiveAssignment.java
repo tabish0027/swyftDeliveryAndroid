@@ -13,15 +13,18 @@ public class ActiveAssignment {
     @SerializedName("address")
     @Expose
     private String address= "";
+    @SerializedName("vendorName")
+    @Expose
+    private String vendorName= "";
     @SerializedName("vendorId")
     @Expose
     private String vendorId= "";
     @SerializedName("geopoints")
     @Expose
     private GeoPoints geopoints = null;
-    @SerializedName("status")
+    @SerializedName("pickupLocationAddress")
     @Expose
-    private String status= "";
+    private String pickupLocationAddress= "";
 
     public int getEstimatedParcels() {
         return estimatedParcels;
@@ -37,6 +40,14 @@ public class ActiveAssignment {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getVendorName() {
+        return vendorName;
+    }
+
+    public void setVendorName(String vendorName) {
+        this.vendorName = vendorName;
     }
 
     public String getVendorId() {
@@ -55,11 +66,11 @@ public class ActiveAssignment {
         this.geopoints = geopoints;
     }
 
-    public String getStatus() {
-        return status;
+    public String getPickupLocationAddress() {
+        return pickupLocationAddress;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setPickupLocationAddress(String pickupLocationAddress) {
+        this.pickupLocationAddress = pickupLocationAddress;
     }
 }

@@ -2,12 +2,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="io.devbeans.swyft.Fragments.AllDailyTasks">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/all_parcels_swipe"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/all_parcels_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:id="@+id/url_loading_animation"
+        style="@style/SpinKitView.Large.Circle"
+        android:layout_width="wrap_content"
+        android:layout_height="76dp"
+        android:layout_gravity="center"
+        app:SpinKit_Color="@color/color_app_theam"
+        />
+
+    <TextView
+        android:id="@+id/tx_empty_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/avenirfile"
+        android:text="Slide Down To Load Your Task "
+        android:textColor="#231f20"
+        android:textSize="@dimen/app_text_size"
+        android:layout_gravity="center"
+        android:textStyle="bold" />
 
 </FrameLayout>

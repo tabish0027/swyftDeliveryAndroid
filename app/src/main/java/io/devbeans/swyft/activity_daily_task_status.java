@@ -81,16 +81,17 @@ public class activity_daily_task_status extends Activity {
         //generate_test_Data();
         if(Databackbone.getinstance().riderdetails.getType().equalsIgnoreCase("delivery"))
         {
-            ad_task = new adapter_status_daily_task(Databackbone.getinstance().ar_task_daily_delivery, this);
+//            ad_task = new adapter_status_daily_task(Databackbone.getinstance().ar_task_daily_delivery, this);
         }
         else{
-            ad_task = new adapter_status_daily_task(Databackbone.getinstance().ar_task_daily_pickup, this);
+//            ad_task = new adapter_status_daily_task(Databackbone.getinstance().ar_task_daily_pickup, this);
 
         }
 
 
         task_list.setAdapter(ad_task);
 
+/*
         ad_task.setOnItemClickListener(new adapter_status_daily_task.ClickListener() {
             @Override
             public void onItemClick(int position, View v,Boolean check) {
@@ -136,6 +137,7 @@ public class activity_daily_task_status extends Activity {
                 Toast.makeText(activity_daily_task_status.this,"onItemLongClick position: " + position,Toast.LENGTH_LONG).show();
             }
         });
+*/
 
         swipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -240,7 +242,7 @@ public class activity_daily_task_status extends Activity {
                 return;
             Boolean activated_task = false;
             for (int i = 0; i < Databackbone.getinstance().parcels.size(); i++) {
-                LatLng m_location = new LatLng(Databackbone.getinstance().parcels.get(i).getLocation().getGeoPoints().getLat(), Databackbone.getinstance().parcels.get(i).getLocation().getGeoPoints().getLng());
+                LatLng m_location = new LatLng(Databackbone.getinstance().parcels.get(i).getLocation().getGeopoints().getLat(), Databackbone.getinstance().parcels.get(i).getLocation().getGeopoints().getLng());
 
                 if (!Databackbone.getinstance().parcels.get(i).getTaskStatus().equalsIgnoreCase("pending"))
                     activated_task = true;
@@ -252,7 +254,7 @@ public class activity_daily_task_status extends Activity {
                 }
 
 
-                double distance = Databackbone.getinstance().CalculationByDistance(Databackbone.getinstance().parcels.get(i).getLocation().getGeoPoints().getLat(), Databackbone.getinstance().parcels.get(i).getLocation().getGeoPoints().getLng());
+                double distance = Databackbone.getinstance().CalculationByDistance(Databackbone.getinstance().parcels.get(i).getLocation().getGeopoints().getLat(), Databackbone.getinstance().parcels.get(i).getLocation().getGeopoints().getLng());
                 model_daily_package_item dataModelValue = new model_daily_package_item(Databackbone.getinstance().parcels.get(i).getTaskId(), Databackbone.getinstance().parcels.get(i).getName(), Databackbone.getinstance().parcels.get(i).getLocation().getAddress(), Double.toString(Databackbone.getinstance().parcels.get(i).getDistance()) + "KM", Databackbone.getinstance().parcels.get(i).getLocation().getAddress(), activated_task, m_location, size);
                 ar_task_daily_pickup.add(dataModelValue);
                 activated_task = false;

@@ -237,7 +237,7 @@ public class activity_daily_order_status  extends Activity {
                 return;
             Boolean activated_order = false;
             for (int i = 0; i < Databackbone.getinstance().parcels.size(); i++) {
-                LatLng m_location = new LatLng(Databackbone.getinstance().parcels.get(i).getLocation().getGeoPoints().getLat(), Databackbone.getinstance().parcels.get(i).getLocation().getGeoPoints().getLng());
+                LatLng m_location = new LatLng(Databackbone.getinstance().parcels.get(i).getLocation().getGeopoints().getLat(), Databackbone.getinstance().parcels.get(i).getLocation().getGeopoints().getLng());
 
                 if (!Databackbone.getinstance().parcels.get(i).getTaskStatus().equalsIgnoreCase("pending"))
                     activated_order = true;
@@ -247,7 +247,7 @@ public class activity_daily_order_status  extends Activity {
                     if (!Databackbone.getinstance().parcels.get(i).getParcels().get(parcelscancount).getScanned())
                         size++;
                 }
-                double distance = CalculationByDistance(Databackbone.getinstance().parcels.get(i).getLocation().getGeoPoints().getLat(), Databackbone.getinstance().parcels.get(i).getLocation().getGeoPoints().getLng());
+                double distance = CalculationByDistance(Databackbone.getinstance().parcels.get(i).getLocation().getGeopoints().getLat(), Databackbone.getinstance().parcels.get(i).getLocation().getGeopoints().getLng());
                 model_daily_package_item dataModelValue = new model_daily_package_item(Databackbone.getinstance().parcels.get(i).getTaskId(), Databackbone.getinstance().parcels.get(i).getName(), Databackbone.getinstance().parcels.get(i).getLocation().getAddress(), Double.toString(Databackbone.getinstance().parcels.get(i).getDistance()) + "KM", Databackbone.getinstance().parcels.get(i).getLocation().getAddress(), activated_order, m_location, size);
                 temp_ar_orders_daily.add(dataModelValue);
                 activated_order = false;
@@ -275,7 +275,7 @@ public class activity_daily_order_status  extends Activity {
                 this.finish();
             for (int i = 0; i < Locations.size(); i++) {
                 Datum data = Locations.get(i);
-                LatLng m_location = new LatLng(data.getLocation().getGeoPoints().getLat(), data.getLocation().getGeoPoints().getLng());
+                LatLng m_location = new LatLng(data.getLocation().getGeopoints().getLat(), data.getLocation().getGeopoints().getLng());
 
                 for (int j = 0; j < data.getParcels().size(); j++) {
                     if((data.getParcels().get(j).getStatus().equals("pending"))){
@@ -287,7 +287,7 @@ public class activity_daily_order_status  extends Activity {
 
                 int total_parcel = Locations.get(i).getParcels().size();
 
-                double distance = CalculationByDistance( Locations.get(i).getLocation().getGeoPoints().getLat(),  Locations.get(i).getLocation().getGeoPoints().getLng());
+                double distance = CalculationByDistance( Locations.get(i).getLocation().getGeopoints().getLat(),  Locations.get(i).getLocation().getGeopoints().getLng());
                 model_daily_package_item dataModelValue = new model_daily_package_item(orderid, data.getName(), data.getLocation().getAddress(), Double.toString(data.getDistance()) + "KM", data.getLocation().getAddress(), activated_order, m_location, total_parcel,data.getParcels());
                 temp_ar_orders_daily.add(dataModelValue);
                 activated_order = false;

@@ -47,6 +47,7 @@ public class Splash extends AppCompatActivity {
         mEditor = sharedpreferences.edit();
 
 
+
         Databackbone.getinstance().contextapp = getApplicationContext();
         Context con = Databackbone.getinstance().contextapp;
         Thread thr= new Thread(new Runnable() {

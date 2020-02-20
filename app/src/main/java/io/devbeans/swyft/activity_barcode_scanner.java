@@ -195,7 +195,7 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
     public void load_parcels_to_scan(){
 
 
-        if(Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery")){
+        if(Databackbone.getinstance().riderdetails.getType().equalsIgnoreCase("delivery")){
 
             //if(Databackbone.getinstance().task_to_show >= Databackbone.getinstance().parcelsdelivery.size()   )
              //   activity_barcode_scanner.this.finish();
@@ -242,7 +242,7 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
     }
 
     public void check_parcel_to_scan(String id){
-       if(Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery"))
+       if(Databackbone.getinstance().riderdetails.getType().equalsIgnoreCase("delivery"))
        {
            Boolean check = false;
            //if(Databackbone.getinstance().task_to_show >= Databackbone.getinstance().parcelsdelivery.size()   )

@@ -135,6 +135,11 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
 //        mDrawerLayout.closeDrawer(Gravity.LEFT);
         navigationView.bringToFront();
 
+        // data attributes set from server
+        tx_username.setText("Hi " + Databackbone.getinstance().riderdetails.getFirstName());
+        Picasso.with(this).load(Databackbone.getinstance().riderdetails.getProfilePicture()).into(profile_image2);
+        tx_rating.setText(Databackbone.getinstance().riderdetails.getType());
+
         Task1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -167,6 +172,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
             @Override
             public void onClick(View v) {
                 Databackbone.resetStaticPoint();
+                mEditor.clear().commit();
                 activity_mapview.this.finish();
             }
         });
@@ -254,19 +260,19 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
             public void onClick(View v) {
                 if (Databackbone.getinstance().riderdetails.getIsOnline()) {
                     Intent pendingtask = null;
-                    if (Databackbone.getinstance().check_parcel_scanning_complete) {
+//                    if (Databackbone.getinstance().check_parcel_scanning_complete) {
                         pendingtask = new Intent(activity_mapview.this, DailyTasksActivity.class);
                         pendingtask.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         pendingtask.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                         activity_mapview.this.startActivity(pendingtask);
                         overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
-                    } else {
-                        pendingtask = new Intent(activity_mapview.this, activity_barcode_scanner.class);
-                        pendingtask.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        pendingtask.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                        activity_mapview.this.startActivity(pendingtask);
-                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
-                    }
+//                    } else {
+//                        pendingtask = new Intent(activity_mapview.this, activity_barcode_scanner.class);
+//                        pendingtask.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                        pendingtask.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+//                        activity_mapview.this.startActivity(pendingtask);
+//                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+//                    }
                 } else {
                     Databackbone.getinstance().showAlsertBox(activity_mapview.this, getResources().getString(R.string.error), getResources().getString(R.string.you_are_not_online));
                 }
@@ -275,10 +281,6 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
 
         btn_navigation.setVisibility(View.GONE);
 
-        // data attributes set from server
-        tx_username.setText("Hi " + Databackbone.getinstance().riderdetails.getFirstName());
-        Picasso.with(this).load(Databackbone.getinstance().riderdetails.getProfilePicture()).into(profile_image2);
-        tx_rating.setText(Databackbone.getinstance().riderdetails.getType());
         btn_navigation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -305,7 +307,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
                 }
             }
         });
-        check_status_of_rider_activity();
+//        check_status_of_rider_activity();
 
 
     }
@@ -635,7 +637,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         btn_navigation.setVisibility(View.GONE);
         for (int i = 0; i < parcels.size(); i++) {
             for (int j = 0; j < parcels.get(i).getPickupLocations().size(); j++){
-                AddMarkers(parcels.get(i).getPickupLocations().get(j).getGeoPoints().getLat(), parcels.get(i).getPickupLocations().get(j).getGeoPoints().getLng(), parcels.get(i).getVendorName(), R.drawable.icon_pickup);
+                AddMarkers(parcels.get(i).getPickupLocations().get(j).getGeopoints().getLat(), parcels.get(i).getPickupLocations().get(j).getGeopoints().getLng(), parcels.get(i).getVendorName(), R.drawable.icon_pickup);
             }
         }
 
@@ -652,7 +654,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
             if (parcels.get(k).getTaskStatus().equals("started"))
                 for (int i = 0; i < parcels.get(k).getData().size(); i++) {
                     Datum data = parcels.get(k).getData().get(i);
-                    AddMarkers(data.getLocation().getGeoPoints().getLat(), data.getLocation().getGeoPoints().getLng(), data.getName(), R.drawable.icon_delivery);
+                    AddMarkers(data.getLocation().getGeopoints().getLat(), data.getLocation().getGeopoints().getLng(), data.getName(), R.drawable.icon_delivery);
                     LoadAllMarkers();
                 }
         }

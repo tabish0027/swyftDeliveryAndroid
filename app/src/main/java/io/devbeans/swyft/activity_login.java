@@ -113,7 +113,7 @@ public class activity_login extends AppCompatActivity {
 
         // For debuging and stage server only
 
-        username.setText("03465175407");
+        username.setText("03403332977");
         password.setText("12345"); // delivery stage
 
         // For debuging and stage server only
@@ -239,7 +239,7 @@ public class activity_login extends AppCompatActivity {
 //                    ApiController.getInstance().getwallet();
 //                    ApiController.getInstance().gethistory();
                     if (ContextCompat.checkSelfPermission(activity_login.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED)
-                        ActivityCompat.requestPermissions(activity_login.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                        ActivityCompat.requestPermissions(activity_login.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CAMERA}, 1);
                     else {
                         Intent i = new Intent(activity_login.this, activity_mapview.class);
                         activity_login.this.startActivity(i);

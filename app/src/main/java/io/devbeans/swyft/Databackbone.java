@@ -78,6 +78,9 @@ public class Databackbone {
 
     public RiderDetails riderdetails = null;
     public TodayAssignments todayassignments = null;
+    public List<String> parcelsIds = null;
+    public List<String> scannedParcelsIds = null;
+    public List<String> vendorIdsList = null;
     //dev
     // public String Base_URL = "https://devapi.swyftlogistics.com:3000/api/";
 
@@ -88,7 +91,7 @@ public class Databackbone {
     //public String Base_URL = "https://api.swyftlogistics.com:3000/api/";
 
     List<PickupParcel> parcels = null;
-    List<TodayAssignmentData> todayassignmentdata = null;
+    public List<TodayAssignmentData> todayassignmentdata = null;
     List<RiderActivityDelivery> parcelsdelivery = null;
     Boolean check_parcel_scanning_complete = true;
     private static final String Back = "AIzaSyDviYdVUT4llQkqJF";
@@ -363,8 +366,8 @@ public class Databackbone {
          if(current_location != null)
         for(int i=0;i < parcel.size();i++){
             try {
-                double Lat = parcel.get(i).getLocation().getGeoPoints().getLat();
-                double Lng = parcel.get(i).getLocation().getGeoPoints().getLng();
+                double Lat = parcel.get(i).getLocation().getGeopoints().getLat();
+                double Lng = parcel.get(i).getLocation().getGeopoints().getLng();
 
                 parcel.get(i).setDistance(CalculationByDistance(Lat, Lng));
             }catch (Exception error){
@@ -378,8 +381,8 @@ public class Databackbone {
          if(current_location != null)
             for(int i=0;i < parcel.size();i++){
                 for(int j=0;j<parcel.get(i).getData().size();j++) {
-                    double Lat = parcel.get(i).getData().get(j).getLocation().getGeoPoints().getLat();
-                    double Lng = parcel.get(i).getData().get(j).getLocation().getGeoPoints().getLng();
+                    double Lat = parcel.get(i).getData().get(j).getLocation().getGeopoints().getLat();
+                    double Lng = parcel.get(i).getData().get(j).getLocation().getGeopoints().getLng();
                     parcel.get(i).getData().get(j).setDistance(CalculationByDistance(Lat, Lng));
                 }
 
@@ -464,8 +467,8 @@ public class Databackbone {
         String[] originAddress = {currentLocation};
         String desaddress[] = new String[parcel.size()];
         for(int i =0;i<parcel.size();i++){
-            double lat = parcel.get(i).getLocation().getGeoPoints().getLat();
-            double lng = parcel.get(i ).getLocation().getGeoPoints().getLng();
+            double lat = parcel.get(i).getLocation().getGeopoints().getLat();
+            double lng = parcel.get(i ).getLocation().getGeopoints().getLng();
             String DestinationLocation = Double.toString(lat)+","+Double.toString(lng)   ;
             desaddress[i] = DestinationLocation;
 
@@ -493,8 +496,8 @@ public class Databackbone {
             String[] originAddress = {currentLocation};
             String desaddress[] = new String[parcel.size()];
             for (int i = 0; i < parcel.size(); i++) {
-                double lat = parcel.get(i).getLocation().getGeoPoints().getLat();
-                double lng = parcel.get(i).getLocation().getGeoPoints().getLng();
+                double lat = parcel.get(i).getLocation().getGeopoints().getLat();
+                double lng = parcel.get(i).getLocation().getGeopoints().getLng();
                 String DestinationLocation = Double.toString(lat) + "," + Double.toString(lng);
                 desaddress[i] = DestinationLocation;
 

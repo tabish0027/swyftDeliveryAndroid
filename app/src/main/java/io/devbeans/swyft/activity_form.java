@@ -90,7 +90,7 @@ public class activity_form extends AppCompatActivity {
         btn_navigation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GeoPoints points = Databackbone.getinstance().getDeliveryTask().getData().get(0).getLocation().getGeoPoints();
+                GeoPoints points = Databackbone.getinstance().getDeliveryTask().getData().get(0).getLocation().getGeopoints();
                 Offlice_Activity(new LatLng(points.getLat(),points.getLng()));
             }
         });

@@ -84,8 +84,14 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics:17.2.2'
 
     // Room Database Libraries
-    implementation "androidx.room:room-runtime:2.2.3"
-    annotationProcessor "androidx.room:room-compiler:2.2.3"
+    implementation "androidx.room:room-runtime:2.2.4"
+    annotationProcessor "androidx.room:room-compiler:2.2.4"
+
+    // start camera library
+    implementation  'com.fxn769:pix:1.4.4'
+
+    // Rounded corners image view
+    implementation 'com.makeramen:roundedimageview:2.3.0'
 
     /*
     implementation "com.mikepenz:materialdrawer:${lastestMaterialDrawerRelease}"

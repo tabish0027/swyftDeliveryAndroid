@@ -39,6 +39,7 @@ import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
 import io.devbeans.swyft.data_models.*;
+import io.devbeans.swyft.interface_retrofit.LoadsheetHistoryModel;
 import io.devbeans.swyft.interface_retrofit.PickupParcel;
 import io.devbeans.swyft.interface_retrofit.Rider;
 import io.devbeans.swyft.interface_retrofit.RiderActivity;
@@ -81,6 +82,9 @@ public class Databackbone {
     public List<String> parcelsIds = null;
     public List<String> scannedParcelsIds = null;
     public List<String> vendorIdsList = null;
+    public List<LoadsheetHistoryModel> loadSheetHistoryList = null;
+    public SignatureURLModel signature_data =  null;
+    public SignatureURLModel cam_image_data =  null;
     //dev
     // public String Base_URL = "https://devapi.swyftlogistics.com:3000/api/";
 

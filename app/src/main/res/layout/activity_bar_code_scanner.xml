@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
             android:fontFamily="@font/avenirfile"
-            android:text="0 Parcels to Scan"
+            android:text="0 Parcels are Scanned"
             android:textColor="@color/color_app_theam_text"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"

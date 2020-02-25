@@ -372,9 +372,9 @@ public class BarCodeScannerActivity extends AppCompatActivity implements ZXingSc
                 }.getType();
                 arrayList = gson.fromJson(json, type);
                 Databackbone.getinstance().scannedParcelsIds = arrayList;
-                pending_parcels_to_scan = Databackbone.getinstance().parcelsIds.size() - Databackbone.getinstance().scannedParcelsIds.size();
+                pending_parcels_to_scan = Databackbone.getinstance().scannedParcelsIds.size();
             }else {
-                pending_parcels_to_scan = Databackbone.getinstance().parcelsIds.size();
+                pending_parcels_to_scan = 0;
             }
 
             if(pending_parcels_to_scan <= 1)

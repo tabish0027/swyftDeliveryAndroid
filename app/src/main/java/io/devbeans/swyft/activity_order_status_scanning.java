@@ -74,7 +74,7 @@ public class activity_order_status_scanning extends Activity {
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         mEditor = sharedpreferences.edit();
         sharedpreferences_default = getSharedPreferences(MyPREFERENCES_default, Context.MODE_PRIVATE);
-        mEditor_default = sharedpreferences.edit();
+        mEditor_default = sharedpreferences_default.edit();
 
         position = Integer.valueOf(getIntent().getStringExtra("position"));
         inner_position = Integer.valueOf(getIntent().getStringExtra("locationPosition"));
@@ -144,7 +144,12 @@ public class activity_order_status_scanning extends Activity {
         generate_loadsheet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loadSheet();
+
+                Intent intent = new Intent(activity_order_status_scanning.this, activity_signature_pad.class);
+                intent.putExtra("position", String.valueOf(position));
+                intent.putExtra("locationPosition", String.valueOf(inner_position));
+                startActivity(intent);
+
             }
         });
 
@@ -156,67 +161,5 @@ public class activity_order_status_scanning extends Activity {
             }
         });
     }
-
-    public void loadSheet() {
-
-        progressBar.setVisibility(View.VISIBLE);
-
-        List<String> arrayList = new ArrayList<>();
-        String json = sharedpreferences.getString(Databackbone.getinstance().todayassignmentdata.get(position).getVendorId() + Databackbone.getinstance().todayassignmentdata.get(position).getPickupLocations().get(inner_position).getId(), "");
-        Type type = new TypeToken<List<String>>() {}.getType();
-        arrayList = gson.fromJson(json, type);
-        Databackbone.getinstance().scannedParcelsIds = arrayList;
-        scannedIds = Databackbone.getinstance().scannedParcelsIds;
-
-        LoadSheetModel loadSheetModel = new LoadSheetModel();
-        loadSheetModel.parcelIds = scannedIds;
-        loadSheetModel.geopoints = Databackbone.getinstance().todayassignmentdata.get(position).getPickupLocations().get(inner_position).getGeopoints();
-        loadSheetModel.signatureUrl = "abc";
-        loadSheetModel.pickupLocationId = Databackbone.getinstance().todayassignmentdata.get(position).getPickupLocations().get(inner_position).getId();
-        loadSheetModel.vendorId = Databackbone.getinstance().todayassignmentdata.get(position).getVendorId();
-
-        swift_api riderapi = Databackbone.getinstance().getRetrofitbuilder().create(swift_api.class);
-
-        Call<PasswordResetRequest> call = riderapi.generateLoadsheet(sharedpreferences_default.getString("AccessToken", ""), (sharedpreferences_default.getString("RiderID", "")), loadSheetModel);
-        call.enqueue(new Callback<PasswordResetRequest>() {
-            @Override
-            public void onResponse(Call<PasswordResetRequest> call, Response<PasswordResetRequest> response) {
-                if (response.isSuccessful()) {
-
-                    new AlertDialog.Builder(activity_order_status_scanning.this)
-                            .setTitle("Success")
-                            .setMessage("Loadsheet generated")
-
-                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    // Continue with delete operation\
-                                    Intent i = new Intent(activity_order_status_scanning.this, activity_mapview.class);
-                                    startActivity(i);
-                                    finishAffinity();
-                                }
-                            })
-
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .show();
-
-
-
-                    progressBar.setVisibility(View.GONE);
-                } else {
-                    Databackbone.getinstance().showAlsertBox(activity_order_status_scanning.this, getResources().getString(R.string.error), "Error in generating Loadsheet");
-                    progressBar.setVisibility(View.GONE);
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<PasswordResetRequest> call, Throwable t) {
-                System.out.println(t.getCause());
-                progressBar.setVisibility(View.GONE);
-            }
-        });
-
-    }
-
 
 }

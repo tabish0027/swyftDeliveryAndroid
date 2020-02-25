@@ -1,12 +1,16 @@
 package io.devbeans.swyft.interface_retrofit;
 
+import androidx.room.Update;
+
 import java.util.List;
 
 import io.devbeans.swyft.data_models.LoadSheetModel;
+import io.devbeans.swyft.data_models.UpdateToken;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -15,6 +19,9 @@ public interface swift_api {
 
     @POST("Riders/login?include=user")
     Call<Rider> getRiderFromLogin(@Body login credentials);
+
+    @PATCH("Riders/{riderId}")
+    Call<RiderDetails> updateRiderforToken(@Header("Authorization") String Authorization, @Body UpdateToken credentials, @Path("riderId") String riderId);
 
 
     //@PATCH("Riders/{riderId}")
@@ -37,6 +44,9 @@ public interface swift_api {
 
     @GET("Riders/get-tasks")
     Call<List<PickupParcel>> getParcelsByRiders(@Header("Authorization") String Authorization, @Query("riderId") String riderId);
+
+    @GET("Riders/{riderId}/loadsheets")
+    Call<List<LoadsheetHistoryModel>> getLoadsheetHistory(@Header("Authorization") String Authorization, @Path("riderId") String riderId, @Query("filter[include][pickupLocation]") String vendor, @Query("filter[order]") String encodedPath);
 
     @POST("Parcels/{parcelid}/scan-parcel")
     Call<List<PickupParcel>> scanParcels(@Header("Authorization") String Authorization, @Path("parcelid") String parcelid,@Body parcel_scan user_task);

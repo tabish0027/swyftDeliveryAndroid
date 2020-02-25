@@ -2,6 +2,7 @@ package io.devbeans.swyft.interface_retrofit_delivery;
 
 import java.util.List;
 
+import io.devbeans.swyft.data_models.SignatureURLModel;
 import io.devbeans.swyft.interface_retrofit.manage_task;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -47,13 +48,9 @@ public interface swift_api_delivery {
     Call<List<history>> deliveryhistory(@Header("Authorization") String Authorization, @Query("riderId") String riderId);
 
     @Multipart
-    @POST("patch-upload")
-    Call<parcel_signature_upload> uploadSignature(   @Part MultipartBody.Part file,
-                                                     @Part("patchModel") RequestBody patchModel,
-                                                    @Part("modelInstanceId") RequestBody modelInstanceId,
-                                                    @Part("uploadContainer") RequestBody uploadContainer,
-                                                    @Part("updateOn") RequestBody updateOn
-                                                    );
+    @POST("file/upload")
+    Call<SignatureURLModel> uploadSignature(@Part MultipartBody.Part file,
+                                            @Part("uploadContainer") RequestBody patchModel);
 
 
 }

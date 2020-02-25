@@ -67,7 +67,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
     ImageView img_rider_activity_button, btn_navigation;
 
     ConstraintLayout offlineTag = null;
-    ConstraintLayout Task1, Task2, Task3, Task4, Task5, Task6 = null;
+    ConstraintLayout Task1, Task2, Task3, Task4, Task5, Task6, Task7 = null;
     ConstraintLayout btn_wallet, btn_earning = null;
     TextView tx_username, tx_rating = null;
     ProgressBar progressBar = null;
@@ -85,6 +85,9 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
     SharedPreferences sharedpreferences;
     SharedPreferences.Editor mEditor;
     public static final String MyPREFERENCES = "MyPrefs";
+    SharedPreferences sharedpreferences_parcels;
+    SharedPreferences.Editor mEditor_parcels;
+    public static final String MyPREFERENCES_parcels = "ScannedList";
 
     ArrayList<MarkerOptions> markers = new ArrayList<>();
 
@@ -95,6 +98,8 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
 
         sharedpreferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
         mEditor = sharedpreferences.edit();
+        sharedpreferences_parcels = getSharedPreferences(MyPREFERENCES_parcels, MODE_PRIVATE);
+        mEditor_parcels = sharedpreferences_parcels.edit();
 
         mMapView = findViewById(R.id.ridermapView);
         offlineTag = findViewById(R.id.img_rider_activity_button_State);
@@ -109,6 +114,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         Task4 = findViewById(R.id.item4);
         Task5 = findViewById(R.id.item5);
         Task6 = findViewById(R.id.item6);
+        Task7 = findViewById(R.id.item7);
         btn_navigation = findViewById(R.id.btn_navigation);
         tx_username = findViewById(R.id.tx_username_slider);
         progressBar = (ProgressBar) findViewById(R.id.url_loading_animation);
@@ -173,6 +179,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
             public void onClick(View v) {
                 Databackbone.resetStaticPoint();
                 mEditor.clear().commit();
+                mEditor_parcels.clear().commit();
                 activity_mapview.this.finish();
             }
         });
@@ -181,6 +188,14 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
             @Override
             public void onClick(View view) {
                 Toast.makeText(activity_mapview.this, "Sync it", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        Task7.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(activity_mapview.this, LoadsheetHistoryActivity.class);
+                startActivity(intent);
             }
         });
         btn_get_current_locationc.setOnClickListener(new View.OnClickListener() {
@@ -216,16 +231,16 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         img_rider_activity_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EnableLoading();
-                String attandanceID = "";
-                if (Databackbone.getinstance().riderdetails != null)
-                    attandanceID = Databackbone.getinstance().riderdetails.getAttendanceId();
-                if (Databackbone.getinstance().riderdetails.getIsOnline()) {
+//                EnableLoading();
+//                String attandanceID = "";
+//                if (Databackbone.getinstance().riderdetails != null)
+//                    attandanceID = Databackbone.getinstance().riderdetails.getAttendanceId();
+//                if (Databackbone.getinstance().riderdetails.getIsOnline()) {
 //                    change_Activity_status(attandanceID, true);
-                }
-                else {
+//                }
+//                else {
 //                    change_Activity_status(attandanceID, true);
-                }
+//                }
 
 
             }
@@ -258,7 +273,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         pendingTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Databackbone.getinstance().riderdetails.getIsOnline()) {
+//                if (Databackbone.getinstance().riderdetails.getIsOnline()) {
                     Intent pendingtask = null;
 //                    if (Databackbone.getinstance().check_parcel_scanning_complete) {
                         pendingtask = new Intent(activity_mapview.this, DailyTasksActivity.class);
@@ -273,9 +288,9 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
 //                        activity_mapview.this.startActivity(pendingtask);
 //                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
 //                    }
-                } else {
-                    Databackbone.getinstance().showAlsertBox(activity_mapview.this, getResources().getString(R.string.error), getResources().getString(R.string.you_are_not_online));
-                }
+//                } else {
+//                    Databackbone.getinstance().showAlsertBox(activity_mapview.this, getResources().getString(R.string.error), getResources().getString(R.string.you_are_not_online));
+//                }
             }
         });
 
@@ -475,6 +490,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
                     if (response.code() == 401) {
                         //sharedpreferences must be removed
                         mEditor.clear().commit();
+                        mEditor_parcels.clear().commit();
                         Intent intent = new Intent(activity_mapview.this, activity_login.class);
                         startActivity(intent);
                         finishAffinity();
@@ -579,6 +595,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
                         DisableLoading();
                         //sharedpreferences must be removed
                         mEditor.clear().commit();
+                        mEditor_parcels.clear().commit();
                         Intent intent = new Intent(activity_mapview.this, activity_login.class);
                         startActivity(intent);
                         finishAffinity();
@@ -715,6 +732,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
                         DisableLoading();
                         //sharedpreferences must be removed
                         mEditor.clear().commit();
+                        mEditor_parcels.clear().commit();
                         Intent intent = new Intent(activity_mapview.this, activity_login.class);
                         startActivity(intent);
                         finishAffinity();

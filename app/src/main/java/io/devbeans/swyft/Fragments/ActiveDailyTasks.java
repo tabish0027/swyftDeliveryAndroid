@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import io.devbeans.swyft.BarCodeScannerActivity;
 import io.devbeans.swyft.DailyTasksActivity;
 import io.devbeans.swyft.Databackbone;
 import io.devbeans.swyft.activity_login;
@@ -44,6 +45,9 @@ public class ActiveDailyTasks extends Fragment {
     SharedPreferences sharedpreferences;
     SharedPreferences.Editor mEditor;
     public static final String MyPREFERENCES = "MyPrefs";
+    SharedPreferences sharedpreferences_parcels;
+    SharedPreferences.Editor mEditor_parcels;
+    public static final String MyPREFERENCES_parcels = "ScannedList";
 
     public ActiveDailyTasks() {
         // Required empty public constructor
@@ -69,6 +73,8 @@ public class ActiveDailyTasks extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         sharedpreferences = getActivity().getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
         mEditor = sharedpreferences.edit();
+        sharedpreferences_parcels = getActivity().getSharedPreferences(MyPREFERENCES_parcels, MODE_PRIVATE);
+        mEditor_parcels = sharedpreferences_parcels.edit();
         swipeRefreshLayout = view.findViewById(R.id.active_parcels_swipe);
         recyclerView = view.findViewById(R.id.active_parcels_recycler);
         progressBar = view.findViewById(R.id.url_loading_animation);
@@ -102,6 +108,37 @@ public class ActiveDailyTasks extends Fragment {
                     AdapterActiveDailyTasks adapterAllDaliyTasks = new AdapterActiveDailyTasks(true, getActivity(), Databackbone.getinstance().todayassignments.getActiveAssignments(), new AdapterActiveDailyTasks.CustomItemClickListener() {
                         @Override
                         public void onItemClick(View v, int position) {
+//                            if (!Databackbone.getinstance().riderdetails.getType().equals("delivery")){
+//                                if (Databackbone.getinstance().todayassignments.getActiveAssignments().get(position).getParcels().isEmpty()){
+//                                    Databackbone.getinstance().showAlsertBox(context, context.getResources().getString(R.string.error), "No Parcel found");
+//                                }else {
+//                                    Databackbone.getinstance().task_to_show = Databackbone.getinstance().todayassignments.getData().get(position).getVendorId();
+//
+////                        List<String> arrayList = new ArrayList<>();
+////                        String json = sharedpreferences.getString("vendorIds", "");
+////                        if (!(json.equals(null) || json.equals(""))) {
+////                            Type type = new TypeToken<List<String>>() {
+////                            }.getType();
+////                            arrayList = gson.fromJson(json, type);
+////                            arrayList.add(list.get(position).getVendorId());
+////                            Databackbone.getinstance().vendorIdsList = arrayList;
+////                        }else {
+////                            arrayList.add(list.get(position).getVendorId());
+////                        }
+////
+////                        String jsonP = gson.toJson(Databackbone.getinstance().scannedParcelsIds);
+////                        mEditor.putString("vendorIds", jsonP).commit();
+//
+//                                    Intent orders = new Intent(context, BarCodeScannerActivity.class);
+//                                    orders.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                                    orders.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+//                                    orders.putExtra("position", String.valueOf(position));
+//                                    orders.putExtra("locationPosition", String.valueOf(i));
+//                                    context.startActivity(orders);
+//
+//                                }
+//
+//                            }
 
                         }
                     });
@@ -117,6 +154,7 @@ public class ActiveDailyTasks extends Fragment {
                         //sharedpreferences must be removed
                         DisableLoading();
                         mEditor.clear().commit();
+                        mEditor_parcels.clear().commit();
                         Intent intent = new Intent(getActivity(), activity_login.class);
                         startActivity(intent);
                         getActivity().finishAffinity();

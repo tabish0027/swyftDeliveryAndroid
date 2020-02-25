@@ -1,24 +1,51 @@
 package io.devbeans.swyft;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.fxn.pix.Options;
+import com.fxn.pix.Pix;
+import com.fxn.utility.ImageQuality;
 import com.github.gcacace.signaturepad.views.SignaturePad;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
+import io.devbeans.swyft.data_models.LoadSheetModel;
+import io.devbeans.swyft.data_models.SignatureURLModel;
+import io.devbeans.swyft.interface_retrofit.PasswordResetRequest;
+import io.devbeans.swyft.interface_retrofit.swift_api;
 import io.devbeans.swyft.interface_retrofit_delivery.Datum;
 import io.devbeans.swyft.interface_retrofit_delivery.RiderActivityDelivery;
 import io.devbeans.swyft.interface_retrofit_delivery.mark_parcel_complete;
@@ -35,38 +62,75 @@ import retrofit2.Retrofit;
 
 public class activity_signature_pad extends AppCompatActivity {
 
-    Button btn_submit;
+    Button btn_submit, capture_image;
     SignaturePad mSignaturePad;
     ImageView btn_cross;
+    EditText user_name;
     ProgressBar progressBar = null;
     Bitmap signature_image = null;
+    Bitmap cam_image = null;
     Boolean has_signature_image = false;
+
+    SharedPreferences sharedpreferences;
+    SharedPreferences.Editor mEditor;
+    public static final String MyPREFERENCES = "ScannedList";
+
+    SharedPreferences sharedpreferences_default;
+    SharedPreferences.Editor mEditor_default;
+    public static final String MyPREFERENCES_default = "MyPrefs";
+
+    List<String> scannedIds = new ArrayList<>();
+    Gson gson = new Gson();
+    int position = 0;
+    int inner_position = 0;
+
+    String image_url, sig_url;
+
+    ArrayList<String> ImagereturnValue = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signature);
+        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        mEditor = sharedpreferences.edit();
+        sharedpreferences_default = getSharedPreferences(MyPREFERENCES_default, Context.MODE_PRIVATE);
+        mEditor_default = sharedpreferences_default.edit();
+
+        position = Integer.valueOf(getIntent().getStringExtra("position"));
+        inner_position = Integer.valueOf(getIntent().getStringExtra("locationPosition"));
+
         mSignaturePad = (SignaturePad) findViewById(R.id.signature_pad);
         btn_cross = findViewById(R.id.btn_cross);
+        user_name = findViewById(R.id.textView11);
         btn_cross.setVisibility(View.GONE);
         btn_submit = findViewById(R.id.btn_submit);
+        capture_image = findViewById(R.id.capture_image);
         btn_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Datum data = Databackbone.getinstance().getDeliveryParcelsTask();
-                if(data == null || data.getParcels().size()==0){
-                    activity_signature_pad.this.finish();
+                if (user_name.getText().toString().trim().isEmpty()){
+                    Toast.makeText(activity_signature_pad.this, "Please enter the name first", Toast.LENGTH_SHORT).show();
+                    user_name.setFocusable(true);
+                }else {
+                    uploadSignature();
                 }
-                String Parcelid =  Databackbone.getinstance().getDeliveryParcelsTask().getParcels().get(0).getParcelId();
-                uploadSignature(Parcelid);
             }
         });
-        progressBar = (ProgressBar)findViewById(R.id.url_loading_animation);
+        progressBar = (ProgressBar) findViewById(R.id.url_loading_animation);
         btn_cross.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mSignaturePad.clear();
                 btn_cross.setVisibility(View.GONE);
                 has_signature_image = false;
+            }
+        });
+        mSignaturePad.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                hideKeyboard(view);
+                return false;
             }
         });
         mSignaturePad.setOnSignedListener(new SignaturePad.OnSignedListener() {
@@ -95,17 +159,121 @@ public class activity_signature_pad extends AppCompatActivity {
                 activity_signature_pad.this.finish();
             }
         });
+
+        capture_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Options options = Options.init()
+                        .setRequestCode(100)                                                 //Request code for activity results
+                        .setCount(1)                                                         //Number of images to restict selection count
+                        .setFrontfacing(false)                                                //Front Facing camera on start
+                        .setImageQuality(ImageQuality.HIGH)                                  //Image Quality
+                        .setScreenOrientation(Options.SCREEN_ORIENTATION_PORTRAIT)           //Orientaion
+                        .setPath("/pix/images");                                             //Custom Path For Image Storage
+
+                Pix.start(activity_signature_pad.this, options);
+            }
+        });
     }
-    public void uploadSignature(final String parcel_id){
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK && requestCode == 100) {
+            ImagereturnValue = data.getStringArrayListExtra(Pix.IMAGE_RESULTS);
+            uploadImage();
+        }
+    }
+
+    protected void hideKeyboard(View view) {
+        InputMethodManager imm = (InputMethodManager) activity_signature_pad.this
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+//        if (imm.isAcceptingText()){
+        InputMethodManager in = (InputMethodManager) activity_signature_pad.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+        in.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+//        }
+    }
+
+    public void uploadImage() {
         EnableLoading();
-        if(!has_signature_image){
-            Databackbone.getinstance().showAlsertBox(activity_signature_pad.this,getResources().getString(R.string.error), getResources().getString(R.string.please_put_signature));
+
+        File image = new File(ImagereturnValue.get(0));
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        cam_image = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
+
+        File f = new File(this.getCacheDir(), "cam_image.jpeg");
+
+
+//Convert bitmap to byte array
+        Bitmap bitmap = cam_image;
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100 /*ignored for PNG*/, bos);
+        byte[] bitmapdata = bos.toByteArray();
+
+//write the bytes in file
+        FileOutputStream fos = null;
+        try {
+            f.createNewFile();
+            fos = new FileOutputStream(f);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            fos.write(bitmapdata);
+            fos.flush();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        RequestBody reqFile = RequestBody.create(MediaType.parse("image/*"), f);
+        MultipartBody.Part filedata = MultipartBody.Part.createFormData("file", f.getName(), reqFile);
+
+        swift_api_delivery riderapidata = Databackbone.getinstance().getRetrofitbuilder().create(swift_api_delivery.class);
+
+        RequestBody uploadContainer = RequestBody.create(MediaType.parse("multipart/form-data"), "Loadsheets");
+
+        Call<SignatureURLModel> call = riderapidata.uploadSignature(filedata, uploadContainer);
+        call.enqueue(new Callback<SignatureURLModel>() {
+            @Override
+            public void onResponse(Call<SignatureURLModel> call, Response<SignatureURLModel> response) {
+                if (response.isSuccessful()) {
+
+                    SignatureURLModel signatureURLModel = response.body();
+                    Databackbone.getinstance().cam_image_data = signatureURLModel;
+                    image_url = Databackbone.getinstance().cam_image_data.getMessage();
+
+                    DisableLoading();
+
+                } else {
+                    Databackbone.getinstance().showAlsertBox(activity_signature_pad.this, getResources().getString(R.string.error), "Server code error 88");
+
+                    DisableLoading();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<SignatureURLModel> call, Throwable t) {
+                System.out.println(t.getCause());
+                Databackbone.getinstance().showAlsertBox(activity_signature_pad.this, getResources().getString(R.string.error), "Server code error 89 " + t.getMessage());
+                DisableLoading();
+
+            }
+        });
+
+    }
+
+
+    public void uploadSignature() {
+        EnableLoading();
+        if (!has_signature_image) {
+            Databackbone.getinstance().showAlsertBox(activity_signature_pad.this, getResources().getString(R.string.error), getResources().getString(R.string.please_put_signature));
 
             return;
         }
-        signature_image=    mSignaturePad.getSignatureBitmap();
+        signature_image = mSignaturePad.getSignatureBitmap();
 
-        File f = new File(this.getCacheDir(),"file.jpeg");
+        File f = new File(this.getCacheDir(), "file.jpeg");
 
 
 //Convert bitmap to byte array
@@ -132,31 +300,25 @@ public class activity_signature_pad extends AppCompatActivity {
         RequestBody reqFile = RequestBody.create(MediaType.parse("image/*"), f);
         MultipartBody.Part filedata = MultipartBody.Part.createFormData("file", f.getName(), reqFile);
 
+        swift_api_delivery riderapidata = Databackbone.getinstance().getRetrofitbuilder().create(swift_api_delivery.class);
 
-        Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
-        swift_api_delivery riderapidata = retrofit.create(swift_api_delivery.class);
+        RequestBody uploadContainer = RequestBody.create(MediaType.parse("multipart/form-data"), "Loadsheets");
 
-        RequestBody patchModel = RequestBody.create(MediaType.parse("multipart/form-data"),  "Parcel");
-        RequestBody modelInstanceId = RequestBody.create(MediaType.parse("multipart/form-data"),  parcel_id);
-        RequestBody uploadContainer = RequestBody.create(MediaType.parse("multipart/form-data"),  "parcels");
-        RequestBody updateOn = RequestBody.create(MediaType.parse("multipart/form-data"),  "deliverySignature");
-
-
-        Call<parcel_signature_upload>  call = riderapidata.uploadSignature(filedata,patchModel,modelInstanceId,uploadContainer,updateOn);
-        call.enqueue(new Callback<parcel_signature_upload>() {
+        Call<SignatureURLModel> call = riderapidata.uploadSignature(filedata, uploadContainer);
+        call.enqueue(new Callback<SignatureURLModel>() {
             @Override
-            public void onResponse(Call<parcel_signature_upload> call, Response<parcel_signature_upload> response) {
-                if(response.isSuccessful()){
+            public void onResponse(Call<SignatureURLModel> call, Response<SignatureURLModel> response) {
+                if (response.isSuccessful()) {
 
-                    //parcel_signature_upload parcels = response.body();
-                    // System.out.println(parcels.size());
-                    markParcelsToComplete();
-                     //DisableLoading();
+                    SignatureURLModel signatureURLModel = response.body();
+                    Databackbone.getinstance().cam_image_data = signatureURLModel;
+                    sig_url = Databackbone.getinstance().cam_image_data.getMessage();
 
+                    loadSheet();
 
+                    DisableLoading();
 
-                }
-                else{
+                } else {
                     Databackbone.getinstance().showAlsertBox(activity_signature_pad.this, getResources().getString(R.string.error), "Server code error 88");
 
                     DisableLoading();
@@ -165,93 +327,87 @@ public class activity_signature_pad extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<parcel_signature_upload> call, Throwable t) {
+            public void onFailure(Call<SignatureURLModel> call, Throwable t) {
                 System.out.println(t.getCause());
-                Databackbone.getinstance().showAlsertBox(activity_signature_pad.this, getResources().getString(R.string.error), "Server code error 89 "+t.getMessage());
+                Databackbone.getinstance().showAlsertBox(activity_signature_pad.this, getResources().getString(R.string.error), "Server code error 89 " + t.getMessage());
                 DisableLoading();
 
             }
         });
 
     }
-    public void markParcelsToComplete( ){
-        double lat = 0.0;
-        double lng = 0.0;
-        final List<String> parcelIds = Databackbone.getinstance().parcel_to_process;
-        String reason = "";
-        String action = "delivered";
-        RiderActivityDelivery riderDelivery = Databackbone.getinstance().getDeliveryTask();
-        if(riderDelivery == null)
-            return;
-        String taskId = riderDelivery.getTaskId();
-        if(parcelIds.size() == 0)
-        {
-            Databackbone.getinstance().showAlsertBox(activity_signature_pad.this, getResources().getString(R.string.error), "Server code error 102");
-            DisableLoading();
-            return;
-        }
 
-        if(Databackbone.getinstance().current_location != null){
-            lat = Databackbone.getinstance().current_location.latitude;
-            lng = Databackbone.getinstance().current_location.longitude;
-        }
+    public void loadSheet() {
 
-        mark_parcel_complete com_parcels = new mark_parcel_complete(parcelIds,action,taskId,lat,  lng, reason);
+        progressBar.setVisibility(View.VISIBLE);
 
-        Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
-        swift_api_delivery riderapi = retrofit.create(swift_api_delivery.class);
-        EnableLoading();
-        Call<List<RiderActivityDelivery>> call = riderapi.markParcelComplete(Databackbone.getinstance().rider.getId(),com_parcels);
-        call.enqueue(new Callback<List<RiderActivityDelivery>>() {
+        List<String> arrayList = new ArrayList<>();
+        String json = sharedpreferences.getString(Databackbone.getinstance().todayassignmentdata.get(position).getVendorId() + Databackbone.getinstance().todayassignmentdata.get(position).getPickupLocations().get(inner_position).getId(), "");
+        Type type = new TypeToken<List<String>>() {}.getType();
+        arrayList = gson.fromJson(json, type);
+        Databackbone.getinstance().scannedParcelsIds = arrayList;
+        scannedIds = Databackbone.getinstance().scannedParcelsIds;
+
+        LoadSheetModel loadSheetModel = new LoadSheetModel();
+        loadSheetModel.parcelIds = scannedIds;
+        loadSheetModel.geopoints = Databackbone.getinstance().todayassignmentdata.get(position).getPickupLocations().get(inner_position).getGeopoints();
+        loadSheetModel.signatureUrl = sig_url;
+        loadSheetModel.pickupSheetUrl = image_url;
+        loadSheetModel.name = user_name.getText().toString();
+        loadSheetModel.pickupLocationId = Databackbone.getinstance().todayassignmentdata.get(position).getPickupLocations().get(inner_position).getId();
+        loadSheetModel.vendorId = Databackbone.getinstance().todayassignmentdata.get(position).getVendorId();
+
+        swift_api riderapi = Databackbone.getinstance().getRetrofitbuilder().create(swift_api.class);
+
+        Call<PasswordResetRequest> call = riderapi.generateLoadsheet(sharedpreferences_default.getString("AccessToken", ""), (sharedpreferences_default.getString("RiderID", "")), loadSheetModel);
+        call.enqueue(new Callback<PasswordResetRequest>() {
             @Override
-            public void onResponse(Call<List<RiderActivityDelivery>> call, Response<List<RiderActivityDelivery>> response) {
-                if(response.isSuccessful()){
+            public void onResponse(Call<PasswordResetRequest> call, Response<PasswordResetRequest> response) {
+                if (response.isSuccessful()) {
 
-                    List<RiderActivityDelivery> parcels = response.body();
-                    parcels = Databackbone.getinstance().resortDelivery(parcels);
-                    Databackbone.getinstance().parcelsdelivery = parcels;
-                    Databackbone.getinstance().remove_location_complete();
+                    new AlertDialog.Builder(activity_signature_pad.this)
+                            .setTitle("Success")
+                            .setMessage("Loadsheet generated")
 
-                        DisableLoading();
-                        new AlertDialog.Builder(activity_signature_pad.this)
-                                .setTitle(getResources().getString(R.string.signature))
-                                .setMessage(getResources().getString(R.string.confirmed))
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // Continue with delete operation\
+                                    Intent i = new Intent(activity_signature_pad.this, LoadsheetHistoryActivity.class);
+                                    startActivity(i);
+                                }
+                            })
 
-                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
 
-                                        activity_signature_pad.this.finish();
-                                    }
-                                })
-
-                                .setIcon(android.R.drawable.ic_dialog_alert)
-                                .show();
+                    mEditor.clear().commit();
 
 
-                }
-                else{
-                    Databackbone.getinstance().showAlsertBox(activity_signature_pad.this, getResources().getString(R.string.error), "Server code error 98");
-                    DisableLoading();
+                    progressBar.setVisibility(View.GONE);
+                } else {
+                    Databackbone.getinstance().showAlsertBox(activity_signature_pad.this, getResources().getString(R.string.error), "Error in generating Loadsheet");
+                    progressBar.setVisibility(View.GONE);
                 }
 
             }
 
             @Override
-            public void onFailure(Call<List<RiderActivityDelivery>> call, Throwable t) {
+            public void onFailure(Call<PasswordResetRequest> call, Throwable t) {
                 System.out.println(t.getCause());
-                Databackbone.getinstance().showAlsertBox(activity_signature_pad.this, getResources().getString(R.string.error), "Server code error 99");
-                DisableLoading();
+                progressBar.setVisibility(View.GONE);
             }
         });
 
     }
 
 
-    public void DisableLoading(){
+
+    public void DisableLoading() {
         btn_submit.setEnabled(true);
         progressBar.setVisibility(View.GONE);
     }
-    public void EnableLoading(){
+
+    public void EnableLoading() {
         btn_submit.setEnabled(false);
 
         progressBar.setVisibility(View.VISIBLE);

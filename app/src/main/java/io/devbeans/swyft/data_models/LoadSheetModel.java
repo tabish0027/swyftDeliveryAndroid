@@ -10,4 +10,6 @@ public class LoadSheetModel {
     public String signatureUrl;
     public String pickupLocationId;
     public String vendorId;
+    public String pickupSheetUrl;
+    public String name;
 }

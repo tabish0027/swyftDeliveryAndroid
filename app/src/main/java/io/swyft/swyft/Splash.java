@@ -37,6 +37,9 @@ public class Splash extends AppCompatActivity {
     SharedPreferences sharedpreferences;
     SharedPreferences.Editor mEditor;
     public static final String MyPREFERENCES = "MyPrefs";
+    SharedPreferences sharedpreferences_parcels;
+    SharedPreferences.Editor mEditor_parcels;
+    public static final String MyPREFERENCES_parcels = "ScannedList";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +48,8 @@ public class Splash extends AppCompatActivity {
 
         sharedpreferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
         mEditor = sharedpreferences.edit();
-
+        sharedpreferences_parcels = getSharedPreferences(MyPREFERENCES_parcels, MODE_PRIVATE);
+        mEditor_parcels = sharedpreferences_parcels.edit();
 
 
         Databackbone.getinstance().contextapp = getApplicationContext();
@@ -88,8 +92,10 @@ public class Splash extends AppCompatActivity {
                     Databackbone.getinstance().riderdetails = riderActivity;
 
                     if (Databackbone.getinstance().riderdetails.getType().equals("delivery")){
-                        if (ContextCompat.checkSelfPermission(Splash.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED)
-                            ActivityCompat.requestPermissions(Splash.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                        if (ContextCompat.checkSelfPermission(Splash.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED &&
+                                ContextCompat.checkSelfPermission(Splash.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED &&
+                                ContextCompat.checkSelfPermission(Splash.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
+                            ActivityCompat.requestPermissions(Splash.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
                         else {
                             Intent i = new Intent(Splash.this, activity_mapview.class);
                             startActivity(i);
@@ -103,6 +109,7 @@ public class Splash extends AppCompatActivity {
                     if (response.code() == 401) {
                         //sharedpreferences must be removed
                         mEditor.clear().commit();
+                        mEditor_parcels.clear().commit();
                         Intent intent = new Intent(Splash.this, activity_login.class);
                         startActivity(intent);
                         finishAffinity();
@@ -137,8 +144,10 @@ public class Splash extends AppCompatActivity {
                     TodayAssignments todayAssignments = response.body();
                     Databackbone.getinstance().todayassignments = todayAssignments;
 
-                    if (ContextCompat.checkSelfPermission(Splash.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED)
-                        ActivityCompat.requestPermissions(Splash.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                    if (ContextCompat.checkSelfPermission(Splash.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED &&
+                            ContextCompat.checkSelfPermission(Splash.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED &&
+                            ContextCompat.checkSelfPermission(Splash.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
+                        ActivityCompat.requestPermissions(Splash.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
                     else {
                         Intent i = new Intent(Splash.this, activity_mapview.class);
                         startActivity(i);
@@ -149,6 +158,7 @@ public class Splash extends AppCompatActivity {
                     if (response.code() == 401) {
                         //sharedpreferences must be removed
                         mEditor.clear().commit();
+                        mEditor_parcels.clear().commit();
                         Intent intent = new Intent(Splash.this, activity_login.class);
                         startActivity(intent);
                         finishAffinity();

@@ -43,6 +43,9 @@ public class AllDailyTasks extends Fragment {
     SharedPreferences sharedpreferences;
     SharedPreferences.Editor mEditor;
     public static final String MyPREFERENCES = "MyPrefs";
+    SharedPreferences sharedpreferences_parcels;
+    SharedPreferences.Editor mEditor_parcels;
+    public static final String MyPREFERENCES_parcels = "ScannedList";
 
     public AllDailyTasks() {
         // Required empty public constructor
@@ -65,6 +68,8 @@ public class AllDailyTasks extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         sharedpreferences = getActivity().getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
         mEditor = sharedpreferences.edit();
+        sharedpreferences_parcels = getActivity().getSharedPreferences(MyPREFERENCES_parcels, MODE_PRIVATE);
+        mEditor_parcels = sharedpreferences_parcels.edit();
         swipeRefreshLayout = view.findViewById(R.id.all_parcels_swipe);
         recyclerView = view.findViewById(R.id.all_parcels_recycler);
         progressBar = view.findViewById(R.id.url_loading_animation);
@@ -113,6 +118,7 @@ public class AllDailyTasks extends Fragment {
                         DisableLoading();
                         //sharedpreferences must be removed
                         mEditor.clear().commit();
+                        mEditor_parcels.clear().commit();
                         Intent intent = new Intent(getActivity(), activity_login.class);
                         startActivity(intent);
                         getActivity().finishAffinity();

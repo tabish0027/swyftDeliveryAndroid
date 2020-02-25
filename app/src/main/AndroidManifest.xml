@@ -8,6 +8,8 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
@@ -19,8 +21,12 @@
         android:roundIcon="@mipmap/ic_app_launcher_driver"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
-        android:usesCleartextTraffic="true">
-        <activity android:name="io.devbeans.swyft.BarCodeScannerActivity"></activity>
+        android:usesCleartextTraffic="true"
+        tools:replace="android:theme"
+        >
+        <activity android:name="io.devbeans.swyft.ViewLoadsheetActivity"></activity>
+        <activity android:name="io.devbeans.swyft.LoadsheetHistoryActivity" />
+        <activity android:name="io.devbeans.swyft.BarCodeScannerActivity" />
         <activity android:name="io.devbeans.swyft.DailyTasksActivity" />
 
         <uses-library android:name="com.google.android.maps" />
@@ -75,7 +81,9 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="io.devbeans.swyft.activity_signature_pad"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" >
+
+        </activity>
         <activity
             android:name="io.devbeans.swyft.activity_faq"
             android:screenOrientation="portrait" />

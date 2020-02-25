@@ -28,6 +28,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
 
+import io.devbeans.swyft.data_models.UpdateToken;
 import io.devbeans.swyft.network.ApiController;
 import io.swyft.swyft.BuildConfig;
 import io.swyft.swyft.R;
@@ -73,7 +74,8 @@ public class activity_login extends AppCompatActivity {
                     String newToken = instanceIdResult.getToken();
                     Log.e("newToken", newToken);
                     mEditor.putString("DeviceToken", newToken);
-                    mEditor.apply();
+                    mEditor.commit();
+                    deviceToken = newToken;
                 }
             });
         }
@@ -113,7 +115,7 @@ public class activity_login extends AppCompatActivity {
 
         // For debuging and stage server only
 
-        username.setText("03403332977");
+        username.setText("+923047216339");
         password.setText("12345"); // delivery stage
 
         // For debuging and stage server only
@@ -177,7 +179,7 @@ public class activity_login extends AppCompatActivity {
                     mEditor.putString("TOKEN", rider.getId()).commit();
                     mEditor.putString("RiderID", rider.getUserId()).commit();
                     mEditor.putString("AccessToken", rider.getId()).commit();
-                    getRiderDetail();
+                    Updatetoken();
 
                     // Toast.makeText(activity_login.this,rider.getId(),Toast.LENGTH_LONG).show();
 
@@ -210,7 +212,7 @@ public class activity_login extends AppCompatActivity {
                     EnableLogin();
                     return;
                 }
-                getRiderDetail();
+
 
 
             }
@@ -221,6 +223,36 @@ public class activity_login extends AppCompatActivity {
                 EnableLogin();
             }
         });
+    }
+
+    public void Updatetoken(){
+        UpdateToken updateToken = new UpdateToken();
+        updateToken.fcmToken = deviceToken;
+
+        swift_api riderapi = Databackbone.getinstance().getRetrofitbuilder().create(swift_api.class);
+
+        Call<RiderDetails> call = riderapi.updateRiderforToken(Databackbone.getinstance().rider.getId(), updateToken, Databackbone.getinstance().rider.getUserId());
+        call.enqueue(new Callback<RiderDetails>() {
+            @Override
+            public void onResponse(Call<RiderDetails> call, Response<RiderDetails> response) {
+                if (response.isSuccessful()) {
+
+                    getRiderDetail();
+
+                } else {
+                    Databackbone.getinstance().showAlsertBox(activity_login.this, getResources().getString(R.string.error), getResources().getString(R.string.wrong_username_or_password));
+                    EnableLogin();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<RiderDetails> call, Throwable t) {
+                System.out.println(t.getCause());
+                EnableLogin();
+            }
+        });
+
     }
 
     public void getRiderDetail() {
@@ -238,8 +270,10 @@ public class activity_login extends AppCompatActivity {
 //                    ApiController.getInstance().getEarnings();
 //                    ApiController.getInstance().getwallet();
 //                    ApiController.getInstance().gethistory();
-                    if (ContextCompat.checkSelfPermission(activity_login.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED)
-                        ActivityCompat.requestPermissions(activity_login.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CAMERA}, 1);
+                    if (ContextCompat.checkSelfPermission(activity_login.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED &&
+                            ContextCompat.checkSelfPermission(activity_login.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED &&
+                            ContextCompat.checkSelfPermission(activity_login.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
+                        ActivityCompat.requestPermissions(activity_login.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
                     else {
                         Intent i = new Intent(activity_login.this, activity_mapview.class);
                         activity_login.this.startActivity(i);

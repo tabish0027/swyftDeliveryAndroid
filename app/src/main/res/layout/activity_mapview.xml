@@ -106,7 +106,6 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
             android:fontFamily="@font/avenirfile"
-            android:text="No Pending Task"
             android:textColor="@color/color_app_theam_text"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"

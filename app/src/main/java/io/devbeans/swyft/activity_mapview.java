@@ -481,7 +481,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
                     Databackbone.getinstance().todayassignmentdata = todayAssignments.getData();
                     LoadLocation(Databackbone.getinstance().todayassignmentdata);
                     //Databackbone.getinstance().parcels = parcels;
-                    tx_parcels_status_count.setText(String.valueOf(todayAssignments.getData().size() + todayAssignments.getActiveAssignments().size()) + " " + getResources().getString(R.string.task_pending));
+                    tx_parcels_status_count.setText(String.valueOf(todayAssignments.getActiveAssignments().size()) + " " + getResources().getString(R.string.active_tasks));
                     DisableLoading();
 
 
@@ -716,7 +716,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
 
                     // System.out.println(parcels.size());
                     if (parcels == null) {
-                        tx_parcels_status_count.setText("0 Task Pending");
+                        tx_parcels_status_count.setText("0 Active Tasks");
                     } else {
                         parcels = Databackbone.getinstance().resortDelivery(parcels);
 

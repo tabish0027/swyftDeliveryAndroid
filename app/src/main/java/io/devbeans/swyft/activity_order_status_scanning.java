@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -145,10 +146,15 @@ public class activity_order_status_scanning extends Activity {
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(activity_order_status_scanning.this, activity_signature_pad.class);
-                intent.putExtra("position", String.valueOf(position));
-                intent.putExtra("locationPosition", String.valueOf(inner_position));
-                startActivity(intent);
+                if (scannedIds != null && !scannedIds.isEmpty()){
+                    Intent intent = new Intent(activity_order_status_scanning.this, activity_signature_pad.class);
+                    intent.putExtra("position", String.valueOf(position));
+                    intent.putExtra("locationPosition", String.valueOf(inner_position));
+                    startActivity(intent);
+                }else {
+                    Toast.makeText(activity_order_status_scanning.this, "You haven't scanned any parcel yet!", Toast.LENGTH_LONG).show();
+                }
+
 
             }
         });

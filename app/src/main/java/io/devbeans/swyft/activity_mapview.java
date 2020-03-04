@@ -8,17 +8,26 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
+import android.net.NetworkRequest;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -71,6 +80,8 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
     ConstraintLayout btn_wallet, btn_earning = null;
     TextView tx_username, tx_rating = null;
     ProgressBar progressBar = null;
+    LinearLayout syncing_red_line_layout;
+    TextView red_line_text;
 
     ImageView btn_slider_menu;
     private AppBarConfiguration mAppBarConfiguration;
@@ -79,7 +90,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
     ConstraintLayout pendingTask;
     private AirLocation airLocation;
     ImageView btn_get_current_locationc, profile_image2;
-    TextView tx_parcels_status_count, tx_earning_slider, tx_wallet_slider;
+    TextView tx_parcels_status_count, tx_earning_slider, tx_wallet_slider, sync_textfield;
     Marker marker_destination_location = null;
 
     SharedPreferences sharedpreferences;
@@ -90,6 +101,12 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
     public static final String MyPREFERENCES_parcels = "ScannedList";
 
     ArrayList<MarkerOptions> markers = new ArrayList<>();
+
+    // to check if we are connected to Network
+    boolean isConnected = true;
+
+    // to check if we are monitoring Network
+    private boolean monitoringConnectivity = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +132,9 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         Task5 = findViewById(R.id.item5);
         Task6 = findViewById(R.id.item6);
         Task7 = findViewById(R.id.item7);
+        syncing_red_line_layout = findViewById(R.id.syncing_red_line_layout);
+        red_line_text = findViewById(R.id.red_line_text);
+        sync_textfield = findViewById(R.id.sync_textfield);
         btn_navigation = findViewById(R.id.btn_navigation);
         tx_username = findViewById(R.id.tx_username_slider);
         progressBar = (ProgressBar) findViewById(R.id.url_loading_animation);
@@ -143,8 +163,20 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
 
         // data attributes set from server
         tx_username.setText("Hi " + Databackbone.getinstance().riderdetails.getFirstName());
-        Picasso.with(this).load(Databackbone.getinstance().riderdetails.getProfilePicture()).into(profile_image2);
+        if (Databackbone.getinstance().riderdetails.getProfilePicture() != null){
+            Picasso.with(this).load(Databackbone.getinstance().riderdetails.getProfilePicture()).into(profile_image2);
+        }
         tx_rating.setText(Databackbone.getinstance().riderdetails.getType());
+
+        if (Databackbone.getinstance().riderdetails.getType().equalsIgnoreCase("delivery")){
+            btn_wallet.setVisibility(View.VISIBLE);
+            btn_earning.setVisibility(View.VISIBLE);
+            Task1.setVisibility(View.VISIBLE);
+        }else {
+            btn_wallet.setVisibility(View.GONE);
+            btn_earning.setVisibility(View.GONE);
+            Task1.setVisibility(View.GONE);
+        }
 
         Task1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -187,7 +219,14 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         Task6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(activity_mapview.this, "Sync it", Toast.LENGTH_SHORT).show();
+                getTodayAssignments();
+            }
+        });
+
+        syncing_red_line_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getTodayAssignments();
             }
         });
 
@@ -327,6 +366,51 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
 
     }
 
+    private ConnectivityManager.NetworkCallback connectivityCallback
+            = new ConnectivityManager.NetworkCallback() {
+        @Override
+        public void onAvailable(Network network) {
+            isConnected = true;
+            Toast.makeText(activity_mapview.this, "INTERNET CONNECTED", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onLost(Network network) {
+            isConnected = false;
+            Toast.makeText(activity_mapview.this, "INTERNET LOST", Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    // Method to check network connectivity in Main Activity
+    private void checkConnectivity() {
+        // here we are getting the connectivity service from connectivity manager
+        final ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(
+                CONNECTIVITY_SERVICE);
+
+        // Getting network Info
+        // give Network Access Permission in Manifest
+        final NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+
+        // isConnected is a boolean variable
+        // here we check if network is connected or is getting connected
+        isConnected = activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+
+        if (!isConnected) {
+            // SHOW ANY ACTION YOU WANT TO SHOW
+            // WHEN WE ARE NOT CONNECTED TO INTERNET/NETWORK
+            Log.e("No_Network", " NO NETWORK!");
+// if Network is not connected we will register a network callback to  monitor network
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                connectivityManager.registerNetworkCallback(
+                        new NetworkRequest.Builder()
+                                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                                .build(), connectivityCallback);
+            }
+            monitoringConnectivity = true;
+        }
+
+    }
+
     // override and call airLocation object's method by the same name
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -356,7 +440,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
                 CameraUpdate location_animation = CameraUpdateFactory.newLatLngZoom(current_location, 15);
                 CameraPosition cameraPosition = new CameraPosition.Builder()
                         .target(current_location)        // Sets the center of the map to Mountain View
-                        .zoom(17)              // Sets the zoom
+                        .zoom(13)              // Sets the zoom
                         .bearing(90)           // Sets the orientation of the camera to east
                         .tilt(0)               // Sets the tilt of the camera to 30 degrees
                         .build();
@@ -416,10 +500,11 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
     @Override
     public void onResume() {
 
+        checkConnectivity();
         mMapView.onResume();
         getCurrentLocation();
-        super.onResume();
         LoadResume();
+        super.onResume();
         getwallet();
         getEarnings();
 
@@ -440,12 +525,25 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         } else {
             Databackbone.getinstance().RiderTypeDelivery = false;
             markers.clear();
-            getTodayAssignments();
+            if (mMapServiceView != null){
+                LoadLocation(Databackbone.getinstance().todayassignmentdata);
+            }
+            //Databackbone.getinstance().parcels = parcels;
+            tx_parcels_status_count.setText(String.valueOf(Databackbone.getinstance().todayAssignmentactive.size()) + " " + getResources().getString(R.string.active_tasks));
         }
     }
 
     @Override
     public void onPause() {
+        // if network is being moniterd then we will unregister the network callback
+        if (monitoringConnectivity) {
+            final ConnectivityManager connectivityManager
+                    = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                connectivityManager.unregisterNetworkCallback(connectivityCallback);
+            }
+            monitoringConnectivity = false;
+        }
         super.onPause();
         mMapView.onPause();
         mDrawerLayout.closeDrawer(Gravity.LEFT);
@@ -466,6 +564,12 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
 
     ////////////////////////////////////////////////////////////////////////////////////////////
     public void getTodayAssignments() {
+
+        sync_textfield.setText("Syncing...");
+        sync_textfield.setTextColor(getResources().getColor(R.color.purple));
+        syncing_red_line_layout.setVisibility(View.VISIBLE);
+        red_line_text.setText("Syncing...");
+
         Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
         swift_api todayAssignment = retrofit.create(swift_api.class);
 
@@ -479,9 +583,14 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
                     Databackbone.getinstance().todayassignments = todayAssignments;
 
                     Databackbone.getinstance().todayassignmentdata = todayAssignments.getData();
+                    Databackbone.getinstance().todayAssignmentactive = todayAssignments.getActiveAssignments();
                     LoadLocation(Databackbone.getinstance().todayassignmentdata);
                     //Databackbone.getinstance().parcels = parcels;
                     tx_parcels_status_count.setText(String.valueOf(todayAssignments.getActiveAssignments().size()) + " " + getResources().getString(R.string.active_tasks));
+                    sync_textfield.setText("Synced");
+                    sync_textfield.setTextColor(getResources().getColor(R.color.black));
+                    syncing_red_line_layout.setVisibility(View.GONE);
+                    red_line_text.setText("Synced");
                     DisableLoading();
 
 
@@ -495,7 +604,11 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
                         startActivity(intent);
                         finishAffinity();
                     }else {
-                        Databackbone.getinstance().showAlsertBox(activity_mapview.this, getResources().getString(R.string.error), "Error Connecting To Server Error Code 33");
+//                        Databackbone.getinstance().showAlsertBox(activity_mapview.this, getResources().getString(R.string.error), "Error Connecting To Server Error Code 33");
+                        sync_textfield.setText("Error syncing. Try again later");
+                        red_line_text.setText("Error syncing. Tap to retry");
+                        syncing_red_line_layout.setVisibility(View.VISIBLE);
+                        sync_textfield.setTextColor(getResources().getColor(R.color.red));
                     }
                     //DeactivateRider();
                 }
@@ -505,49 +618,15 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
             @Override
             public void onFailure(Call<TodayAssignments> call, Throwable t) {
                 System.out.println(t.getCause());
-                Databackbone.getinstance().showAlsertBox(activity_mapview.this, getResources().getString(R.string.error), "Error Connecting To Server Error Code 34");
-
+//                Databackbone.getinstance().showAlsertBox(activity_mapview.this, getResources().getString(R.string.error), "Error Connecting To Server Error Code 34");
+                sync_textfield.setText("Error syncing. Try again later");
+                red_line_text.setText("Error syncing. Tap to retry");
+                syncing_red_line_layout.setVisibility(View.VISIBLE);
+                sync_textfield.setTextColor(getResources().getColor(R.color.red));
                 //DeactivateRider();
             }
         });
     }
-
-    /*public void LoadParcels() {
-        Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
-        swift_api riderapi = retrofit.create(swift_api.class);
-        EnableLoading();
-        Call<List<PickupParcel>> call = riderapi.getParcelsByRiders(sharedpreferences.getString("AccessToken", ""), sharedpreferences.getString("RiderID", ""));
-        call.enqueue(new Callback<List<PickupParcel>>() {
-            @Override
-            public void onResponse(Call<List<PickupParcel>> call, Response<List<PickupParcel>> response) {
-                if (response.isSuccessful()) {
-
-                    List<PickupParcel> parcels = response.body();
-                    parcels = Databackbone.getinstance().resortParcelsPickup(parcels);
-
-                    // System.out.println(parcels.size());
-                    LoadLocation(parcels);
-                    Databackbone.getinstance().parcels = parcels;
-                    //Databackbone.getinstance().parcels = parcels;
-                    tx_parcels_status_count.setText(Integer.toString(parcels.size()) + " " + getResources().getString(R.string.task_pending));
-                    DisableLoading();
-
-                } else {
-                    DisableLoading();
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<List<PickupParcel>> call, Throwable t) {
-                System.out.println(t.getCause());
-                tx_parcels_status_count.setText(getResources().getString(R.string.zero_task_pending));
-                DisableLoading();
-            }
-        });
-
-
-    }*/
 
     public void check_status_of_rider_activity() {
         if (Databackbone.getinstance().riderdetails != null) {
@@ -626,7 +705,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
 
         MarkerOptions marker = new MarkerOptions().position(new LatLng(lat, lng)).title("Pickup : " + title);
         BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(marker_image);
-        mMapServiceView.clear();
+
         marker.icon(icon);
         markers.add(marker);
         mMapServiceView.addMarker(marker);
@@ -651,6 +730,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
 
     public void LoadLocation(List<TodayAssignmentData> parcels) {
         markers.clear();
+        mMapServiceView.clear();
         btn_navigation.setVisibility(View.GONE);
         for (int i = 0; i < parcels.size(); i++) {
             for (int j = 0; j < parcels.get(i).getPickupLocations().size(); j++){
@@ -686,6 +766,8 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
             //Databackbone.getinstance().showAlsertBox(activity_mapview.this, "Error", "Activate your GPS");
             return;
         }
+
+        LatLng current_latlng = new LatLng(Databackbone.getinstance().current_location.latitude, Databackbone.getinstance().current_location.longitude);
         MarkerOptions currentmarker = new MarkerOptions().position(new LatLng(Databackbone.getinstance().current_location.latitude, Databackbone.getinstance().current_location.longitude));
         markers.add(currentmarker);
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
@@ -694,9 +776,18 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
         }
         LatLngBounds bounds = builder.build();
         int padding = 100; // offset from edges of the map in pixels
-        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-        mMapServiceView.moveCamera(cu);
-        mMapServiceView.animateCamera(cu);
+//        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+//        mMapServiceView.moveCamera(cu);
+//        mMapServiceView.animateCamera(cu);
+
+        CameraUpdate location_animation = CameraUpdateFactory.newLatLngZoom(current_latlng, 15);
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(current_latlng)        // Sets the center of the map to Mountain View
+                .zoom(13)              // Sets the zoom
+                .bearing(90)           // Sets the orientation of the camera to east
+                .tilt(0)               // Sets the tilt of the camera to 30 degrees
+                .build();
+        mMapServiceView.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
     }
 

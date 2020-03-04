@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.devbeans.swyft.BarCodeScannerActivity;
 import io.devbeans.swyft.Databackbone;
 import io.swyft.swyft.R;
 import io.devbeans.swyft.data_models.model_order_item;
@@ -82,6 +83,7 @@ public class adapter_status_packages_scanning extends RecyclerView.Adapter<adapt
                 mEditor.putString(Databackbone.getinstance().todayassignmentdata.get(abc).getVendorId() + Databackbone.getinstance().todayassignmentdata.get(abc).getPickupLocations().get(cde).getId(), jsonP).commit();
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, filtered.size());
+                BarCodeScannerActivity.refresh = true;
             }
         });
 

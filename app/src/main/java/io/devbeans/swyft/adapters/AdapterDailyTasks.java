@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -67,7 +68,7 @@ public class AdapterDailyTasks extends RecyclerView.Adapter<AdapterDailyTasks.My
         if (status) {
             holder.mb_parcel_type.setImageResource(R.drawable.icon_circle_deliverd);
             holder.parcel_type_bottom_bar.setBackgroundColor(Color.parseColor("#90703090"));
-            holder.mb_parcel_type_background.setBackgroundResource(R.drawable.round_daily_package_active);
+            holder.mb_parcel_type_background.setBackgroundResource(R.drawable.new_daily_task_background);
             if (!Databackbone.getinstance().riderdetails.getType().equalsIgnoreCase("delivery")) {
                 holder.btn_navigation.setVisibility(View.VISIBLE);
                 holder.btn_navigation.setOnClickListener(new View.OnClickListener() {
@@ -103,6 +104,7 @@ public class AdapterDailyTasks extends RecyclerView.Adapter<AdapterDailyTasks.My
         } else {
             holder.mb_parcel_type.setImageResource(R.drawable.icon_circle_reattempt);
             holder.parcel_type_bottom_bar.setBackgroundColor(Color.parseColor("#90f15b22"));
+            holder.down_colored_relative.setBackgroundResource(R.drawable.dailly_task_down_half_filled_deactivate);
             holder.mb_parcel_type_background.setBackgroundResource(R.drawable.round_daily_package_deactive);
             holder.btn_navigation.setVisibility(View.INVISIBLE);
         }
@@ -117,24 +119,23 @@ public class AdapterDailyTasks extends RecyclerView.Adapter<AdapterDailyTasks.My
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView mb_name ;
         TextView mb_address ;
-        TextView mb_distance ;
         TextView mb_zone ;
         ImageView mb_parcel_type;
         LinearLayout parcel_type_bottom_bar;
-        ConstraintLayout mb_parcel_type_background;
-        ImageView btn_navigation,btn_activate;
+        LinearLayout mb_parcel_type_background;
+        ImageView btn_navigation;
+        LinearLayout down_colored_relative;
 
         MyViewHolder(View itemView) {
             super(itemView);
             mb_name =itemView.findViewById(R.id.mb_name); ;
             mb_address =itemView.findViewById(R.id.mb_address);
-            mb_distance =itemView.findViewById(R.id.mb_distance);
             mb_zone =itemView.findViewById(R.id.mb_zone);
             mb_parcel_type =itemView.findViewById(R.id.parcel_type);
             parcel_type_bottom_bar =itemView.findViewById(R.id.parcel_type_bottom_bar);
-            mb_parcel_type_background =itemView.findViewById(R.id.parcel_type_background);
             btn_navigation =itemView.findViewById(R.id.btn_navigation);
-            btn_activate =itemView.findViewById(R.id.btn_activate);
+            down_colored_relative =itemView.findViewById(R.id.down_colored_relative);
+            mb_parcel_type_background =itemView.findViewById(R.id.mb_parcel_type_background);
         }
     }
 

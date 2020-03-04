@@ -35,7 +35,8 @@ import static android.content.Context.MODE_PRIVATE;
 public class AllDailyTasks extends Fragment {
 
 
-    RecyclerView recyclerView;
+    public static RecyclerView recyclerView;
+    public static AdapterAllDaliyTasks adapterAllDaliyTasks;
     SwipeRefreshLayout swipeRefreshLayout;
     ProgressBar progressBar = null;
     TextView tx_empty_view;
@@ -76,12 +77,28 @@ public class AllDailyTasks extends Fragment {
         tx_empty_view = view.findViewById(R.id.tx_empty_view);
         progressBar.setVisibility(View.GONE);
         tx_empty_view.setVisibility(View.GONE);
-        getTodayAssignments();
+//        getTodayAssignments();
+
+        EnableLoading();
+
+        adapterAllDaliyTasks = new AdapterAllDaliyTasks(false, getActivity(), Databackbone.getinstance().todayassignments.getData(), new AdapterAllDaliyTasks.CustomItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+
+            }
+        });
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setAdapter(adapterAllDaliyTasks);
+
+        DisableLoading();
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getTodayAssignments();
+//                getTodayAssignments();
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
     }

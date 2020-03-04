@@ -19,12 +19,16 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.devbeans.swyft.BarCodeScannerActivity;
 import io.devbeans.swyft.DailyTasksActivity;
 import io.devbeans.swyft.Databackbone;
 import io.devbeans.swyft.activity_login;
 import io.devbeans.swyft.adapters.AdapterActiveDailyTasks;
 import io.devbeans.swyft.adapters.AdapterAllDaliyTasks;
+import io.devbeans.swyft.interface_retrofit.ActiveAssignment;
 import io.devbeans.swyft.interface_retrofit.TodayAssignments;
 import io.devbeans.swyft.interface_retrofit.swift_api;
 import io.swyft.swyft.R;
@@ -37,10 +41,14 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class ActiveDailyTasks extends Fragment {
 
-    RecyclerView recyclerView;
+    public static RecyclerView recyclerView;
+    public static AdapterActiveDailyTasks adapterAllDaliyTasks;
     SwipeRefreshLayout swipeRefreshLayout;
     ProgressBar progressBar = null;
     TextView tx_empty_view;
+
+    int sending_position_main = 0;
+    int sending_position_location = 0;
 
     SharedPreferences sharedpreferences;
     SharedPreferences.Editor mEditor;
@@ -48,6 +56,8 @@ public class ActiveDailyTasks extends Fragment {
     SharedPreferences sharedpreferences_parcels;
     SharedPreferences.Editor mEditor_parcels;
     public static final String MyPREFERENCES_parcels = "ScannedList";
+
+    public static List<ActiveAssignment> active_items_merged = new ArrayList<>();
 
     public ActiveDailyTasks() {
         // Required empty public constructor
@@ -81,12 +91,57 @@ public class ActiveDailyTasks extends Fragment {
         tx_empty_view = view.findViewById(R.id.tx_empty_view);
         progressBar.setVisibility(View.GONE);
         tx_empty_view.setVisibility(View.GONE);
-        getTodayAssignments();
+//        getTodayAssignments();
+
+        EnableLoading();
+
+        for (int i = 0; i < Databackbone.getinstance().todayAssignmentactive.size(); i++){
+
+            if (active_items_merged.isEmpty()){
+                active_items_merged.add(Databackbone.getinstance().todayAssignmentactive.get(i));
+            }else {
+                for (int k = 0; k < active_items_merged.size(); k++){
+                    if (!Databackbone.getinstance().todayAssignmentactive.get(i).getAddress().equals(active_items_merged.get(k).getAddress()) && !Databackbone.getinstance().todayAssignmentactive.get(i).getVendorId().equals(active_items_merged.get(k).getVendorId())){
+                        active_items_merged.add(Databackbone.getinstance().todayAssignmentactive.get(i));
+                    }
+                }
+            }
+        }
+
+        adapterAllDaliyTasks = new AdapterActiveDailyTasks(true, getActivity(), active_items_merged, new AdapterActiveDailyTasks.CustomItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+
+                for (int i = 0; i < Databackbone.getinstance().todayassignmentdata.size(); i++){
+                    for (int j = 0; j < Databackbone.getinstance().todayassignmentdata.get(i).getPickupLocations().size(); j++){
+                        if (active_items_merged.get(position).getVendorId().equals(Databackbone.getinstance().todayassignmentdata.get(i).getVendorId()) && active_items_merged.get(position).getPickupLocationId().equals(Databackbone.getinstance().todayassignmentdata.get(i).getPickupLocations().get(j).getId())){
+                            sending_position_main = i;
+                            sending_position_location = j;
+                        }
+                    }
+                }
+
+                Intent orders = new Intent(getActivity(), BarCodeScannerActivity.class);
+                orders.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                orders.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                orders.putExtra("position", String.valueOf(sending_position_main));
+                orders.putExtra("locationPosition", String.valueOf(sending_position_location));
+                startActivity(orders);
+
+            }
+        });
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setAdapter(adapterAllDaliyTasks);
+
+        DisableLoading();
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getTodayAssignments();
+//                getTodayAssignments();
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
     }
@@ -108,37 +163,6 @@ public class ActiveDailyTasks extends Fragment {
                     AdapterActiveDailyTasks adapterAllDaliyTasks = new AdapterActiveDailyTasks(true, getActivity(), Databackbone.getinstance().todayassignments.getActiveAssignments(), new AdapterActiveDailyTasks.CustomItemClickListener() {
                         @Override
                         public void onItemClick(View v, int position) {
-//                            if (!Databackbone.getinstance().riderdetails.getType().equals("delivery")){
-//                                if (Databackbone.getinstance().todayassignments.getActiveAssignments().get(position).getParcels().isEmpty()){
-//                                    Databackbone.getinstance().showAlsertBox(context, context.getResources().getString(R.string.error), "No Parcel found");
-//                                }else {
-//                                    Databackbone.getinstance().task_to_show = Databackbone.getinstance().todayassignments.getData().get(position).getVendorId();
-//
-////                        List<String> arrayList = new ArrayList<>();
-////                        String json = sharedpreferences.getString("vendorIds", "");
-////                        if (!(json.equals(null) || json.equals(""))) {
-////                            Type type = new TypeToken<List<String>>() {
-////                            }.getType();
-////                            arrayList = gson.fromJson(json, type);
-////                            arrayList.add(list.get(position).getVendorId());
-////                            Databackbone.getinstance().vendorIdsList = arrayList;
-////                        }else {
-////                            arrayList.add(list.get(position).getVendorId());
-////                        }
-////
-////                        String jsonP = gson.toJson(Databackbone.getinstance().scannedParcelsIds);
-////                        mEditor.putString("vendorIds", jsonP).commit();
-//
-//                                    Intent orders = new Intent(context, BarCodeScannerActivity.class);
-//                                    orders.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                                    orders.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-//                                    orders.putExtra("position", String.valueOf(position));
-//                                    orders.putExtra("locationPosition", String.valueOf(i));
-//                                    context.startActivity(orders);
-//
-//                                }
-//
-//                            }
 
                         }
                     });

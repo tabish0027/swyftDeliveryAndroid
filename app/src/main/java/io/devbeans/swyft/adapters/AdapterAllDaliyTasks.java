@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -27,12 +29,14 @@ import io.devbeans.swyft.Databackbone;
 import io.devbeans.swyft.interface_retrofit.TodayAssignmentData;
 import io.swyft.swyft.R;
 
-public class AdapterAllDaliyTasks extends RecyclerView.Adapter<AdapterAllDaliyTasks.MyViewHolder> {
+public class AdapterAllDaliyTasks extends RecyclerView.Adapter<AdapterAllDaliyTasks.MyViewHolder> implements Filterable {
     private Context context;
     CustomItemClickListener listener;
     List<TodayAssignmentData> list;
+    List<TodayAssignmentData> filtered;
     boolean status;
     Gson gson = new Gson();
+    int sending_position = 0;
 
     SharedPreferences sharedpreferences;
     SharedPreferences.Editor mEditor;
@@ -40,6 +44,7 @@ public class AdapterAllDaliyTasks extends RecyclerView.Adapter<AdapterAllDaliyTa
 
     public AdapterAllDaliyTasks(boolean Status, Context context, List<TodayAssignmentData> home_list, CustomItemClickListener listener) {
         this.list = home_list;
+        this.filtered = home_list;
         this.context = context;
         this.listener = listener;
         this.status = Status;
@@ -65,35 +70,29 @@ public class AdapterAllDaliyTasks extends RecyclerView.Adapter<AdapterAllDaliyTa
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
 
-        AdapterDailyTasks adapterDailyTasks = new AdapterDailyTasks(position, status, context, list.get(position).getPickupLocations(), list, new AdapterDailyTasks.CustomItemClickListener() {
+        AdapterDailyTasks adapterDailyTasks = new AdapterDailyTasks(position, status, context, filtered.get(position).getPickupLocations(), filtered, new AdapterDailyTasks.CustomItemClickListener() {
             @Override
             public void onItemClick(View v, int i) {
 
                 if (!Databackbone.getinstance().riderdetails.getType().equals("delivery")){
-                    if (list.get(position).getParcels().isEmpty()){
+                    if (filtered.get(position).getParcels().isEmpty()){
                         Databackbone.getinstance().showAlsertBox(context, context.getResources().getString(R.string.error), "No Parcel found");
                     }else {
                         Databackbone.getinstance().task_to_show = Databackbone.getinstance().todayassignments.getData().get(position).getVendorId();
 
-//                        List<String> arrayList = new ArrayList<>();
-//                        String json = sharedpreferences.getString("vendorIds", "");
-//                        if (!(json.equals(null) || json.equals(""))) {
-//                            Type type = new TypeToken<List<String>>() {
-//                            }.getType();
-//                            arrayList = gson.fromJson(json, type);
-//                            arrayList.add(list.get(position).getVendorId());
-//                            Databackbone.getinstance().vendorIdsList = arrayList;
-//                        }else {
-//                            arrayList.add(list.get(position).getVendorId());
-//                        }
-//
-//                        String jsonP = gson.toJson(Databackbone.getinstance().scannedParcelsIds);
-//                        mEditor.putString("vendorIds", jsonP).commit();
+                        for (int j = 0; j < list.size(); j++){
+
+                            if (filtered.get(position).getVendorName().equals(list.get(j).getVendorName())){
+                                sending_position = j;
+                                break;
+                            }
+
+                        }
 
                         Intent orders = new Intent(context, BarCodeScannerActivity.class);
                         orders.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         orders.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                        orders.putExtra("position", String.valueOf(position));
+                        orders.putExtra("position", String.valueOf(sending_position));
                         orders.putExtra("locationPosition", String.valueOf(i));
                         context.startActivity(orders);
 
@@ -113,7 +112,48 @@ public class AdapterAllDaliyTasks extends RecyclerView.Adapter<AdapterAllDaliyTa
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return filtered.size();
+    }
+
+    @Override
+    public Filter getFilter() {
+        Filter filter = new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+
+                FilterResults filterResults = new FilterResults();
+                if(constraint == null || constraint.length() == 0){
+                    filterResults.count = list.size();
+                    filterResults.values = list;
+
+                }else{
+                    List<TodayAssignmentData> resultsModel = new ArrayList<>();
+                    String searchStr = constraint.toString().toLowerCase();
+
+                    for(int i = 0; i < list.size(); i++){
+                        String vendor_name = list.get(i).getVendorName().toLowerCase();
+                        if(vendor_name.contains(searchStr)){
+                            resultsModel.add(list.get(i));
+                        }
+                        filterResults.count = resultsModel.size();
+                        filterResults.values = resultsModel;
+                    }
+
+
+                }
+
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+
+                filtered = (List<TodayAssignmentData>) results.values;
+                notifyDataSetChanged();
+
+            }
+        };
+        return filter;
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {

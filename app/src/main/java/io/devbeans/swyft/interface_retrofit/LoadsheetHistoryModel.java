@@ -19,6 +19,9 @@ public class LoadsheetHistoryModel {
     @SerializedName("vendorId")
     @Expose
     private String vendorId = "";
+    @SerializedName("name")
+    @Expose
+    private String name = "";
     @SerializedName("geopoints")
     @Expose
     private GeoPoints geopoints = null;
@@ -40,6 +43,15 @@ public class LoadsheetHistoryModel {
     @SerializedName("pickupLocation")
     @Expose
     private PickupLocationModel pickupLocation = null;
+
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public List<String> getParcelIds() {
         return parcelIds;

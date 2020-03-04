@@ -7,33 +7,90 @@
     android:orientation="vertical"
     tools:context="io.devbeans.swyft.DailyTasksActivity">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@color/color_app_theam"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp">
+        android:gravity="center_vertical"
+        android:weightSum="7"
+        android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/btn_back"
-            android:layout_width="@dimen/border_title_back"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_back" />
-
-        <TextView
-            android:id="@+id/tx_pending_title"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="20dp"
-            android:layout_toRightOf="@+id/btn_back"
-            android:fontFamily="sans-serif-thin"
-            android:text="Pending Task"
-            android:textColor="#ffffff"
-            android:textSize="@dimen/border_title"
-            android:textStyle="bold" />
+            android:layout_weight="1.2"
+            android:orientation="horizontal">
+            <ImageView
+                android:id="@+id/btn_back"
+                android:layout_width="45dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_back"
+                android:paddingLeft="20dp"
+                android:visibility="visible"/>
+            <ImageView
+                android:id="@+id/hide_search"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/cross"
+                android:tint="@color/white"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:paddingLeft="20dp"
+                android:visibility="gone"/>
+        </LinearLayout>
 
-    </RelativeLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4.6"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-thin"
+                android:text="Pending Task"
+                android:textColor="#ffffff"
+                android:textSize="@dimen/border_title"
+                android:textStyle="bold"
+                android:visibility="visible"/>
+            <EditText
+                android:id="@+id/search_editfield"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+                android:hint="Write something to search"
+                android:textColorHint="@color/white"
+                android:fontFamily="sans-serif-thin"
+                android:textColor="@color/white"
+                android:textSize="14dp"
+                android:background="@color/invisible"
+                android:visibility="gone"
+                android:singleLine="true"
+                android:maxLines="1"
+                android:scrollHorizontally="true"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.2"
+            android:orientation="horizontal"
+            android:gravity="right">
+            <ImageView
+                android:id="@+id/search_image_btn"
+                android:layout_width="55dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/search_icon"
+                android:tint="@color/white"
+                android:paddingLeft="10dp"
+                android:paddingRight="20dp" />
+        </LinearLayout>
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

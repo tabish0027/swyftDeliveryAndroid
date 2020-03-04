@@ -56,7 +56,9 @@ public class AdapterLoadsheetHistory extends RecyclerView.Adapter<AdapterLoadshe
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
 
-        holder.textView.setText(list.get(position).getId());
+        holder.loadsheet_id_text.setText(list.get(position).getId());
+        holder.loadsheet_vendorname_text.setText(list.get(position).getPickupLocation().getVendor().getName());
+        holder.loadsheet_totalparcels_text.setText(String.valueOf(list.get(position).getParcelIds().size()) + " Parcels");
 
     }
 
@@ -66,13 +68,15 @@ public class AdapterLoadsheetHistory extends RecyclerView.Adapter<AdapterLoadshe
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView textView;
+        TextView loadsheet_id_text, loadsheet_vendorname_text, loadsheet_totalparcels_text;
         ImageView imageView;
 
         MyViewHolder(View itemView) {
             super(itemView);
-            imageView =itemView.findViewById(R.id.completion_icon); ;
-            textView =itemView.findViewById(R.id.loadsheet_id_text); ;
+            imageView =itemView.findViewById(R.id.completion_icon);
+            loadsheet_id_text =itemView.findViewById(R.id.loadsheet_id_text);
+            loadsheet_vendorname_text =itemView.findViewById(R.id.loadsheet_vendorname_text);
+            loadsheet_totalparcels_text =itemView.findViewById(R.id.loadsheet_totalparcels_text);
 
         }
     }

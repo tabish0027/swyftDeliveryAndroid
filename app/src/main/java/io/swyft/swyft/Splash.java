@@ -143,6 +143,8 @@ public class Splash extends AppCompatActivity {
 
                     TodayAssignments todayAssignments = response.body();
                     Databackbone.getinstance().todayassignments = todayAssignments;
+                    Databackbone.getinstance().todayassignmentdata = todayAssignments.getData();
+                    Databackbone.getinstance().todayAssignmentactive = todayAssignments.getActiveAssignments();
 
                     if (ContextCompat.checkSelfPermission(Splash.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED &&
                             ContextCompat.checkSelfPermission(Splash.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED &&

@@ -46,6 +46,8 @@ public class AdapterViewLoadsheet extends RecyclerView.Adapter<AdapterViewLoadsh
 
         holder.textView.setText(list.get(position));
         holder.imageView.setVisibility(View.GONE);
+        holder.loadsheet_vendorname_text.setVisibility(View.GONE);
+        holder.loadsheet_totalparcels_text.setVisibility(View.GONE);
 
     }
 
@@ -55,13 +57,15 @@ public class AdapterViewLoadsheet extends RecyclerView.Adapter<AdapterViewLoadsh
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView textView;
+        TextView textView, loadsheet_vendorname_text, loadsheet_totalparcels_text;
         ImageView imageView;
 
         MyViewHolder(View itemView) {
             super(itemView);
-            imageView =itemView.findViewById(R.id.completion_icon); ;
-            textView =itemView.findViewById(R.id.loadsheet_id_text); ;
+            imageView =itemView.findViewById(R.id.completion_icon);
+            textView =itemView.findViewById(R.id.loadsheet_id_text);
+            loadsheet_totalparcels_text =itemView.findViewById(R.id.loadsheet_totalparcels_text);
+            loadsheet_vendorname_text =itemView.findViewById(R.id.loadsheet_vendorname_text);
 
         }
     }

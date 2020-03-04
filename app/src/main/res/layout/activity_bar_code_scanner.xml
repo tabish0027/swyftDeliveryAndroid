@@ -13,7 +13,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="13dp"
-        android:fontFamily="@font/avenirfile"
+        android:fontFamily="@font/avenir"
         android:gravity="center"
         android:text="Align the QR/ Bar Code within the frame to scan "
         android:textColor="#231f20"
@@ -51,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:fontFamily="@font/avenirfile"
+            android:fontFamily="@font/avenir"
             android:text="0 Parcels are Scanned"
             android:textColor="@color/color_app_theam_text"
             android:textStyle="bold"
@@ -115,7 +115,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:fontFamily="@font/avenirfile"
+        android:fontFamily="@font/avenir"
         android:gravity="center_vertical"
         android:text="Parcel Scanner"
         android:textColor="#ffffff"
@@ -124,6 +124,22 @@
         app:layout_constraintBottom_toBottomOf="@+id/btn_back"
         app:layout_constraintStart_toEndOf="@+id/btn_back"
         app:layout_constraintTop_toTopOf="@+id/btn_back" />
+
+    <TextView
+        android:id="@+id/sync_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/avenir"
+        android:gravity="center_vertical"
+        android:text="Sync"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:textColor="#ffffff"
+        android:textSize="@dimen/border_title"
+        app:layout_constraintBottom_toBottomOf="@+id/constraintLayout"
+        app:layout_constraintStart_toStartOf="@+id/guideline3"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/ic_back" />
 
 
     <androidx.constraintlayout.widget.Guideline
@@ -145,7 +161,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.85" />
+        app:layout_constraintGuide_percent="0.8515815" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline4"
@@ -159,7 +175,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.90" />
+        app:layout_constraintGuide_begin="370dp" />
 
     <LinearLayout
         android:id="@+id/barcodescannerview"
@@ -224,7 +240,7 @@
                 android:layout_height="19dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="16dp"
-                android:fontFamily="@font/avenirfile"
+                android:fontFamily="@font/avenir"
                 android:text="218732974983274932"
                 android:textColor="#231f20"
                 android:textStyle="bold"
@@ -239,7 +255,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="16dp"
-                android:fontFamily="@font/avenirfile"
+                android:fontFamily="@font/avenir"
                 android:text="Parcel ID #"
                 android:textColor="#231f20"
                 android:textStyle="bold"

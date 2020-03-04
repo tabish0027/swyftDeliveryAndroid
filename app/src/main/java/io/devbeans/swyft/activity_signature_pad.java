@@ -84,6 +84,8 @@ public class activity_signature_pad extends AppCompatActivity {
     int position = 0;
     int inner_position = 0;
 
+    List<LoadSheetModel> savedLoadsheets = new ArrayList<>();
+
     String image_url, sig_url;
 
     ArrayList<String> ImagereturnValue = new ArrayList<>();
@@ -265,12 +267,12 @@ public class activity_signature_pad extends AppCompatActivity {
 
 
     public void uploadSignature() {
-        EnableLoading();
         if (!has_signature_image) {
             Databackbone.getinstance().showAlsertBox(activity_signature_pad.this, getResources().getString(R.string.error), getResources().getString(R.string.please_put_signature));
 
             return;
         }
+        EnableLoading();
         signature_image = mSignaturePad.getSignatureBitmap();
 
         File f = new File(this.getCacheDir(), "file.jpeg");
@@ -316,8 +318,6 @@ public class activity_signature_pad extends AppCompatActivity {
 
                     loadSheet();
 
-                    DisableLoading();
-
                 } else {
                     Databackbone.getinstance().showAlsertBox(activity_signature_pad.this, getResources().getString(R.string.error), "Server code error 88");
 
@@ -339,8 +339,6 @@ public class activity_signature_pad extends AppCompatActivity {
 
     public void loadSheet() {
 
-        progressBar.setVisibility(View.VISIBLE);
-
         List<String> arrayList = new ArrayList<>();
         String json = sharedpreferences.getString(Databackbone.getinstance().todayassignmentdata.get(position).getVendorId() + Databackbone.getinstance().todayassignmentdata.get(position).getPickupLocations().get(inner_position).getId(), "");
         Type type = new TypeToken<List<String>>() {}.getType();
@@ -348,14 +346,28 @@ public class activity_signature_pad extends AppCompatActivity {
         Databackbone.getinstance().scannedParcelsIds = arrayList;
         scannedIds = Databackbone.getinstance().scannedParcelsIds;
 
+        List<LoadSheetModel> arrayList_loadsheet = new ArrayList<>();
+        String json_loadsheet = sharedpreferences.getString("PendingLoadsheet", "");
+
+        if (json_loadsheet != null){
+            if (!json_loadsheet.equals("")){
+                Type type_loadsheet = new TypeToken<List<LoadSheetModel>>() {}.getType();
+                arrayList_loadsheet = gson.fromJson(json_loadsheet, type_loadsheet);
+                savedLoadsheets = arrayList_loadsheet;
+            }
+        }
+
         LoadSheetModel loadSheetModel = new LoadSheetModel();
-        loadSheetModel.parcelIds = scannedIds;
-        loadSheetModel.geopoints = Databackbone.getinstance().todayassignmentdata.get(position).getPickupLocations().get(inner_position).getGeopoints();
-        loadSheetModel.signatureUrl = sig_url;
-        loadSheetModel.pickupSheetUrl = image_url;
-        loadSheetModel.name = user_name.getText().toString();
-        loadSheetModel.pickupLocationId = Databackbone.getinstance().todayassignmentdata.get(position).getPickupLocations().get(inner_position).getId();
-        loadSheetModel.vendorId = Databackbone.getinstance().todayassignmentdata.get(position).getVendorId();
+
+        loadSheetModel.setParcelIds(scannedIds);
+        loadSheetModel.setGeopoints(Databackbone.getinstance().todayassignmentdata.get(position).getPickupLocations().get(inner_position).getGeopoints());
+        loadSheetModel.setSignatureUrl(sig_url);
+        loadSheetModel.setPickupSheetUrl(image_url);
+        loadSheetModel.setName(user_name.getText().toString());
+        loadSheetModel.setPickupLocationId(Databackbone.getinstance().todayassignmentdata.get(position).getPickupLocations().get(inner_position).getId());
+        loadSheetModel.setVendorId(Databackbone.getinstance().todayassignmentdata.get(position).getVendorId());
+
+        savedLoadsheets.add(loadSheetModel);
 
         swift_api riderapi = Databackbone.getinstance().getRetrofitbuilder().create(swift_api.class);
 
@@ -383,10 +395,27 @@ public class activity_signature_pad extends AppCompatActivity {
                     mEditor.clear().commit();
 
 
-                    progressBar.setVisibility(View.GONE);
+                    DisableLoading();
                 } else {
-                    Databackbone.getinstance().showAlsertBox(activity_signature_pad.this, getResources().getString(R.string.error), "Error in generating Loadsheet");
-                    progressBar.setVisibility(View.GONE);
+                    String jsonP = gson.toJson(savedLoadsheets);
+                    mEditor.putString("PendingLoadsheet", jsonP).commit();
+
+                    new AlertDialog.Builder(activity_signature_pad.this)
+                            .setTitle("Error")
+                            .setMessage("Error has been occured during generating Loadsheet.\nTry again later!")
+
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // Continue with delete operation\
+                                    Intent i = new Intent(activity_signature_pad.this, LoadsheetHistoryActivity.class);
+                                    startActivity(i);
+                                }
+                            })
+
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+
+                    DisableLoading();
                 }
 
             }
@@ -394,7 +423,23 @@ public class activity_signature_pad extends AppCompatActivity {
             @Override
             public void onFailure(Call<PasswordResetRequest> call, Throwable t) {
                 System.out.println(t.getCause());
-                progressBar.setVisibility(View.GONE);
+                String jsonP = gson.toJson(savedLoadsheets);
+                mEditor.putString("PendingLoadsheet", jsonP).commit();
+                new AlertDialog.Builder(activity_signature_pad.this)
+                        .setTitle("Error")
+                        .setMessage("Error has been occured during generating Loadsheet.\nTry again later!")
+
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Continue with delete operation\
+                                Intent i = new Intent(activity_signature_pad.this, LoadsheetHistoryActivity.class);
+                                startActivity(i);
+                            }
+                        })
+
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+                DisableLoading();
             }
         });
 

@@ -39,6 +39,7 @@ import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
 import io.devbeans.swyft.data_models.*;
+import io.devbeans.swyft.interface_retrofit.ActiveAssignment;
 import io.devbeans.swyft.interface_retrofit.LoadsheetHistoryModel;
 import io.devbeans.swyft.interface_retrofit.PickupParcel;
 import io.devbeans.swyft.interface_retrofit.Rider;
@@ -96,6 +97,7 @@ public class Databackbone {
 
     List<PickupParcel> parcels = null;
     public List<TodayAssignmentData> todayassignmentdata = null;
+    public List<ActiveAssignment> todayAssignmentactive = null;
     List<RiderActivityDelivery> parcelsdelivery = null;
     Boolean check_parcel_scanning_complete = true;
     private static final String Back = "AIzaSyDviYdVUT4llQkqJF";

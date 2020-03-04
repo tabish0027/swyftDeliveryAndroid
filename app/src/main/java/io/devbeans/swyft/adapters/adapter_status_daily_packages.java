@@ -66,7 +66,6 @@ public class adapter_status_daily_packages extends RecyclerView.Adapter<adapter_
 
         holder.mb_name.setText(order.mb_name);
         holder.mb_address.setText(order.mb_address);
-        holder.mb_distance.setText(order.mb_distance);
         holder.mb_zone.setText(order.mb_zone);
         if(order.status)
         {
@@ -127,11 +126,10 @@ public class adapter_status_daily_packages extends RecyclerView.Adapter<adapter_
 
         public TextView mb_name ;
         public TextView mb_address ;
-        public TextView mb_distance ;
         public TextView mb_zone ;
         public ImageView mb_parcel_type;
         public LinearLayout parcel_type_bottom_bar;
-        public ConstraintLayout mb_parcel_type_background;
+        public LinearLayout mb_parcel_type_background;
         public ImageView btn_navigation,btn_activate;
         public model_order_daily_item_holder(View itemView) {
             super(itemView);
@@ -140,13 +138,11 @@ public class adapter_status_daily_packages extends RecyclerView.Adapter<adapter_
 
             mb_name =itemView.findViewById(R.id.mb_name); ;
             mb_address =itemView.findViewById(R.id.mb_address);
-            mb_distance =itemView.findViewById(R.id.mb_distance);
             mb_zone =itemView.findViewById(R.id.mb_zone);
             mb_parcel_type =itemView.findViewById(R.id.parcel_type);
             parcel_type_bottom_bar =itemView.findViewById(R.id.parcel_type_bottom_bar);
-            mb_parcel_type_background =itemView.findViewById(R.id.parcel_type_background);
+            mb_parcel_type_background =itemView.findViewById(R.id.mb_parcel_type_background);
             btn_navigation =itemView.findViewById(R.id.btn_navigation);
-            btn_activate =itemView.findViewById(R.id.btn_activate);
             btn_activate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

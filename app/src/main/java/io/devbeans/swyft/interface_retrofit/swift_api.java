@@ -39,6 +39,9 @@ public interface swift_api {
     @GET("app-version-check")
     Call<Void> getversioncontrol(@Header("Authorization") String Authorization, @Query("version") String version);
 
+    @GET("Riders/get-vendor-parcel-ids")
+    Call<List<String>> getParcelsofVendor(@Header("Authorization") String Authorization, @Query("vendorId") String vendorId);
+
     @POST("Riders/mark-attendance")
     Call<RiderDetails> markattendance(@Header("Authorization") String Authorization,@Body markattendance status);
 

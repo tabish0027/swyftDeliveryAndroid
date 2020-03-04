@@ -19,12 +19,23 @@ public class ActiveAssignment {
     @SerializedName("vendorId")
     @Expose
     private String vendorId= "";
+    @SerializedName("pickupLocationId")
+    @Expose
+    private String pickupLocationId= "";
     @SerializedName("geopoints")
     @Expose
     private GeoPoints geopoints = null;
     @SerializedName("pickupLocationAddress")
     @Expose
     private String pickupLocationAddress= "";
+
+    public String getPickupLocationId() {
+        return pickupLocationId;
+    }
+
+    public void setPickupLocationId(String pickupLocationId) {
+        this.pickupLocationId = pickupLocationId;
+    }
 
     public int getEstimatedParcels() {
         return estimatedParcels;

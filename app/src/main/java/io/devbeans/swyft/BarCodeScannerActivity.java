@@ -40,26 +40,40 @@ import java.util.List;
 
 import io.devbeans.swyft.interface_retrofit.Parcel;
 import io.devbeans.swyft.interface_retrofit.PickupParcel;
+import io.devbeans.swyft.interface_retrofit.TodayAssignments;
+import io.devbeans.swyft.interface_retrofit.swift_api;
 import io.devbeans.swyft.interface_retrofit_delivery.Datum;
 import io.devbeans.swyft.interface_retrofit_delivery.RiderActivityDelivery;
 import io.swyft.swyft.R;
+import io.swyft.swyft.Splash;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class BarCodeScannerActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler{
 
     private ZXingScannerView mScannerView;
     LinearLayout barcodescannerview;
-    TextView tx_barcode ;
+    TextView tx_barcode, sync_textview;
     ConstraintLayout layout_scanned_id,layout_add_parcel;
     ImageView btn_refreash,btn_add_parcel;
     ConstraintLayout barcode_remaining_parcels ;
     TextView tx_parcels_to_scan;
     ProgressBar progressBar = null;
+    int parcels_scanned = 0;
     int pending_parcels_to_scan = 0;
 
     SharedPreferences sharedpreferences;
     SharedPreferences.Editor mEditor;
     public static final String MyPREFERENCES = "ScannedList";
+
+    SharedPreferences sharedpreferences_default;
+    SharedPreferences.Editor mEditor_default;
+    public static final String MyPREFERENCES_default = "MyPrefs";
+
+    List<String> syncedParcelsList = new ArrayList<>();
 
     EditText edt_parcel_id;
     Button btn_add;
@@ -67,8 +81,10 @@ public class BarCodeScannerActivity extends AppCompatActivity implements ZXingSc
     int position = 0;
     int inner_position = 0;
     Gson gson = new Gson();
+    public static boolean refresh = false;
 
     List<String> localScannedIds = new ArrayList<>();
+
 
     @Override
     public void onBackPressed() {
@@ -82,6 +98,8 @@ public class BarCodeScannerActivity extends AppCompatActivity implements ZXingSc
         setContentView(R.layout.activity_bar_code_scanner);
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         mEditor = sharedpreferences.edit();
+        sharedpreferences_default = getSharedPreferences(MyPREFERENCES_default, Context.MODE_PRIVATE);
+        mEditor_default = sharedpreferences_default.edit();
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED){
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, 2);
@@ -94,6 +112,13 @@ public class BarCodeScannerActivity extends AppCompatActivity implements ZXingSc
     }
 
     private void Actions(){
+
+        sync_textview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                syncLatestParcels();
+            }
+        });
 
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,15 +144,15 @@ public class BarCodeScannerActivity extends AppCompatActivity implements ZXingSc
                 if(edt_parcel_id.getText().length()!=0){
                     String Scannedbarcode = edt_parcel_id.getText().toString();
                     mScannerView.stopCameraPreview();
-//                    EnableLoading();
-//                    check_parcel_to_scan(Scannedbarcode);
+                    check_parcel_to_scan(Scannedbarcode);
                 }
             }
         });
         btn_refreash.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                refreashScanner();
+                refreashScanner();
+                RefreshList();
             }
         });
         //View child1 = LayoutInflater.from(this).inflate(mScannerView, null);
@@ -148,6 +173,7 @@ public class BarCodeScannerActivity extends AppCompatActivity implements ZXingSc
     private void Initializations(){
         barcodescannerview =  findViewById(R.id.barcodescannerview);
         tx_barcode = findViewById(R.id.tx_barcode);
+        sync_textview = findViewById(R.id.sync_textview);
         mScannerView = new ZXingScannerView(this);
         btn_refreash = findViewById(R.id.btn_refreash);
         tx_parcels_to_scan = findViewById(R.id.tx_parcels_to_scan);
@@ -161,6 +187,54 @@ public class BarCodeScannerActivity extends AppCompatActivity implements ZXingSc
         barcode_remaining_parcels = findViewById(R.id.barcode_remaining_parcels);
 
     }
+
+    public void syncLatestParcels() {
+        EnableLoading();
+        Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
+        swift_api syncParcels = retrofit.create(swift_api.class);
+
+        String vendorId = Databackbone.getinstance().todayassignmentdata.get(position).getVendorId();
+
+        Call<List<String>> call = syncParcels.getParcelsofVendor(sharedpreferences_default.getString("AccessToken", ""), vendorId);
+        call.enqueue(new Callback<List<String>>() {
+            @Override
+            public void onResponse(Call<List<String>> call, Response<List<String>> response) {
+                if (response.isSuccessful()) {
+
+                    syncedParcelsList = response.body();
+
+                    Databackbone.getinstance().todayassignmentdata.get(position).getParcels().clear();
+                    Databackbone.getinstance().todayassignmentdata.get(position).getParcels().addAll(syncedParcelsList);
+
+                    DisableLoading();
+
+                } else {
+                    if (response.code() == 401) {
+                        DisableLoading();
+                        //sharedpreferences must be removed
+                        mEditor.clear().commit();
+                        Intent intent = new Intent(BarCodeScannerActivity.this, activity_login.class);
+                        startActivity(intent);
+                        finishAffinity();
+                    }else {
+                        Databackbone.getinstance().showAlsertBox(BarCodeScannerActivity.this, getResources().getString(R.string.error), "Error Connecting To Server Error Code 33");
+                        DisableLoading();
+                    }
+                    //DeactivateRider();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<List<String>> call, Throwable t) {
+                System.out.println(t.getCause());
+                Databackbone.getinstance().showAlsertBox(BarCodeScannerActivity.this, getResources().getString(R.string.error), "Error Connecting To Server Error Code 34");
+                DisableLoading();
+                //DeactivateRider();
+            }
+        });
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -224,6 +298,8 @@ public class BarCodeScannerActivity extends AppCompatActivity implements ZXingSc
             }*/
         }
         else {
+
+            edt_parcel_id.setText("");
 
             if(Databackbone.getinstance().parcelsIds == null)
                 finish();
@@ -297,6 +373,35 @@ public class BarCodeScannerActivity extends AppCompatActivity implements ZXingSc
             mScannerView.setResultHandler(this); // Register ourselves as a handler for scan results.
             mScannerView.startCamera(); // Start camera on resume
         }
+        if (refresh){
+            refresh = false;
+            Databackbone.getinstance().parcelsIds = Databackbone.getinstance().todayassignmentdata.get(position).getParcels();
+
+            List<String> arrayList = new ArrayList<>();
+            String json = sharedpreferences.getString(Databackbone.getinstance().todayassignmentdata.get(position).getVendorId() + Databackbone.getinstance().todayassignmentdata.get(position).getPickupLocations().get(inner_position).getId(), "");
+
+            if (json != null){
+
+                if (!json.equals("")){
+                    Type type = new TypeToken<List<String>>() {}.getType();
+                    arrayList = gson.fromJson(json, type);
+                    Databackbone.getinstance().scannedParcelsIds = arrayList;
+                    parcels_scanned = Databackbone.getinstance().scannedParcelsIds.size();
+                    pending_parcels_to_scan = Databackbone.getinstance().parcelsIds.size() - Databackbone.getinstance().scannedParcelsIds.size();
+                }else {
+                    parcels_scanned = 0;
+                    pending_parcels_to_scan = Databackbone.getinstance().parcelsIds.size();
+                }
+
+            }else {
+                parcels_scanned = 0;
+                pending_parcels_to_scan = Databackbone.getinstance().parcelsIds.size();
+            }
+
+            if(parcels_scanned <= 1)
+                tx_parcels_to_scan.setText(Integer.toString(parcels_scanned) + " " + getResources().getString(R.string.parcel_left_to_scan));
+            else tx_parcels_to_scan.setText(Integer.toString(parcels_scanned) + " " + getResources().getString(R.string.parcel_left_to_scan));
+        }
     }
     public void refreashScanner(){
         layout_add_parcel.setVisibility(View.GONE);
@@ -367,19 +472,27 @@ public class BarCodeScannerActivity extends AppCompatActivity implements ZXingSc
             List<String> arrayList = new ArrayList<>();
             String json = sharedpreferences.getString(Databackbone.getinstance().todayassignmentdata.get(position).getVendorId() + Databackbone.getinstance().todayassignmentdata.get(position).getPickupLocations().get(inner_position).getId(), "");
 
-            if (!(json.equals(null) || json.equals(""))) {
-                Type type = new TypeToken<List<String>>() {
-                }.getType();
-                arrayList = gson.fromJson(json, type);
-                Databackbone.getinstance().scannedParcelsIds = arrayList;
-                pending_parcels_to_scan = Databackbone.getinstance().scannedParcelsIds.size();
+            if (json != null){
+                if (!json.equals("")){
+                    Type type = new TypeToken<List<String>>() {}.getType();
+                    arrayList = gson.fromJson(json, type);
+                    Databackbone.getinstance().scannedParcelsIds = arrayList;
+                    parcels_scanned = Databackbone.getinstance().scannedParcelsIds.size();
+                    pending_parcels_to_scan = Databackbone.getinstance().parcelsIds.size() - Databackbone.getinstance().scannedParcelsIds.size();
+
+                }else {
+                    parcels_scanned = 0;
+                    pending_parcels_to_scan = Databackbone.getinstance().parcelsIds.size();
+                }
+
             }else {
-                pending_parcels_to_scan = 0;
+                parcels_scanned = 0;
+                pending_parcels_to_scan = Databackbone.getinstance().parcelsIds.size();
             }
 
-            if(pending_parcels_to_scan <= 1)
-                tx_parcels_to_scan.setText(Integer.toString(pending_parcels_to_scan) + " " + getResources().getString(R.string.parcel_left_to_scan));
-            else tx_parcels_to_scan.setText(Integer.toString(pending_parcels_to_scan) + " " + getResources().getString(R.string.parcel_left_to_scan));
+            if(parcels_scanned <= 1)
+                tx_parcels_to_scan.setText(Integer.toString(parcels_scanned) + " " + getResources().getString(R.string.parcel_left_to_scan));
+            else tx_parcels_to_scan.setText(Integer.toString(parcels_scanned) + " " + getResources().getString(R.string.parcel_left_to_scan));
 
         }
 

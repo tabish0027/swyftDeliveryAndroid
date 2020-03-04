@@ -20,16 +20,26 @@
             android:paddingLeft="20dp"
             android:paddingRight="20dp">
 
+            <ImageView
+                android:id="@+id/btn_back"
+                android:layout_width="@dimen/border_title_back"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_back"
+                android:layout_alignParentLeft="true"
+                />
+
             <TextView
                 android:id="@+id/vendor_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:fontFamily="@font/avenir"
                 android:text="vendor name"
                 android:textColor="@color/white"
-                android:textSize="16dp" />
+                android:textSize="16dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_toRightOf="@+id/btn_back"/>
 
             <TextView
                 android:id="@+id/parcel_quantity"
@@ -99,12 +109,12 @@
             android:orientation="horizontal"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
-            android:weightSum="3.1">
+            android:weightSum="3.2">
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
+                android:layout_weight="1"
                 android:orientation="horizontal">
 
                 <TextView
@@ -122,6 +132,26 @@
                     android:textSize="16dp" />
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".1" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:id="@+id/sheet_img"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    app:riv_corner_radius="10dp"
+                    app:riv_border_width="1dp"
+                    app:riv_border_color="@color/black"/>
+
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

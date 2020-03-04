@@ -52,16 +52,17 @@ public class LoadsheetHistoryActivity extends AppCompatActivity {
     ImageView btn_back;
     RecyclerView recyclerView, canceled_recyclerView;
     ProgressBar progressBar;
-    LinearLayout canceled_headings;
-    TextView no_data_text, succeed_textView, canceled_textView;
+    public static LinearLayout canceled_headings;
+    TextView no_data_text, succeed_textView;
+    public static TextView canceled_textView;
 
     SharedPreferences sharedpreferences;
     SharedPreferences.Editor mEditor;
     public static final String MyPREFERENCES = "MyPrefs";
 
-    SharedPreferences sharedpreferences_list;
-    SharedPreferences.Editor mEditor_list;
-    public static final String MyPREFERENCES_list = "ScannedList";
+    SharedPreferences sharedpreferences_loadsheet;
+    SharedPreferences.Editor mEditor_loadsheet;
+    public static final String MyPREFERENCES_loadsheet = "LoadSheet";
 
     List<LoadsheetHistoryModel> loadsheetList;
     List<LoadSheetModel> savedLoadsheets = new ArrayList<>();
@@ -70,19 +71,37 @@ public class LoadsheetHistoryActivity extends AppCompatActivity {
     String encoded;
 
     @Override
+    public void onBackPressed() {
+        if (getIntent().getStringExtra("activity").equals("home")){
+            finish();
+        }else {
+            Intent intent = new Intent(LoadsheetHistoryActivity.this, activity_mapview.class);
+            startActivity(intent);
+            finish();
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loadsheet_history);
-        sharedpreferences_list = getSharedPreferences(MyPREFERENCES_list, Context.MODE_PRIVATE);
-        mEditor_list = sharedpreferences_list.edit();
+
         sharedpreferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
         mEditor = sharedpreferences.edit();
+        sharedpreferences_loadsheet = getSharedPreferences(MyPREFERENCES_loadsheet, Context.MODE_PRIVATE);
+        mEditor_loadsheet = sharedpreferences_loadsheet.edit();
         Initialization();
 
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                if (getIntent().getStringExtra("activity").equals("home")){
+                    finish();
+                }else {
+                    Intent intent = new Intent(LoadsheetHistoryActivity.this, activity_mapview.class);
+                    startActivity(intent);
+                    finish();
+                }
             }
         });
 
@@ -100,7 +119,7 @@ public class LoadsheetHistoryActivity extends AppCompatActivity {
         no_data_text = findViewById(R.id.no_data_text);
 
         List<LoadSheetModel> arrayList_loadsheet = new ArrayList<>();
-        String json_loadsheet = sharedpreferences.getString("PendingLoadsheet", "");
+        String json_loadsheet = sharedpreferences_loadsheet.getString("PendingLoadsheet", "");
 
         if (json_loadsheet != null){
             if (!json_loadsheet.equals("")){

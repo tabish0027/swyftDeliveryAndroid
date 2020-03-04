@@ -58,7 +58,7 @@ public class Splash extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(0);
 
                     if (sharedpreferences.getString("TOKEN", "") != null && !sharedpreferences.getString("TOKEN", "").isEmpty()){
                         getRiderDetail();

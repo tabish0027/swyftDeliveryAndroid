@@ -79,6 +79,10 @@ public class activity_signature_pad extends AppCompatActivity {
     SharedPreferences.Editor mEditor_default;
     public static final String MyPREFERENCES_default = "MyPrefs";
 
+    SharedPreferences sharedpreferences_loadsheet;
+    SharedPreferences.Editor mEditor_loadsheet;
+    public static final String MyPREFERENCES_loadsheet = "LoadSheet";
+
     List<String> scannedIds = new ArrayList<>();
     Gson gson = new Gson();
     int position = 0;
@@ -86,7 +90,8 @@ public class activity_signature_pad extends AppCompatActivity {
 
     List<LoadSheetModel> savedLoadsheets = new ArrayList<>();
 
-    String image_url, sig_url;
+    String image_url = "abc";
+    String sig_url;
 
     ArrayList<String> ImagereturnValue = new ArrayList<>();
 
@@ -98,6 +103,8 @@ public class activity_signature_pad extends AppCompatActivity {
         mEditor = sharedpreferences.edit();
         sharedpreferences_default = getSharedPreferences(MyPREFERENCES_default, Context.MODE_PRIVATE);
         mEditor_default = sharedpreferences_default.edit();
+        sharedpreferences_loadsheet = getSharedPreferences(MyPREFERENCES_loadsheet, Context.MODE_PRIVATE);
+        mEditor_loadsheet = sharedpreferences_loadsheet.edit();
 
         position = Integer.valueOf(getIntent().getStringExtra("position"));
         inner_position = Integer.valueOf(getIntent().getStringExtra("locationPosition"));
@@ -111,10 +118,10 @@ public class activity_signature_pad extends AppCompatActivity {
         btn_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (user_name.getText().toString().trim().isEmpty()){
+                if (user_name.getText().toString().trim().isEmpty()) {
                     Toast.makeText(activity_signature_pad.this, "Please enter the name first", Toast.LENGTH_SHORT).show();
                     user_name.setFocusable(true);
-                }else {
+                } else {
                     uploadSignature();
                 }
             }
@@ -341,17 +348,19 @@ public class activity_signature_pad extends AppCompatActivity {
 
         List<String> arrayList = new ArrayList<>();
         String json = sharedpreferences.getString(Databackbone.getinstance().todayassignmentdata.get(position).getVendorId() + Databackbone.getinstance().todayassignmentdata.get(position).getPickupLocations().get(inner_position).getId(), "");
-        Type type = new TypeToken<List<String>>() {}.getType();
+        Type type = new TypeToken<List<String>>() {
+        }.getType();
         arrayList = gson.fromJson(json, type);
         Databackbone.getinstance().scannedParcelsIds = arrayList;
         scannedIds = Databackbone.getinstance().scannedParcelsIds;
 
         List<LoadSheetModel> arrayList_loadsheet = new ArrayList<>();
-        String json_loadsheet = sharedpreferences.getString("PendingLoadsheet", "");
+        String json_loadsheet = sharedpreferences_loadsheet.getString("PendingLoadsheet", "");
 
-        if (json_loadsheet != null){
-            if (!json_loadsheet.equals("")){
-                Type type_loadsheet = new TypeToken<List<LoadSheetModel>>() {}.getType();
+        if (json_loadsheet != null) {
+            if (!json_loadsheet.equals("")) {
+                Type type_loadsheet = new TypeToken<List<LoadSheetModel>>() {
+                }.getType();
                 arrayList_loadsheet = gson.fromJson(json_loadsheet, type_loadsheet);
                 savedLoadsheets = arrayList_loadsheet;
             }
@@ -380,41 +389,38 @@ public class activity_signature_pad extends AppCompatActivity {
                     new AlertDialog.Builder(activity_signature_pad.this)
                             .setTitle("Success")
                             .setMessage("Loadsheet generated")
-
                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     // Continue with delete operation\
                                     Intent i = new Intent(activity_signature_pad.this, LoadsheetHistoryActivity.class);
+                                    i.putExtra("activity", "signature");
                                     startActivity(i);
+                                    finishAffinity();
                                 }
                             })
-
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .show();
-
                     mEditor.clear().commit();
-
-
                     DisableLoading();
                 } else {
                     String jsonP = gson.toJson(savedLoadsheets);
-                    mEditor.putString("PendingLoadsheet", jsonP).commit();
+                    mEditor_loadsheet.putString("PendingLoadsheet", jsonP).commit();
 
                     new AlertDialog.Builder(activity_signature_pad.this)
                             .setTitle("Error")
                             .setMessage("Error has been occured during generating Loadsheet.\nTry again later!")
-
                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     // Continue with delete operation\
                                     Intent i = new Intent(activity_signature_pad.this, LoadsheetHistoryActivity.class);
+                                    i.putExtra("activity", "signature");
                                     startActivity(i);
+                                    finishAffinity();
                                 }
                             })
-
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .show();
-
+                    mEditor.clear().commit();
                     DisableLoading();
                 }
 
@@ -424,27 +430,27 @@ public class activity_signature_pad extends AppCompatActivity {
             public void onFailure(Call<PasswordResetRequest> call, Throwable t) {
                 System.out.println(t.getCause());
                 String jsonP = gson.toJson(savedLoadsheets);
-                mEditor.putString("PendingLoadsheet", jsonP).commit();
+                mEditor_loadsheet.putString("PendingLoadsheet", jsonP).commit();
                 new AlertDialog.Builder(activity_signature_pad.this)
                         .setTitle("Error")
                         .setMessage("Error has been occured during generating Loadsheet.\nTry again later!")
-
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 // Continue with delete operation\
                                 Intent i = new Intent(activity_signature_pad.this, LoadsheetHistoryActivity.class);
+                                i.putExtra("activity", "signature");
                                 startActivity(i);
+                                finishAffinity();
                             }
                         })
-
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .show();
+                mEditor.clear().commit();
                 DisableLoading();
             }
         });
 
     }
-
 
 
     public void DisableLoading() {

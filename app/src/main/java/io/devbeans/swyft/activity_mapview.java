@@ -3,6 +3,7 @@ package io.devbeans.swyft;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -234,6 +235,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(activity_mapview.this, LoadsheetHistoryActivity.class);
+                intent.putExtra("activity", "home");
                 startActivity(intent);
             }
         });

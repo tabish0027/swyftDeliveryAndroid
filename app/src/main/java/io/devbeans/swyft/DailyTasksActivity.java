@@ -127,34 +127,36 @@ public class DailyTasksActivity extends AppCompatActivity {
                         }
                     });
 
-                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(DailyTasksActivity.this);
-                    AllDailyTasks.recyclerView.setLayoutManager(linearLayoutManager);
-                    AllDailyTasks.recyclerView.setAdapter(AllDailyTasks.adapterAllDaliyTasks);
+                    if (ActiveDailyTasks.active_items_merged != null){
+                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(DailyTasksActivity.this);
+                        AllDailyTasks.recyclerView.setLayoutManager(linearLayoutManager);
+                        AllDailyTasks.recyclerView.setAdapter(AllDailyTasks.adapterAllDaliyTasks);
 
-                    ActiveDailyTasks.adapterAllDaliyTasks = new AdapterActiveDailyTasks(true, DailyTasksActivity.this, ActiveDailyTasks.active_items_merged, new AdapterActiveDailyTasks.CustomItemClickListener() {
-                        @Override
-                        public void onItemClick(View v, int position) {
-                            for (int i = 0; i < Databackbone.getinstance().todayassignmentdata.size(); i++){
-                                for (int j = 0; j < Databackbone.getinstance().todayassignmentdata.get(i).getPickupLocations().size(); j++){
-                                    if (ActiveDailyTasks.active_items_merged.get(position).getVendorId().equals(Databackbone.getinstance().todayassignmentdata.get(i).getVendorId()) && ActiveDailyTasks.active_items_merged.get(position).getPickupLocationId().equals(Databackbone.getinstance().todayassignmentdata.get(i).getPickupLocations().get(j).getId())){
-                                        sending_position_main = i;
-                                        sending_position_location = j;
+                        ActiveDailyTasks.adapterAllDaliyTasks = new AdapterActiveDailyTasks(true, DailyTasksActivity.this, ActiveDailyTasks.active_items_merged, new AdapterActiveDailyTasks.CustomItemClickListener() {
+                            @Override
+                            public void onItemClick(View v, int position) {
+                                for (int i = 0; i < Databackbone.getinstance().todayassignmentdata.size(); i++){
+                                    for (int j = 0; j < Databackbone.getinstance().todayassignmentdata.get(i).getPickupLocations().size(); j++){
+                                        if (ActiveDailyTasks.active_items_merged.get(position).getVendorId().equals(Databackbone.getinstance().todayassignmentdata.get(i).getVendorId()) && ActiveDailyTasks.active_items_merged.get(position).getPickupLocationId().equals(Databackbone.getinstance().todayassignmentdata.get(i).getPickupLocations().get(j).getId())){
+                                            sending_position_main = i;
+                                            sending_position_location = j;
+                                        }
                                     }
                                 }
+
+                                Intent orders = new Intent(DailyTasksActivity.this, BarCodeScannerActivity.class);
+                                orders.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                orders.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                                orders.putExtra("position", String.valueOf(sending_position_main));
+                                orders.putExtra("locationPosition", String.valueOf(sending_position_location));
+                                startActivity(orders);
                             }
+                        });
 
-                            Intent orders = new Intent(DailyTasksActivity.this, BarCodeScannerActivity.class);
-                            orders.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            orders.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                            orders.putExtra("position", String.valueOf(sending_position_main));
-                            orders.putExtra("locationPosition", String.valueOf(sending_position_location));
-                            startActivity(orders);
-                        }
-                    });
-
-                    LinearLayoutManager linearLayoutManageractive = new LinearLayoutManager(DailyTasksActivity.this);
-                    ActiveDailyTasks.recyclerView.setLayoutManager(linearLayoutManageractive);
-                    ActiveDailyTasks.recyclerView.setAdapter(ActiveDailyTasks.adapterAllDaliyTasks);
+                        LinearLayoutManager linearLayoutManageractive = new LinearLayoutManager(DailyTasksActivity.this);
+                        ActiveDailyTasks.recyclerView.setLayoutManager(linearLayoutManageractive);
+                        ActiveDailyTasks.recyclerView.setAdapter(ActiveDailyTasks.adapterAllDaliyTasks);
+                    }
                 }else {
                     AllDailyTasks.adapterAllDaliyTasks.getFilter().filter(editable.toString());
                     ActiveDailyTasks.adapterAllDaliyTasks.getFilter().filter(editable.toString());

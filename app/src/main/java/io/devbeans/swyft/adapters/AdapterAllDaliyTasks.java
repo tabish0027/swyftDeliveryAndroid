@@ -32,8 +32,8 @@ import io.swyft.swyft.R;
 public class AdapterAllDaliyTasks extends RecyclerView.Adapter<AdapterAllDaliyTasks.MyViewHolder> implements Filterable {
     private Context context;
     CustomItemClickListener listener;
-    List<TodayAssignmentData> list;
-    List<TodayAssignmentData> filtered;
+    List<TodayAssignmentData> list = new ArrayList<>();
+    List<TodayAssignmentData> filtered = new ArrayList<>();
     boolean status;
     Gson gson = new Gson();
     int sending_position = 0;
@@ -112,7 +112,11 @@ public class AdapterAllDaliyTasks extends RecyclerView.Adapter<AdapterAllDaliyTa
 
     @Override
     public int getItemCount() {
-        return filtered.size();
+        if (filtered != null){
+            return filtered.size();
+        }else {
+            return 0;
+        }
     }
 
     @Override

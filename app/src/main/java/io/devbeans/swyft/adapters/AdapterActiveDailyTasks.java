@@ -33,8 +33,8 @@ import io.swyft.swyft.R;
 public class AdapterActiveDailyTasks extends RecyclerView.Adapter<AdapterActiveDailyTasks.MyViewHolder> implements Filterable {
     private Context context;
     CustomItemClickListener listener;
-    List<ActiveAssignment> list;
-    List<ActiveAssignment> filtered;
+    List<ActiveAssignment> list = new ArrayList<>();
+    List<ActiveAssignment> filtered = new ArrayList<>();
     boolean status;
 
     public AdapterActiveDailyTasks(boolean Status, Context context, List<ActiveAssignment> home_list, CustomItemClickListener listener) {
@@ -114,7 +114,11 @@ public class AdapterActiveDailyTasks extends RecyclerView.Adapter<AdapterActiveD
 
     @Override
     public int getItemCount() {
-        return filtered.size();
+        if (filtered != null){
+            return filtered.size();
+        }else {
+            return 0;
+        }
     }
 
     @Override

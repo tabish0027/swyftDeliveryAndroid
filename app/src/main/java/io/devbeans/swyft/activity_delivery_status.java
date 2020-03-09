@@ -20,6 +20,7 @@ import java.util.List;
 import io.devbeans.swyft.interface_retrofit_delivery.RiderActivityDelivery;
 import io.devbeans.swyft.interface_retrofit_delivery.mark_parcel_complete;
 import io.devbeans.swyft.interface_retrofit_delivery.swift_api_delivery;
+import io.swyft.pickup.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -86,7 +87,7 @@ public class activity_delivery_status extends AppCompatActivity {
 
         if(parcelIds.size() == 0)
         {
-            Databackbone.getinstance().showAlsertBox(activity_delivery_status.this, "Error", "Server code error 102");
+            Databackbone.getinstance().showAlsertBox(activity_delivery_status.this, getResources().getString(R.string.error), "Server code error 102");
             DisableLoading();
             return;
         }
@@ -98,8 +99,8 @@ public class activity_delivery_status extends AppCompatActivity {
         String date = "19-11-2019";
         String phase = "Morning";
         List<String> checkbox = new ArrayList<>();
-        checkbox.add("Not Enought Funds");
-        mark_parcel_complete com_parcels = new mark_parcel_complete(parcelIds,action,taskId,lat,  lng, reason,date,phase,checkbox);
+        checkbox.add(getResources().getString(R.string.net_enough_funds));
+        mark_parcel_complete com_parcels = new mark_parcel_complete(parcelIds,action,taskId,lat, lng, reason,date,phase,checkbox);
 
         Retrofit retrofit = Databackbone.getinstance().getRetrofitbuilder();
         swift_api_delivery riderapi = retrofit.create(swift_api_delivery.class);
@@ -117,8 +118,8 @@ public class activity_delivery_status extends AppCompatActivity {
 
                     DisableLoading();
                     new AlertDialog.Builder(activity_delivery_status.this)
-                            .setTitle("Not Delivered")
-                            .setMessage("Confirmed")
+                            .setTitle(getResources().getString(R.string.not_delivered))
+                            .setMessage(getResources().getString(R.string.confirmed))
 
                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
@@ -138,7 +139,7 @@ public class activity_delivery_status extends AppCompatActivity {
                          jObjError = new JSONObject(response.errorBody().string());
                      } catch (Exception e) {
                       }
-                    Databackbone.getinstance().showAlsertBox(activity_delivery_status.this, "Error", "Server code error 98");
+                    Databackbone.getinstance().showAlsertBox(activity_delivery_status.this, getResources().getString(R.string.error), "Server code error 98");
                     DisableLoading();
                 }
 
@@ -147,7 +148,7 @@ public class activity_delivery_status extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<RiderActivityDelivery>> call, Throwable t) {
                 System.out.println(t.getCause());
-                Databackbone.getinstance().showAlsertBox(activity_delivery_status.this, "Error", "Server code error 99");
+                Databackbone.getinstance().showAlsertBox(activity_delivery_status.this, getResources().getString(R.string.error), "Server code error 99");
                 DisableLoading();
             }
         });

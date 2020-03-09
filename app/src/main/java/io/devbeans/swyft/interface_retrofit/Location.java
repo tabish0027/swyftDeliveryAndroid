@@ -6,19 +6,23 @@ import com.google.gson.annotations.SerializedName;
 
 public class Location {
 
-    @SerializedName("geoPoints")
+    @SerializedName("geopoints")
     @Expose
-    private GeoPoints geoPoints;
+    private GeoPoints geopoints;
     @SerializedName("address")
     @Expose
     private String address;
+    @SerializedName("id")
+    @Expose
+    private String id;
 
-    public GeoPoints getGeoPoints() {
-        return geoPoints;
+
+    public GeoPoints getGeopoints() {
+        return geopoints;
     }
 
-    public void setGeoPoints(GeoPoints geoPoints) {
-        this.geoPoints = geoPoints;
+    public void setGeopoints(GeoPoints geopoints) {
+        this.geopoints = geopoints;
     }
 
     public String getAddress() {
@@ -29,4 +33,11 @@ public class Location {
         this.address = address;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 }

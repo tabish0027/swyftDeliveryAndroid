@@ -7,10 +7,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-import com.google.android.gms.common.internal.Constants;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.maps.DistanceMatrixApi;
 import com.google.maps.DistanceMatrixApiRequest;
 import com.google.maps.GeoApiContext;
@@ -18,14 +15,11 @@ import com.google.maps.errors.ApiException;
 import com.google.maps.model.DistanceMatrix;
 import com.google.maps.model.TravelMode;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,15 +33,21 @@ import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
 import io.devbeans.swyft.data_models.*;
+import io.devbeans.swyft.interface_retrofit.ActiveAssignment;
+import io.devbeans.swyft.interface_retrofit.LoadsheetHistoryModel;
 import io.devbeans.swyft.interface_retrofit.PickupParcel;
 import io.devbeans.swyft.interface_retrofit.Rider;
 import io.devbeans.swyft.interface_retrofit.RiderActivity;
 import io.devbeans.swyft.interface_retrofit.RiderDetails;
+import io.devbeans.swyft.interface_retrofit.TodayAssignmentData;
+import io.devbeans.swyft.interface_retrofit.TodayAssignments;
 import io.devbeans.swyft.interface_retrofit_delivery.Datum;
 import io.devbeans.swyft.interface_retrofit_delivery.RiderActivityDelivery;
 import io.devbeans.swyft.interface_retrofit_delivery.delivery_earnings;
 import io.devbeans.swyft.interface_retrofit_delivery.delivery_wallet;
 import io.devbeans.swyft.interface_retrofit_delivery.history;
+import io.swyft.pickup.BuildConfig;
+import io.swyft.pickup.R;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -73,6 +73,13 @@ public class Databackbone {
     public RiderActivity riderActivity = null;
 
     public RiderDetails riderdetails = null;
+    public TodayAssignments todayassignments = null;
+    public List<String> parcelsIds = null;
+    public List<String> scannedParcelsIds = null;
+    public List<String> vendorIdsList = null;
+    public List<LoadsheetHistoryModel> loadSheetHistoryList = null;
+    public SignatureURLModel signature_data =  null;
+    public SignatureURLModel cam_image_data =  null;
     //dev
     // public String Base_URL = "https://devapi.swyftlogistics.com:3000/api/";
 
@@ -83,6 +90,8 @@ public class Databackbone {
     //public String Base_URL = "https://api.swyftlogistics.com:3000/api/";
 
     List<PickupParcel> parcels = null;
+    public List<TodayAssignmentData> todayassignmentdata = null;
+    public List<ActiveAssignment> todayAssignmentactive = null;
     List<RiderActivityDelivery> parcelsdelivery = null;
     Boolean check_parcel_scanning_complete = true;
     private static final String Back = "AIzaSyDviYdVUT4llQkqJF";
@@ -357,8 +366,8 @@ public class Databackbone {
          if(current_location != null)
         for(int i=0;i < parcel.size();i++){
             try {
-                double Lat = parcel.get(i).getLocation().getGeoPoints().getLat();
-                double Lng = parcel.get(i).getLocation().getGeoPoints().getLng();
+                double Lat = parcel.get(i).getLocation().getGeopoints().getLat();
+                double Lng = parcel.get(i).getLocation().getGeopoints().getLng();
 
                 parcel.get(i).setDistance(CalculationByDistance(Lat, Lng));
             }catch (Exception error){
@@ -372,8 +381,8 @@ public class Databackbone {
          if(current_location != null)
             for(int i=0;i < parcel.size();i++){
                 for(int j=0;j<parcel.get(i).getData().size();j++) {
-                    double Lat = parcel.get(i).getData().get(j).getLocation().getGeoPoints().getLat();
-                    double Lng = parcel.get(i).getData().get(j).getLocation().getGeoPoints().getLng();
+                    double Lat = parcel.get(i).getData().get(j).getLocation().getGeopoints().getLat();
+                    double Lng = parcel.get(i).getData().get(j).getLocation().getGeopoints().getLng();
                     parcel.get(i).getData().get(j).setDistance(CalculationByDistance(Lat, Lng));
                 }
 
@@ -460,8 +469,8 @@ public class Databackbone {
         String[] originAddress = {currentLocation};
         String desaddress[] = new String[parcel.size()];
         for(int i =0;i<parcel.size();i++){
-            double lat = parcel.get(i).getLocation().getGeoPoints().getLat();
-            double lng = parcel.get(i ).getLocation().getGeoPoints().getLng();
+            double lat = parcel.get(i).getLocation().getGeopoints().getLat();
+            double lng = parcel.get(i ).getLocation().getGeopoints().getLng();
             String DestinationLocation = Double.toString(lat)+","+Double.toString(lng)   ;
             desaddress[i] = DestinationLocation;
 
@@ -490,8 +499,8 @@ public class Databackbone {
             String[] originAddress = {currentLocation};
             String desaddress[] = new String[parcel.size()];
             for (int i = 0; i < parcel.size(); i++) {
-                double lat = parcel.get(i).getLocation().getGeoPoints().getLat();
-                double lng = parcel.get(i).getLocation().getGeoPoints().getLng();
+                double lat = parcel.get(i).getLocation().getGeopoints().getLat();
+                double lng = parcel.get(i).getLocation().getGeopoints().getLng();
                 String DestinationLocation = Double.toString(lat) + "," + Double.toString(lng);
                 desaddress[i] = DestinationLocation;
 

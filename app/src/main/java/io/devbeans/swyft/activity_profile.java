@@ -12,6 +12,8 @@ import androidx.annotation.Nullable;
 
 import com.squareup.picasso.Picasso;
 
+import io.swyft.pickup.R;
+
 public class activity_profile  extends Activity {
     Button btn_today;
     Button btn_month;

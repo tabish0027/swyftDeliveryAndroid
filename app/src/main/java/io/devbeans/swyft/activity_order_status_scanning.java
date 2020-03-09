@@ -1,85 +1,143 @@
 package io.devbeans.swyft;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 import io.devbeans.swyft.adapters.adapter_status_packages_scanning;
-import io.devbeans.swyft.data_models.model_order_item;
-import io.devbeans.swyft.interface_retrofit.Parcel;
-import io.devbeans.swyft.interface_retrofit.PickupParcel;
-import io.devbeans.swyft.interface_retrofit_delivery.Datum;
-import io.devbeans.swyft.interface_retrofit_delivery.RiderActivityDelivery;
+import io.swyft.pickup.R;
 
 public class activity_order_status_scanning extends Activity {
 
-    public androidx.constraintlayout.widget.ConstraintLayout con_orders_scanned,con_orders_remaining;
-    public RecyclerView order_list_remaining,order_list_scanned;
-    public adapter_status_packages_scanning ad_orders_scanned,ad_orders_remaining;
-    public TextView tx_count_scanned,tx_count_remaining;
+    public RecyclerView recyclerView;
+    public adapter_status_packages_scanning ad_orders_scanned;
+    EditText search_edittext;
+    TextView no_data_text, generate_loadsheet, add_more_btn;
+    ProgressBar progressBar;
+
+    SharedPreferences sharedpreferences;
+    SharedPreferences.Editor mEditor;
+    public static final String MyPREFERENCES = "ScannedList";
+
+    SharedPreferences sharedpreferences_default;
+    SharedPreferences.Editor mEditor_default;
+    public static final String MyPREFERENCES_default = "MyPrefs";
+
+    List<String> scannedIds = new ArrayList<>();
+    Gson gson = new Gson();
+    int position = 0;
+    int inner_position = 0;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scanned_order_status);
 
-        order_list_remaining= findViewById(R.id.order_list_remaining);
-        order_list_scanned= findViewById(R.id.order_list_scanned);
+        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        mEditor = sharedpreferences.edit();
+        sharedpreferences_default = getSharedPreferences(MyPREFERENCES_default, Context.MODE_PRIVATE);
+        mEditor_default = sharedpreferences_default.edit();
 
+        position = Integer.valueOf(getIntent().getStringExtra("position"));
+        inner_position = Integer.valueOf(getIntent().getStringExtra("locationPosition"));
 
-        con_orders_scanned= findViewById(R.id.con_orders_scanned);
-        con_orders_remaining= findViewById(R.id.con_orders_remaining);
+        List<String> arrayList = new ArrayList<>();
+        String json = sharedpreferences.getString(Databackbone.getinstance().todayassignmentdata.get(position).getVendorId() + Databackbone.getinstance().todayassignmentdata.get(position).getPickupLocations().get(inner_position).getId(), "");
+            Type type = new TypeToken<List<String>>() {}.getType();
+            arrayList = gson.fromJson(json, type);
+            Databackbone.getinstance().scannedParcelsIds = arrayList;
+            scannedIds = Databackbone.getinstance().scannedParcelsIds;
 
+        recyclerView= findViewById(R.id.scanned_parcels_recycler);
+        search_edittext = findViewById(R.id.search_edittext);
+        no_data_text = findViewById(R.id.no_data_text);
+        generate_loadsheet = findViewById(R.id.generate_loadsheet);
+        add_more_btn = findViewById(R.id.add_more_btn);
+        progressBar = findViewById(R.id.url_loading_animation);
+        progressBar.setVisibility(View.GONE);
 
+        if (scannedIds != null && !scannedIds.isEmpty()){
+            no_data_text.setVisibility(View.GONE);
+            search_edittext.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
+            ad_orders_scanned = new adapter_status_packages_scanning(position, inner_position, scannedIds, this);
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+            recyclerView.setLayoutManager(linearLayoutManager);
+            recyclerView.setAdapter(ad_orders_scanned);
 
-        tx_count_scanned= findViewById(R.id.tx_count_scanned);
-        tx_count_remaining= findViewById(R.id.tx_count_remaining);
+        }else {
+            no_data_text.setVisibility(View.VISIBLE);
+            search_edittext.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
 
+        }
 
-        Databackbone.getinstance().ar_orders_scanned = new ArrayList<>();
-        Databackbone.getinstance().ar_orders_remaining= new ArrayList<>();
-
-
-        ad_orders_scanned = new adapter_status_packages_scanning(Databackbone.getinstance().ar_orders_scanned, this);
-        ad_orders_remaining = new adapter_status_packages_scanning(Databackbone.getinstance().ar_orders_remaining, this);
-
-
-        order_list_remaining.setAdapter(ad_orders_remaining);
-        order_list_scanned.setAdapter(ad_orders_scanned);
-
-
-
-        con_orders_scanned.setOnClickListener(new View.OnClickListener() {
+        search_edittext.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View v) {
-                if(order_list_scanned.getVisibility() == View.VISIBLE)
-                {
-                    order_list_scanned.setVisibility(View.GONE);
-                }
-                else
-                {
-                    order_list_scanned.setVisibility(View.VISIBLE);
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable == null || editable.toString().isEmpty()){
+                    ad_orders_scanned = new adapter_status_packages_scanning(position, inner_position, scannedIds, activity_order_status_scanning.this);
+                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(activity_order_status_scanning.this);
+                    recyclerView.setLayoutManager(linearLayoutManager);
+                    recyclerView.setAdapter(ad_orders_scanned);
+                }else {
+                    ad_orders_scanned.getFilter().filter(editable.toString());
                 }
             }
         });
-        con_orders_remaining.setOnClickListener(new View.OnClickListener() {
+
+        add_more_btn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                if(order_list_remaining.getVisibility() == View.VISIBLE)
-                {
-                    order_list_remaining.setVisibility(View.GONE);
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        generate_loadsheet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (scannedIds != null && !scannedIds.isEmpty()){
+                    Intent intent = new Intent(activity_order_status_scanning.this, activity_signature_pad.class);
+                    intent.putExtra("position", String.valueOf(position));
+                    intent.putExtra("locationPosition", String.valueOf(inner_position));
+                    startActivity(intent);
+                }else {
+                    Toast.makeText(activity_order_status_scanning.this, "You haven't scanned any parcel yet!", Toast.LENGTH_LONG).show();
                 }
-                else
-                {
-                    order_list_remaining.setVisibility(View.VISIBLE);
-                }
+
+
             }
         });
 
@@ -87,79 +145,9 @@ public class activity_order_status_scanning extends Activity {
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                activity_order_status_scanning.this.finish();
+                finish();
             }
         });
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        load_parcels();
-
-    }
-
-    public void load_parcels(){
-
-        Databackbone.getinstance().ar_orders_scanned.clear();
-        Databackbone.getinstance().ar_orders_remaining.clear();
-
-        ArrayList<model_order_item>  temp_ar_orders_scanned = new ArrayList<>();
-        ArrayList<model_order_item>  temp_ar_orders_remaining= new ArrayList<>();
-
-       if(!Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery")) {
-           PickupParcel parcelPickups = Databackbone.getinstance().getParcelsForPickup() ;
-           if(parcelPickups == null)
-               activity_order_status_scanning.this.finish();
-           List<Parcel> parcels = parcelPickups.getParcels() ;
-           for (int i = 0; i < parcels.size(); i++) {
-               if (!parcels.get(i).getScanned()) {
-
-                   temp_ar_orders_remaining.add(new model_order_item(parcels.get(i).getParcelId(), "", "", "remain"));
-
-               } else {
-
-                   temp_ar_orders_scanned.add(new model_order_item(parcels.get(i).getParcelId(), parcels.get(i).getScannedOn(), "", "scan"));
-               }
-           }
-       }else{
-           RiderActivityDelivery BatchToDeliver = Databackbone.getinstance().getDeliveryTask();
-           if(BatchToDeliver == null   )
-               activity_order_status_scanning.this.finish();
-           List<Datum> Locations= BatchToDeliver.getData();
-
-           for (int i = 0; i < Locations.size(); i++) {
-               Datum data = Locations.get(i);
-
-               for (int j = 0; j < data.getParcels().size(); j++) {
-                   if(!(data.getParcels().get(j).getStatus().equals("scanned")||data.getParcels().get(j).getStatus().equals("started"))){
-                       temp_ar_orders_remaining.add(new model_order_item(data.getParcels().get(j).getParcelId(), "", "", "remain"));
-
-                   }
-                   else{
-                       temp_ar_orders_scanned.add(new model_order_item(data.getParcels().get(j).getParcelId(),data.getParcels().get(j).getScannedOn(), "", "scan"));
-
-                   }
-               }
-           }
-
-       }
-        Databackbone.getinstance().ar_orders_scanned.addAll(temp_ar_orders_scanned);
-        Databackbone.getinstance().ar_orders_remaining.addAll(temp_ar_orders_remaining);
-        update_view();
-    }
-
-
-    public void update_view(){
-        tx_count_scanned.setText(Integer.toString(Databackbone.getinstance().ar_orders_scanned.size()));
-        tx_count_remaining.setText(Integer.toString(Databackbone.getinstance().ar_orders_remaining.size()));
-
-
-        ad_orders_scanned.update_list();
-        ad_orders_remaining.update_list();
-
-
-    }
-
 
 }

@@ -13,6 +13,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import io.swyft.pickup.R;
+
 public class bottomsheet_reattempt extends BottomSheetDialogFragment {
     ImageView btn_close;
     ConstraintLayout btn_order_morning,btn_order_evening;

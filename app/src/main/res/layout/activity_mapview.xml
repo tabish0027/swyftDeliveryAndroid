@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_app_theam_color"
-    tools:context=".MainActivity">
+    >
 
 
     <com.google.android.gms.maps.MapView
@@ -16,6 +16,28 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/syncing_red_line_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/red"
+        android:gravity="center"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/red_line_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Syncing..."
+            android:textSize="12dp"
+            android:gravity="center"
+            android:textColor="@color/white"/>
+
+    </LinearLayout>
 
     <com.github.ybq.android.spinkit.SpinKitView
         android:id="@+id/url_loading_animation"
@@ -106,7 +128,6 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
             android:fontFamily="@font/avenirfile"
-            android:text="No Pending Task"
             android:textColor="@color/color_app_theam_text"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"

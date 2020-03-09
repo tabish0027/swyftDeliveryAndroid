@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="io.devbeans.swyft.LoadsheetHistoryActivity"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/color_app_theam">
+            <ImageView
+                android:id="@+id/back_btn"
+                android:layout_width="@dimen/border_title_back"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_back"
+                android:layout_marginLeft="20dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Loadsheet History"
+                android:textColor="@color/white"
+                android:textSize="@dimen/border_title"
+                android:fontFamily="@font/avenir"
+                android:textStyle="bold"
+                android:layout_marginLeft="20dp"
+                android:layout_toRightOf="@+id/back_btn"
+                android:layout_centerVertical="true"/>
+        </RelativeLayout>
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/loadsheet_history_nestedscrollview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/canceled_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Canceled Loadsheets"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:textSize="16dp"
+                    android:fontFamily="@font/avenir"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"/>
+
+                <LinearLayout
+                    android:id="@+id/canceled_headings"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:weightSum="4">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="ID"
+                        android:textSize="14dp"
+                        android:fontFamily="@font/avenir"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"/>
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".1"/>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Name"
+                        android:textSize="14dp"
+                        android:fontFamily="@font/avenir"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"/>
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".1"/>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1.8"
+                        android:layout_height="wrap_content"
+                        android:text="Total Parcels"
+                        android:textSize="14dp"
+                        android:fontFamily="@font/avenir"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"/>
+
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/canceled_loadsheet_recycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"/>
+
+                <TextView
+                    android:id="@+id/succeed_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Succeed Loadsheets"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:textSize="16dp"
+                    android:fontFamily="@font/avenir"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:weightSum="4">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="ID"
+                        android:textSize="14dp"
+                        android:fontFamily="@font/avenir"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"/>
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".1"/>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Name"
+                        android:textSize="14dp"
+                        android:fontFamily="@font/avenir"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"/>
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".1"/>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1.8"
+                        android:layout_height="wrap_content"
+                        android:text="Total Parcels"
+                        android:textSize="14dp"
+                        android:fontFamily="@font/avenir"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"/>
+
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/loadsheet_recycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"/>
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
+
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:id="@+id/url_loading_animation"
+        style="@style/SpinKitView.Large.Circle"
+        android:layout_width="wrap_content"
+        android:layout_height="76dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="32dp"
+        app:SpinKit_Color="@color/color_app_theam"
+        android:layout_centerInParent="true"/>
+    <TextView
+        android:id="@+id/no_data_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="You haven't generated Loadsheet yet"
+        android:layout_gravity="center"
+        android:textSize="16dp"
+        android:fontFamily="@font/avenir"
+        android:textColor="@color/black"
+        android:layout_centerInParent="true"
+        />
+
+
+</RelativeLayout>

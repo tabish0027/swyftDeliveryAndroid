@@ -36,6 +36,7 @@ import io.devbeans.swyft.interface_retrofit_delivery.Datum;
 import io.devbeans.swyft.interface_retrofit_delivery.RiderActivityDelivery;
 import io.devbeans.swyft.interface_retrofit_delivery.parcel_scan_delivery;
 import io.devbeans.swyft.interface_retrofit_delivery.swift_api_delivery;
+import io.swyft.pickup.R;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -55,6 +56,14 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
 
     EditText edt_parcel_id;
     Button btn_add;
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_down);
+        activity_barcode_scanner.this.finish();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +84,7 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_down);
                 activity_barcode_scanner.this.finish();
             }
         });
@@ -185,7 +195,7 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
     public void load_parcels_to_scan(){
 
 
-        if(Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery")){
+        if(Databackbone.getinstance().riderdetails.getType().equalsIgnoreCase("delivery")){
 
             //if(Databackbone.getinstance().task_to_show >= Databackbone.getinstance().parcelsdelivery.size()   )
              //   activity_barcode_scanner.this.finish();
@@ -205,8 +215,8 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
                 }
             }
             if(pending_parcels_to_scan <= 1)
-                tx_parcels_to_scan.setText(Integer.toString(pending_parcels_to_scan)+" Parcel left to Scan");
-            else tx_parcels_to_scan.setText(Integer.toString(pending_parcels_to_scan)+" Parcel left to Scan");
+                tx_parcels_to_scan.setText(Integer.toString(pending_parcels_to_scan)+" " + getResources().getString(R.string.parcel_left_to_scan));
+            else tx_parcels_to_scan.setText(Integer.toString(pending_parcels_to_scan)+" " + getResources().getString(R.string.parcel_left_to_scan));
 
         }else{
             PickupParcel pickupparcels=   Databackbone.getinstance().getParcelsForPickup();
@@ -222,8 +232,8 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
             }
 
             if(pending_parcels_to_scan <= 1)
-                tx_parcels_to_scan.setText(Integer.toString(pending_parcels_to_scan)+" Parcel left to Scan");
-            else tx_parcels_to_scan.setText(Integer.toString(pending_parcels_to_scan)+" Parcel left to Scan");
+                tx_parcels_to_scan.setText(Integer.toString(pending_parcels_to_scan) + " " + getResources().getString(R.string.parcel_left_to_scan));
+            else tx_parcels_to_scan.setText(Integer.toString(pending_parcels_to_scan) + " " + getResources().getString(R.string.parcel_left_to_scan));
 
         }
 
@@ -232,7 +242,7 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
     }
 
     public void check_parcel_to_scan(String id){
-       if(Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery"))
+       if(Databackbone.getinstance().riderdetails.getType().equalsIgnoreCase("delivery"))
        {
            Boolean check = false;
            //if(Databackbone.getinstance().task_to_show >= Databackbone.getinstance().parcelsdelivery.size()   )
@@ -250,7 +260,7 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
                for (int j = 0; j < data.getParcels().size(); j++) {
                    if(data.getParcels().get(j).getParcelId().equals(id) ){
                        if(!data.getParcels().get(j).getStatus().equals("pending")){
-                           Databackbone.getinstance().showAlsertBox(this, "Error", "Parcel Already Scanned");
+                           Databackbone.getinstance().showAlsertBox(this, getResources().getString(R.string.error), getResources().getString(R.string.parcel_already_scanned));
                            DisableLoading();
                            refreahScanner();
                            return;
@@ -263,7 +273,7 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
                if(check)break;
            }
            if(!check){
-               Databackbone.getinstance().showAlsertBox(this, "Error", "Parcel not found");
+               Databackbone.getinstance().showAlsertBox(this, getResources().getString(R.string.error), "Parcel not found");
                DisableLoading();
                refreahScanner();
            }else{
@@ -275,7 +285,7 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
            if(parcelspickup == null)
                activity_barcode_scanner.this.finish();
            if(!parcelspickup.getTaskStatus().equals("started")){
-               Databackbone.getinstance().showAlsertBox(this, "Error", "Task Not Active");
+               Databackbone.getinstance().showAlsertBox(this, getResources().getString(R.string.error), "Task Not Active");
 
                DisableLoading();
                refreahScanner();
@@ -291,7 +301,7 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
                }
            }
            if (!check) {
-               Databackbone.getinstance().showAlsertBox(this, "Error", "Parcel not found");
+               Databackbone.getinstance().showAlsertBox(this, getResources().getString(R.string.error), "Parcel not found");
 
                DisableLoading();
                refreahScanner();
@@ -323,7 +333,7 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
                 else{
                     DisableLoading();
                     //DeactivateRider();
-                    Databackbone.getinstance().showAlsertBox(activity_barcode_scanner.this,"Error","QRcode Not Found Error Code 37");
+                    Databackbone.getinstance().showAlsertBox(activity_barcode_scanner.this,getResources().getString(R.string.error),"QRcode Not Found Error Code 37");
                 }
 
             }
@@ -332,7 +342,7 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
             public void onFailure(Call<List<PickupParcel>> call, Throwable t) {
                 System.out.println(t.getCause());
                 DisableLoading();
-                Databackbone.getinstance().showAlsertBox(activity_barcode_scanner.this,"Error","Barcode Not Found Error Code 38");
+                Databackbone.getinstance().showAlsertBox(activity_barcode_scanner.this,getResources().getString(R.string.error),"Barcode Not Found Error Code 38");
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -376,7 +386,7 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
                 else{
                     DisableLoading();
                     //DeactivateRider();
-                    Databackbone.getinstance().showAlsertBox(activity_barcode_scanner.this,"Error","QRcode Not Found Error Code 37");
+                    Databackbone.getinstance().showAlsertBox(activity_barcode_scanner.this,getResources().getString(R.string.error),"QRcode Not Found Error Code 37");
                 }
 
             }
@@ -385,7 +395,7 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
             public void onFailure(Call<List<RiderActivityDelivery>> call, Throwable t) {
                 System.out.println(t.getCause());
                 DisableLoading();
-                Databackbone.getinstance().showAlsertBox(activity_barcode_scanner.this,"Error","Barcode Not Found Error Code 38");
+                Databackbone.getinstance().showAlsertBox(activity_barcode_scanner.this,getResources().getString(R.string.error),"Barcode Not Found Error Code 38");
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -473,10 +483,10 @@ public class activity_barcode_scanner extends AppCompatActivity implements ZXing
         if(pending_parcels_to_scan == 0)
             //return ;
         new AlertDialog.Builder(activity_barcode_scanner.this)
-                .setTitle("confirmation")
-                .setMessage("All Parcels Scanned ")
+                .setTitle(getResources().getString(R.string.confirmation))
+                .setMessage(getResources().getString(R.string.all_parcels_scanned))
 
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         activity_barcode_scanner.this.finish();
                     }

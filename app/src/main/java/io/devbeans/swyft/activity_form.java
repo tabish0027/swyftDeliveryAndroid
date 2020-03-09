@@ -17,6 +17,7 @@ import java.util.List;
 
 import io.devbeans.swyft.interface_retrofit.GeoPoints;
 import io.devbeans.swyft.interface_retrofit_delivery.Datum;
+import io.swyft.pickup.R;
 
 public class activity_form extends AppCompatActivity {
     ImageView btn_back;
@@ -89,7 +90,7 @@ public class activity_form extends AppCompatActivity {
         btn_navigation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GeoPoints points = Databackbone.getinstance().getDeliveryTask().getData().get(0).getLocation().getGeoPoints();
+                GeoPoints points = Databackbone.getinstance().getDeliveryTask().getData().get(0).getLocation().getGeopoints();
                 Offlice_Activity(new LatLng(points.getLat(),points.getLng()));
             }
         });
@@ -106,7 +107,7 @@ public class activity_form extends AppCompatActivity {
     public void Offlice_Activity(LatLng location){
         String location_to_string = Double.toString(location.latitude) + ","+Double.toString(location.longitude);
         Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                Uri.parse("http://maps.google.com/maps?daddr="+location_to_string));
+                Uri.parse(getResources().getString(R.string.google_map_link_address)+location_to_string));
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         this.getApplicationContext().startActivity(intent);
@@ -176,19 +177,19 @@ public class activity_form extends AppCompatActivity {
 
         if(parcel_count == 1 ){
             btn_parcel_selection.setVisibility(View.INVISIBLE);
-            btn_delivered.setText("DELIVERED");
-            btn_diclined.setText("DECLINED");
-            tx_parcel_id.setText("Parcels Id : " + data.getParcels().get(0).getParcelId());
+            btn_delivered.setText(getResources().getString(R.string.DELIVERED));
+            btn_diclined.setText(getResources().getString(R.string.DECLINED));
+            tx_parcel_id.setText(getResources().getString(R.string.parcels_id) + " : " + data.getParcels().get(0).getParcelId());
             tx_description_detail.setText(data.getParcels().get(0).getDescription());
-            tx_description_title.setText("Parcel Description");
+            tx_description_title.setText(getResources().getString(R.string.parcel_description));
         }
         else{
-            tx_parcel_id.setText("Parcels count : " + Integer.toString(parcel_count));
+            tx_parcel_id.setText(getResources().getString(R.string.parcels_count) + " : " + Integer.toString(parcel_count));
 
-            btn_delivered.setText("DELIVERED ALL");
-            btn_diclined.setText("DECLINED ALL");
-            tx_description_detail.setText("Please process all Parcels to mark this task complete");
-            tx_description_title.setText("Disclaimer");
+            btn_delivered.setText(getResources().getString(R.string.DELIVERED_ALL));
+            btn_diclined.setText(getResources().getString(R.string.DECLINED_ALL));
+            tx_description_detail.setText(getResources().getString(R.string.please_process_all_parcels_to_mark_this_task_complete));
+            tx_description_title.setText(getResources().getString(R.string.disclaimer));
         }
         return amount;
 
@@ -225,7 +226,7 @@ public class activity_form extends AppCompatActivity {
             tx_name.setText(data.getName());
             PhoneNumber = data.getPhone();
             tx_address.setText(data.getLocation().getAddress());
-            tx_payment_method.setText("Cash");
+            tx_payment_method.setText(getResources().getString(R.string.cash));
             mark_park_parcel_to_complete();
 
             if (checkIforderActive()) {
@@ -253,7 +254,7 @@ public class activity_form extends AppCompatActivity {
             smsIntent.putExtra("sms_body", "");
             startActivity(smsIntent);
         }catch (Exception i){
-            Databackbone.getinstance().showAlsertBox(this,"error","This phone dont support sms sync app Please Contact support for this ");
+            Databackbone.getinstance().showAlsertBox(this,getResources().getString(R.string.error), getResources().getString(R.string.this_phone_donot_support_sms_sync_app_please_contact_support_for_this));
         }
     }
 

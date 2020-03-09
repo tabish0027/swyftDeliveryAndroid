@@ -7,6 +7,10 @@
     <color name="color_app_theam_text">#ffffff</color>
 
     <color name="color_app_theam_color">#ffffff</color>
+    <color name="red">#F44336</color>
+    <color name="purple">#6f308f</color>
+    <color name="invisible">#00FFFFFF</color>
+    <color name="light_text_color">#6F6F6F</color>
 
 
 </resources>

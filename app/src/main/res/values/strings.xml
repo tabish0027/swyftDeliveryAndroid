@@ -5,5 +5,85 @@
     <string name="navigation_drawer_close">open drawer</string>
     <string name="appfont"> sans-serif-thin</string>
 
+    <string name="default_notification_channel_id">swyft_channel</string>
+    <string name="google_map_link_address">http://maps.google.com/maps?daddr=</string>
+
+    <string name="confirmation">Confirmation</string>
+    <string name="all_parcels_scanned">All Parcels Scanned</string>
+    <string name="ok">OK</string>
+    <string name="error">Error</string>
+    <string name="parcel_already_scanned">Parcel Already Scanned</string>
+    <string name="parcel_left_to_scan">Parcel are Scanned</string>
+    <string name="pending_parcels">Pending Parcels</string>
+    <string name="please_start_task_before_scan">Please Start the task before you scan parcels</string>
+    <string name="this_is_already_an_active_order">This is already an active order</string>
+    <string name="please_scan_all_parcels_before_start">PleasesScan all parcels before you start</string>
+    <string name="their_is_already_an_active_order">Their is already an active order</string>
+    <string name="notice">Notice</string>
+    <string name="you_are_about_to_start_order_for">You are about to start order for</string>
+    <string name="you_have_already_scanned_all_the_parcels">You have already scanned all the parcels</string>
+    <string name="completed">Completed</string>
+    <string name="issue">Issue</string>
+    <string name="this_app_version_is_obsolete">This app version is obsolete, Please Download the newer version</string>
+    <string name="order">Order</string>
+    <string name="order_start">Order Start</string>
+    <string name="wallet">Wallet</string>
+    <string name="earnings">Earnings</string>
+    <string name="delivery">Delivery</string>
+    <string name="help">Help</string>
+    <string name="faq">FAQ</string>
+    <string name="setting">Setting</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="this_is_already_an_active_task">This is already an active task</string>
+    <string name="only_one_task_canbe_activated_ata_time">Only one task can be activated at a time</string>
+    <string name="status">Status</string>
+    <string name="you_are_about_to_start_task_for">You are about to start Task for</string>
+    <string name="you_are_about_to_mark_this_task_complete">You are about to mark this task complete</string>
+    <string name="cancel">Cancel</string>
+    <string name="task">Task</string>
+    <string name="please_submit_the_collected_amount_to_swyftoffice_before_you_mark_this_task_complete">Please submit the collected amount to swyft office before you mark this task complete</string>
+    <string name="net_enough_funds">Not Enough Funds</string>
+    <string name="not_delivered">Not Delivered</string>
+    <string name="confirmed">Confirmed</string>
+    <string name="please_enter_avalid_phone_number">Please enter a valid Phone Number</string>
+    <string name="password_and_confirm_password_not_same">Password and confirm password are not same</string>
+    <string name="password_length_shouldbe_greater_than_6_words">Password length should be greater than 6 words</string>
+    <string name="please_enter_avalid_otp">Please enter a valid OTP</string>
+    <string name="password_reset">Password reset</string>
+    <string name="done">Done</string>
+    <string name="DELIVERED">DELIVERED</string>
+    <string name="DECLINED">DECLINED</string>
+    <string name="parcels_id">Parcels Id</string>
+    <string name="parcel_description">Parcel Description</string>
+    <string name="parcels_count">Parcels count</string>
+    <string name="DELIVERED_ALL">DELIVERED ALL</string>
+    <string name="DECLINED_ALL">DECLINED ALL</string>
+    <string name="please_process_all_parcels_to_mark_this_task_complete">Please process all parcels to mark this task complete</string>
+    <string name="disclaimer">Disclaimer</string>
+    <string name="cash">Cash</string>
+    <string name="this_phone_donot_support_sms_sync_app_please_contact_support_for_this">This phone do not support sms sync app. Please contact support for this</string>
+    <string name="user_or_password_too_short">User or Password are too short</string>
+    <string name="wrong_username_or_password">Wrong username or password</string>
+    <string name="please_give_permission_for_location">Please give permission for location</string>
+    <string name="you_are_not_online">You Are Not Online</string>
+    <string name="navigation_request">Navigation Request</string>
+    <string name="activate_navigation_for">Activate Navigation for</string>
+    <string name="task_pending">Task Pending</string>
+    <string name="zero_task_pending">0 Task Pending</string>
+    <string name="rider_app">Rider App</string>
+    <string name="online">Online</string>
+    <string name="offline">Offline</string>
+    <string name="declined_parcels">Diclined Parcels</string>
+    <string name="no_data_found">No Data Found</string>
+    <string name="reattempt_parcels">Reattempt Parcels</string>
+    <string name="delivered_parcels">Delivered Parcels</string>
+    <string name="please_put_signature">Please put Signature</string>
+    <string name="signature">Signature</string>
+    <string name="sync">Sync</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="loadsheet_history">Loadsheet history</string>
+    <string name="active_tasks">Active Tasks</string>
 
 </resources>

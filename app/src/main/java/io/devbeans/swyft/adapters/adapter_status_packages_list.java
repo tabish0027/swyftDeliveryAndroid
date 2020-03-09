@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import io.devbeans.swyft.R;
+import io.swyft.pickup.R;
 import io.devbeans.swyft.data_models.model_order_item;
 
 public class adapter_status_packages_list extends RecyclerView.Adapter<adapter_status_packages_list.model_order_item_holder> {

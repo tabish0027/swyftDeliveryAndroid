@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -28,6 +27,8 @@ import io.devbeans.swyft.interface_retrofit.manage_task;
 import io.devbeans.swyft.interface_retrofit.swift_api;
 import io.devbeans.swyft.interface_retrofit_delivery.RiderActivityDelivery;
 import io.devbeans.swyft.interface_retrofit_delivery.swift_api_delivery;
+import io.swyft.pickup.BuildConfig;
+import io.swyft.pickup.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -43,6 +44,14 @@ public class activity_daily_task_status extends Activity {
     ConstraintLayout pendingTask;
     private Call<List<PickupParcel>> call;
     TextView tx_empty_view;
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_down);
+        activity_daily_task_status.this.finish();
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +68,7 @@ public class activity_daily_task_status extends Activity {
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_down);
                 activity_daily_task_status.this.finish();
             }
         });
@@ -68,23 +78,24 @@ public class activity_daily_task_status extends Activity {
 
 
         //generate_test_Data();
-        if(Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery"))
+        if(Databackbone.getinstance().riderdetails.getType().equalsIgnoreCase("delivery"))
         {
-            ad_task = new adapter_status_daily_task(Databackbone.getinstance().ar_task_daily_delivery, this);
+//            ad_task = new adapter_status_daily_task(Databackbone.getinstance().ar_task_daily_delivery, this);
         }
         else{
-            ad_task = new adapter_status_daily_task(Databackbone.getinstance().ar_task_daily_pickup, this);
+//            ad_task = new adapter_status_daily_task(Databackbone.getinstance().ar_task_daily_pickup, this);
 
         }
 
 
         task_list.setAdapter(ad_task);
 
+/*
         ad_task.setOnItemClickListener(new adapter_status_daily_task.ClickListener() {
             @Override
             public void onItemClick(int position, View v,Boolean check) {
                 if(check) {
-                    if (Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery")) {
+                    if (Databackbone.getinstance().riderdetails.getType().equalsIgnoreCase("delivery")) {
                         Databackbone.getinstance().task_to_show = Databackbone.getinstance().parcelsdelivery.get(position).getTaskId();
                         StartDeliveryTask(position);
                     }
@@ -96,7 +107,7 @@ public class activity_daily_task_status extends Activity {
                         startPicupTask(position);
                     }
                 }else{
-                    if (Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery"))
+                    if (Databackbone.getinstance().riderdetails.getType().equalsIgnoreCase("delivery"))
                     {
                         Databackbone.getinstance().task_to_show = Databackbone.getinstance().parcelsdelivery.get(position).getTaskId();
 
@@ -125,11 +136,12 @@ public class activity_daily_task_status extends Activity {
                 Toast.makeText(activity_daily_task_status.this,"onItemLongClick position: " + position,Toast.LENGTH_LONG).show();
             }
         });
+*/
 
         swipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if(Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery"))
+                if(Databackbone.getinstance().riderdetails.getType().equalsIgnoreCase("delivery"))
                     LoadParcelsForDelivery();
                 else
 
@@ -182,7 +194,7 @@ public class activity_daily_task_status extends Activity {
         */
         else{
             if(check_is_any_pickup_task_active()){
-                Databackbone.getinstance().showAlsertBox(activity_daily_task_status.this,"Error","The is already an active task");
+                Databackbone.getinstance().showAlsertBox(activity_daily_task_status.this,getResources().getString(R.string.error), getResources().getString(R.string.this_is_already_an_active_task));
                 return ;
 
             }
@@ -197,7 +209,7 @@ public class activity_daily_task_status extends Activity {
                 completeTaskConfirmation(Databackbone.getinstance().parcelsdelivery.get(position).getTaskId());
             }
             else if(check_is_any_delivery_task_active()){
-                Databackbone.getinstance().showAlsertBox(activity_daily_task_status.this,"Error","Only one task can be activated at a time");
+                Databackbone.getinstance().showAlsertBox(activity_daily_task_status.this,getResources().getString(R.string.error), getResources().getString(R.string.only_one_task_canbe_activated_ata_time));
 
                 return;
             }
@@ -221,7 +233,7 @@ public class activity_daily_task_status extends Activity {
 
     public void load_Data() {
         tx_empty_view.setVisibility(View.INVISIBLE);
-        if(!Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery")) {
+        if(!Databackbone.getinstance().riderdetails.getType().equalsIgnoreCase("delivery")) {
             Databackbone.getinstance().ar_task_daily_pickup.clear();
 
             ArrayList<model_daily_package_item> ar_task_daily_pickup = new ArrayList<>();
@@ -229,7 +241,7 @@ public class activity_daily_task_status extends Activity {
                 return;
             Boolean activated_task = false;
             for (int i = 0; i < Databackbone.getinstance().parcels.size(); i++) {
-                LatLng m_location = new LatLng(Databackbone.getinstance().parcels.get(i).getLocation().getGeoPoints().getLat(), Databackbone.getinstance().parcels.get(i).getLocation().getGeoPoints().getLng());
+                LatLng m_location = new LatLng(Databackbone.getinstance().parcels.get(i).getLocation().getGeopoints().getLat(), Databackbone.getinstance().parcels.get(i).getLocation().getGeopoints().getLng());
 
                 if (!Databackbone.getinstance().parcels.get(i).getTaskStatus().equalsIgnoreCase("pending"))
                     activated_task = true;
@@ -241,7 +253,7 @@ public class activity_daily_task_status extends Activity {
                 }
 
 
-                double distance = Databackbone.getinstance().CalculationByDistance(Databackbone.getinstance().parcels.get(i).getLocation().getGeoPoints().getLat(), Databackbone.getinstance().parcels.get(i).getLocation().getGeoPoints().getLng());
+                double distance = Databackbone.getinstance().CalculationByDistance(Databackbone.getinstance().parcels.get(i).getLocation().getGeopoints().getLat(), Databackbone.getinstance().parcels.get(i).getLocation().getGeopoints().getLng());
                 model_daily_package_item dataModelValue = new model_daily_package_item(Databackbone.getinstance().parcels.get(i).getTaskId(), Databackbone.getinstance().parcels.get(i).getName(), Databackbone.getinstance().parcels.get(i).getLocation().getAddress(), Double.toString(Databackbone.getinstance().parcels.get(i).getDistance()) + "KM", Databackbone.getinstance().parcels.get(i).getLocation().getAddress(), activated_task, m_location, size);
                 ar_task_daily_pickup.add(dataModelValue);
                 activated_task = false;
@@ -274,7 +286,7 @@ public class activity_daily_task_status extends Activity {
 
                 String mb_task_id = Databackbone.getinstance().parcelsdelivery.get(i).getTaskId();
                 String mb_name =Databackbone.getinstance().parcelsdelivery.get(i).getTaskId();
-                String mb_address ="Status : " + Databackbone.getinstance().parcelsdelivery.get(i).getTaskStatus();
+                String mb_address = getResources().getString(R.string.status) + " : " + Databackbone.getinstance().parcelsdelivery.get(i).getTaskStatus();
                 String mb_distance = Integer.toString(Total_parcels);
                 String mb_zone = "Parcel";
                 int location_left = Databackbone.getinstance().parcelsdelivery.get(i).getData().size();
@@ -298,7 +310,7 @@ public class activity_daily_task_status extends Activity {
 
     }
     public void check_is_task_active_and_complete(){
-        if(!Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery")) {
+        if(!Databackbone.getinstance().riderdetails.getType().equalsIgnoreCase("delivery")) {
             for (int i = 0; i < Databackbone.getinstance().ar_task_daily_pickup.size(); i++) {
                 if(Databackbone.getinstance().ar_task_daily_pickup.get(i).m_remaining_parcels_to_scan  == 0 && Databackbone.getinstance().ar_task_daily_pickup.get(i).status){
                     activate_Task_activater(Databackbone.getinstance().ar_task_daily_pickup.get(i).mb_task_id,"completed");
@@ -369,12 +381,12 @@ public class activity_daily_task_status extends Activity {
 
     public void startTaskConfirmation(final String name , final String taskid){
         new AlertDialog.Builder(activity_daily_task_status.this)
-                .setTitle("Notice")
-                .setMessage("You are about to start Task for " + name )
+                .setTitle(getResources().getString(R.string.notice))
+                .setMessage(getResources().getString(R.string.you_are_about_to_start_task_for) + name )
 
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        if(Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery"))
+                        if(Databackbone.getinstance().riderdetails.getType().equalsIgnoreCase("delivery"))
                             activate_Task_delivery_activater(taskid,"started");
                         else
                             activate_Task_activater(taskid,"started");
@@ -394,19 +406,19 @@ public class activity_daily_task_status extends Activity {
     }
     public void completeTaskConfirmation(final String taskid){
         new AlertDialog.Builder(activity_daily_task_status.this)
-                .setTitle("Notice")
-                .setMessage("You are about to mark this task complete" )
+                .setTitle(getResources().getString(R.string.notice))
+                .setMessage(getResources().getString(R.string.you_are_about_to_mark_this_task_complete))
 
-                .setPositiveButton("Completed", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getResources().getString(R.string.completed), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        if(Databackbone.getinstance().rider.getUser().getType().equalsIgnoreCase("delivery"))
+                        if(Databackbone.getinstance().riderdetails.getType().equalsIgnoreCase("delivery"))
                             activate_Task_delivery_activater(taskid,"completed");
                         else
                             activate_Task_activater(taskid,"completed");
 
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
                     }
@@ -421,12 +433,12 @@ public class activity_daily_task_status extends Activity {
         EnableLoading();
         double distance = Databackbone.getinstance().getfinalcouvereddistance (taskId,activity_daily_task_status.this);
 
-        Call<List<PickupParcel>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),taskId,new manage_task(action,(int)distance,BuildConfig.VERSION_NAME));
+        Call<List<PickupParcel>> call = riderapi.manageTask(Databackbone.getinstance().rider.getId(),taskId,new manage_task(action,(int)distance, BuildConfig.VERSION_NAME));
         call.enqueue(new Callback<List<PickupParcel>>() {
             @Override
             public void onResponse(Call<List<PickupParcel>> call, Response<List<PickupParcel>> response) {
                 if (response.code() != 200) {
-                    Databackbone.getinstance().showAlsertBox(activity_daily_task_status.this,"Error","This app version is obsolete, Please Download the newer version");
+                    Databackbone.getinstance().showAlsertBox(activity_daily_task_status.this,getResources().getString(R.string.error),getResources().getString(R.string.this_app_version_is_obsolete));
                     DisableLoading();
                     return;
                 }
@@ -443,10 +455,10 @@ public class activity_daily_task_status extends Activity {
                    DisableLoading();
                     if(action.equals("started")){
                         new AlertDialog.Builder(activity_daily_task_status.this)
-                                .setTitle("confirmation")
-                                .setMessage("Task "+action)
+                                .setTitle(getResources().getString(R.string.confirmation))
+                                .setMessage(getResources().getString(R.string.task) + " "+action)
 
-                                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                       if(Databackbone.getinstance().RiderTypeDelivery) {
                                           Intent orders = new Intent(activity_daily_task_status.this, activity_daily_order_status.class);
@@ -463,7 +475,7 @@ public class activity_daily_task_status extends Activity {
 
                     }
                     else{
-                        Databackbone.getinstance().showAlsertBox(activity_daily_task_status.this,"confirmation","Task "+action);
+                        Databackbone.getinstance().showAlsertBox(activity_daily_task_status.this,getResources().getString(R.string.confirmation),getResources().getString(R.string.task) + " "+action);
                         Databackbone.getinstance().SaveData("swift_work_progress","none",getApplicationContext());
 
                     }
@@ -496,12 +508,12 @@ public class activity_daily_task_status extends Activity {
             @Override
             public void onResponse(Call<List<RiderActivityDelivery>> call, Response<List<RiderActivityDelivery>> response) {
                 if (response.code() != 200 && response.code() != 400) {
-                    Databackbone.getinstance().showAlsertBox(activity_daily_task_status.this,"Error","This app version is obsolete, Please Download the newer version");
+                    Databackbone.getinstance().showAlsertBox(activity_daily_task_status.this,getResources().getString(R.string.error),getResources().getString(R.string.this_app_version_is_obsolete));
                     DisableLoading();
                     return;
                 }
                 else if (response.code() == 400) {
-                    Databackbone.getinstance().showAlsertBox(activity_daily_task_status.this,"Error","Please submit the collected amount to swyft office before you mark this task complete");
+                    Databackbone.getinstance().showAlsertBox(activity_daily_task_status.this,getResources().getString(R.string.error),getResources().getString(R.string.please_submit_the_collected_amount_to_swyftoffice_before_you_mark_this_task_complete));
                     DisableLoading();
                     return;
                 }
@@ -520,10 +532,10 @@ public class activity_daily_task_status extends Activity {
                     if(action.equals("started"))
                     {
                         new AlertDialog.Builder(activity_daily_task_status.this)
-                                .setTitle("confirmation")
-                                .setMessage("Task "+action)
+                                .setTitle(getResources().getString(R.string.confirmation))
+                                .setMessage(getResources().getString(R.string.task) + " "+action)
 
-                                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         Intent orders = new Intent(activity_daily_task_status.this,activity_daily_order_status.class);
                                         orders.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -535,7 +547,7 @@ public class activity_daily_task_status extends Activity {
                                 .setIcon(android.R.drawable.ic_dialog_alert)
                                 .show();
                     }else{
-                        Databackbone.getinstance().showAlsertBox(activity_daily_task_status.this,"confirmation","Task "+action);
+                        Databackbone.getinstance().showAlsertBox(activity_daily_task_status.this,getResources().getString(R.string.confirmation),getResources().getString(R.string.task) + " "+action);
                         Databackbone.getinstance().SaveData("swift_work_progress","none",getApplicationContext());
 
                     }

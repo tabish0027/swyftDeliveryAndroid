@@ -6,6 +6,8 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import io.swyft.pickup.R;
+
 public class activity_settings extends AppCompatActivity {
 
     ImageView btn_back;

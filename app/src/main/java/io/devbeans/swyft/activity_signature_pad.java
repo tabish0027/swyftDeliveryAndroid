@@ -401,6 +401,7 @@ public class activity_signature_pad extends AppCompatActivity {
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .show();
                     mEditor.clear().commit();
+                    Databackbone.getinstance().scannedParcelsIds.clear();
                     DisableLoading();
                 } else {
                     String jsonP = gson.toJson(savedLoadsheets);
@@ -421,6 +422,7 @@ public class activity_signature_pad extends AppCompatActivity {
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .show();
                     mEditor.clear().commit();
+                    Databackbone.getinstance().scannedParcelsIds.clear();
                     DisableLoading();
                 }
 
@@ -446,6 +448,7 @@ public class activity_signature_pad extends AppCompatActivity {
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .show();
                 mEditor.clear().commit();
+                Databackbone.getinstance().scannedParcelsIds.clear();
                 DisableLoading();
             }
         });

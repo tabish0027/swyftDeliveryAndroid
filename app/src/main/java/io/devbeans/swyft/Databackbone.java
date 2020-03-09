@@ -452,6 +452,8 @@ public class Databackbone {
 
     public List<PickupParcel> CalculateLocationFromPickupParcels(List<PickupParcel> parcel){
         //List<String> destinations =  new ArrayList<String>();
+        return parcel;
+        /*
         if(parcel == null || current_location == null)
             return parcel;
         String currentLocation = Double.toString(current_location.latitude)+","+Double.toString(current_location.longitude)   ;
@@ -475,11 +477,12 @@ public class Databackbone {
 
         }
         return parcel;
-
-
+        */
     }
     public List<Datum> CalculateLocationFromDelivery(List<Datum> parcel){
         //List<String> destinations =  new ArrayList<String>();
+        return parcel;
+        /*
         if(parcel == null || current_location == null)
             return parcel;
         try {
@@ -508,7 +511,7 @@ public class Databackbone {
             return parcel;
         }
         return parcel;
-
+        */
 
     }
     public PickupParcel getParcelsForPickup( ){

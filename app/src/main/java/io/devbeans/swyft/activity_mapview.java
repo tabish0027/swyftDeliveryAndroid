@@ -512,7 +512,7 @@ public class activity_mapview extends Activity implements OnMapReadyCallback {
             public void onFailure(Call<RiderDetails> call, Throwable t) {
                 System.out.println(t.getCause());
                 DisableLoading();
-                Databackbone.getinstance().showAlsertBox(activity_mapview.this,"Error","Error Connecting To Server Error Code 34");
+                Databackbone.getinstance().showAlsertBox(activity_mapview.this,"Error","Error Connecting To Server Error Code 34" + t.getCause().toString());
 
                 //DeactivateRider();
             }

@@ -13,11 +13,8 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -27,8 +24,7 @@ import java.util.List;
 
 import io.devbeans.swyft.Databackbone;
 import io.devbeans.swyft.interface_retrofit.ActiveAssignment;
-import io.devbeans.swyft.interface_retrofit.TodayAssignmentData;
-import io.swyft.swyft.R;
+import io.swyft.pickup.R;
 
 public class AdapterActiveDailyTasks extends RecyclerView.Adapter<AdapterActiveDailyTasks.MyViewHolder> implements Filterable {
     private Context context;

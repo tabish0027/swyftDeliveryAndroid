@@ -1,16 +1,12 @@
 package io.devbeans.swyft;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager.widget.ViewPager;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -27,15 +23,7 @@ import io.devbeans.swyft.Fragments.AllDailyTasks;
 import io.devbeans.swyft.adapters.AdapterActiveDailyTasks;
 import io.devbeans.swyft.adapters.AdapterAllDaliyTasks;
 import io.devbeans.swyft.adapters.DailyTasksViewPagerAdapter;
-import io.devbeans.swyft.adapters.adapter_status_packages_scanning;
-import io.devbeans.swyft.interface_retrofit.TodayAssignments;
-import io.devbeans.swyft.interface_retrofit.swift_api;
-import io.swyft.swyft.R;
-import io.swyft.swyft.Splash;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
+import io.swyft.pickup.R;
 
 public class DailyTasksActivity extends AppCompatActivity {
 

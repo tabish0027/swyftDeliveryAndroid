@@ -1,9 +1,7 @@
 package io.devbeans.swyft.Fragments;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -24,7 +22,7 @@ import io.devbeans.swyft.activity_login;
 import io.devbeans.swyft.adapters.AdapterAllDaliyTasks;
 import io.devbeans.swyft.interface_retrofit.TodayAssignments;
 import io.devbeans.swyft.interface_retrofit.swift_api;
-import io.swyft.swyft.R;
+import io.swyft.pickup.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

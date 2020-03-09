@@ -16,7 +16,7 @@ import io.devbeans.swyft.interface_retrofit.PasswordResetRequest;
 import io.devbeans.swyft.interface_retrofit.reset_password;
 import io.devbeans.swyft.interface_retrofit.swift_api;
 import io.devbeans.swyft.interface_retrofit.username;
-import io.swyft.swyft.R;
+import io.swyft.pickup.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

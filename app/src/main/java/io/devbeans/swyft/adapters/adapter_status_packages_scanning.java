@@ -20,8 +20,7 @@ import java.util.List;
 
 import io.devbeans.swyft.BarCodeScannerActivity;
 import io.devbeans.swyft.Databackbone;
-import io.swyft.swyft.R;
-import io.devbeans.swyft.data_models.model_order_item;
+import io.swyft.pickup.R;
 
 public class adapter_status_packages_scanning extends RecyclerView.Adapter<adapter_status_packages_scanning.model_order_item_holder> implements Filterable {
 

@@ -1,30 +1,18 @@
 package io.devbeans.swyft.adapters;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Color;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
 
-import io.devbeans.swyft.Databackbone;
 import io.devbeans.swyft.interface_retrofit.LoadsheetHistoryModel;
-import io.devbeans.swyft.interface_retrofit.Location;
-import io.devbeans.swyft.interface_retrofit.TodayAssignmentData;
-import io.swyft.swyft.R;
+import io.swyft.pickup.R;
 
 public class AdapterLoadsheetHistory extends RecyclerView.Adapter<AdapterLoadsheetHistory.MyViewHolder> {
     private Context context;

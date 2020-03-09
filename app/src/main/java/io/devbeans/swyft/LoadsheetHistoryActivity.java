@@ -1,23 +1,16 @@
 package io.devbeans.swyft;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -31,17 +24,9 @@ import java.util.List;
 import io.devbeans.swyft.adapters.AdapterLoadsheetHistory;
 import io.devbeans.swyft.adapters.CanceledLoadSheetAdapter;
 import io.devbeans.swyft.data_models.LoadSheetModel;
-import io.devbeans.swyft.data_models.LoadsheetURLModel;
-import io.devbeans.swyft.data_models.RiderIDModel;
-import io.devbeans.swyft.data_models.includeModel;
-import io.devbeans.swyft.data_models.innerIncludeModel;
-import io.devbeans.swyft.data_models.innerScopeModel;
-import io.devbeans.swyft.data_models.scopeModel;
 import io.devbeans.swyft.interface_retrofit.LoadsheetHistoryModel;
-import io.devbeans.swyft.interface_retrofit.RiderDetails;
 import io.devbeans.swyft.interface_retrofit.swift_api;
-import io.swyft.swyft.R;
-import io.swyft.swyft.Splash;
+import io.swyft.pickup.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

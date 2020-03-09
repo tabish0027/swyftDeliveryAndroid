@@ -13,7 +13,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import io.devbeans.swyft.interface_retrofit_delivery.delivery_earnings;
 import io.devbeans.swyft.interface_retrofit_delivery.swift_api_delivery;
-import io.swyft.swyft.R;
+import io.swyft.pickup.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

@@ -13,7 +13,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-import io.swyft.swyft.R;
+import io.swyft.pickup.R;
 
 public class bottomsheet_payment_method extends BottomSheetDialogFragment {
 

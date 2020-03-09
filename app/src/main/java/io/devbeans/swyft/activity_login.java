@@ -29,10 +29,8 @@ import com.google.firebase.iid.InstanceIdResult;
 
 
 import io.devbeans.swyft.data_models.UpdateToken;
-import io.devbeans.swyft.network.ApiController;
-import io.swyft.swyft.BuildConfig;
-import io.swyft.swyft.R;
-import io.swyft.swyft.Splash;
+import io.swyft.pickup.BuildConfig;
+import io.swyft.pickup.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

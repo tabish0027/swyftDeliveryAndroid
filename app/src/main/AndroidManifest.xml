@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="io.swyft.swyft">
+    package="io.swyft.pickup">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -52,7 +52,7 @@
             android:name="io.devbeans.swyft.activity_form"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Splash"
+            android:name="io.swyft.pickup.Splash"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -11,8 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import io.devbeans.swyft.interface_retrofit.LoadsheetHistoryModel;
-import io.swyft.swyft.R;
+import io.swyft.pickup.R;
 
 public class AdapterViewLoadsheet extends RecyclerView.Adapter<AdapterViewLoadsheet.MyViewHolder> {
     private Context context;

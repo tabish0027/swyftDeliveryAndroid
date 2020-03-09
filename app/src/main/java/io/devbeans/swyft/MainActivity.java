@@ -7,7 +7,7 @@ import android.os.Bundle;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 
-import io.swyft.swyft.R;
+import io.swyft.pickup.R;
 
 public class MainActivity extends AppCompatActivity {
     private GoogleMap mMap;

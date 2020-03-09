@@ -8,10 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -31,9 +28,6 @@ import com.github.gcacace.signaturepad.views.SignaturePad;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -46,19 +40,14 @@ import io.devbeans.swyft.data_models.LoadSheetModel;
 import io.devbeans.swyft.data_models.SignatureURLModel;
 import io.devbeans.swyft.interface_retrofit.PasswordResetRequest;
 import io.devbeans.swyft.interface_retrofit.swift_api;
-import io.devbeans.swyft.interface_retrofit_delivery.Datum;
-import io.devbeans.swyft.interface_retrofit_delivery.RiderActivityDelivery;
-import io.devbeans.swyft.interface_retrofit_delivery.mark_parcel_complete;
-import io.devbeans.swyft.interface_retrofit_delivery.parcel_signature_upload;
 import io.devbeans.swyft.interface_retrofit_delivery.swift_api_delivery;
-import io.swyft.swyft.R;
+import io.swyft.pickup.R;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
 public class activity_signature_pad extends AppCompatActivity {
 

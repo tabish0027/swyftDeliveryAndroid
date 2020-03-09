@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import io.swyft.swyft.R;
+import io.swyft.pickup.R;
 import io.devbeans.swyft.data_models.model_wallets_order;
 
 public class adapter_status_daily_wallet extends RecyclerView.Adapter<adapter_status_daily_wallet.model_order_wallet_item_holder> {

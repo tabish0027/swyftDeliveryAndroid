@@ -18,10 +18,8 @@ import androidx.core.content.ContextCompat;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import org.json.JSONException;
-
 import io.devbeans.swyft.activity_login;
-import io.swyft.swyft.R;
+import io.swyft.pickup.R;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     String TAG = "NotiData";

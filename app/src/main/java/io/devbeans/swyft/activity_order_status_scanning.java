@@ -1,9 +1,7 @@
 package io.devbeans.swyft;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -28,23 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.devbeans.swyft.adapters.adapter_status_packages_scanning;
-import io.devbeans.swyft.data_models.LoadSheetModel;
-import io.devbeans.swyft.data_models.model_order_item;
-import io.devbeans.swyft.interface_retrofit.Parcel;
-import io.devbeans.swyft.interface_retrofit.PasswordResetRequest;
-import io.devbeans.swyft.interface_retrofit.PickupParcel;
-import io.devbeans.swyft.interface_retrofit.Rider;
-import io.devbeans.swyft.interface_retrofit.login;
-import io.devbeans.swyft.interface_retrofit.markattendance;
-import io.devbeans.swyft.interface_retrofit.swift_api;
-import io.devbeans.swyft.interface_retrofit_delivery.Datum;
-import io.devbeans.swyft.interface_retrofit_delivery.RiderActivityDelivery;
-import io.swyft.swyft.BuildConfig;
-import io.swyft.swyft.R;
-import io.swyft.swyft.Splash;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import io.swyft.pickup.R;
 
 public class activity_order_status_scanning extends Activity {
 

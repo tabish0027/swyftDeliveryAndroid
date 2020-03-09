@@ -14,7 +14,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -23,8 +22,7 @@ import java.util.ArrayList;
 
 import io.devbeans.swyft.Databackbone;
 import io.devbeans.swyft.interface_retrofit.TodayAssignmentData;
-import io.swyft.swyft.R;
-import io.devbeans.swyft.data_models.model_daily_package_item;
+import io.swyft.pickup.R;
 
 public class adapter_status_daily_task extends RecyclerView.Adapter<adapter_status_daily_task.model_order_daily_item_holder> {
 

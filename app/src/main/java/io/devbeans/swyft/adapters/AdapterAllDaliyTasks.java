@@ -8,26 +8,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.squareup.picasso.Picasso;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 import io.devbeans.swyft.BarCodeScannerActivity;
 import io.devbeans.swyft.Databackbone;
 import io.devbeans.swyft.interface_retrofit.TodayAssignmentData;
-import io.swyft.swyft.R;
+import io.swyft.pickup.R;
 
 public class AdapterAllDaliyTasks extends RecyclerView.Adapter<AdapterAllDaliyTasks.MyViewHolder> implements Filterable {
     private Context context;

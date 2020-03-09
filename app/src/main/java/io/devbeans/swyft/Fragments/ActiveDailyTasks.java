@@ -1,6 +1,5 @@
 package io.devbeans.swyft.Fragments;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -23,15 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.devbeans.swyft.BarCodeScannerActivity;
-import io.devbeans.swyft.DailyTasksActivity;
 import io.devbeans.swyft.Databackbone;
 import io.devbeans.swyft.activity_login;
 import io.devbeans.swyft.adapters.AdapterActiveDailyTasks;
-import io.devbeans.swyft.adapters.AdapterAllDaliyTasks;
 import io.devbeans.swyft.interface_retrofit.ActiveAssignment;
 import io.devbeans.swyft.interface_retrofit.TodayAssignments;
 import io.devbeans.swyft.interface_retrofit.swift_api;
-import io.swyft.swyft.R;
+import io.swyft.pickup.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

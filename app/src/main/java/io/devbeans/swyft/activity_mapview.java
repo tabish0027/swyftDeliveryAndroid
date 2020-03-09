@@ -1,13 +1,10 @@
 package io.devbeans.swyft;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.Network;
@@ -28,10 +25,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -52,16 +46,11 @@ import com.squareup.picasso.Picasso;
 
 import androidx.navigation.ui.AppBarConfiguration;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import io.devbeans.swyft.interface_retrofit.PickupParcel;
 import io.devbeans.swyft.interface_retrofit.*;
-import io.swyft.swyft.R;
-import io.swyft.swyft.Splash;
+import io.swyft.pickup.R;
 import mumayank.com.airlocationlibrary.AirLocation;
 import retrofit2.Call;
 import retrofit2.Callback;

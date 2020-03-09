@@ -22,7 +22,7 @@ import java.util.List;
 
 import io.devbeans.swyft.adapters.AdapterViewLoadsheet;
 import io.devbeans.swyft.interface_retrofit.LoadsheetHistoryModel;
-import io.swyft.swyft.R;
+import io.swyft.pickup.R;
 
 public class ViewLoadsheetActivity extends AppCompatActivity {
 

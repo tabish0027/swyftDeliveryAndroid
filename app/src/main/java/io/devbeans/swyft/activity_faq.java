@@ -6,7 +6,7 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import io.swyft.swyft.R;
+import io.swyft.pickup.R;
 
 public class activity_faq extends AppCompatActivity {
 

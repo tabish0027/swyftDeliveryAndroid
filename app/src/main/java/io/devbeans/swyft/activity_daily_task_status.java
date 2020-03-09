@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -28,8 +27,8 @@ import io.devbeans.swyft.interface_retrofit.manage_task;
 import io.devbeans.swyft.interface_retrofit.swift_api;
 import io.devbeans.swyft.interface_retrofit_delivery.RiderActivityDelivery;
 import io.devbeans.swyft.interface_retrofit_delivery.swift_api_delivery;
-import io.swyft.swyft.BuildConfig;
-import io.swyft.swyft.R;
+import io.swyft.pickup.BuildConfig;
+import io.swyft.pickup.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

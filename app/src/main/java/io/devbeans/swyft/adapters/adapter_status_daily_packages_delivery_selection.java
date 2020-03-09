@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import io.swyft.swyft.R;
+import io.swyft.pickup.R;
 import io.devbeans.swyft.data_models.model_parcel;
 
 public class adapter_status_daily_packages_delivery_selection extends RecyclerView.Adapter<adapter_status_daily_packages_delivery_selection.status_daily_packages_delivery_selection_holder>  {
